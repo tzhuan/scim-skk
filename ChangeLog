@@ -1,3 +1,11 @@
+2005-01-08  Jun Mukai  <mukai@jmuk.org>
+
+	* src/scim_skk_core.cpp: changes the type of `m_okurihead' from
+	WideString to ucs4_t.
+	(process_key_event): Fix bug on cancel of learning.
+	(process_key_event): Fix bug on cancel for candidates without
+	lookup table.
+
 2005-01-06  Jun Mukai  <mukai@jmuk.org>
 
 	* src/scim_skk_keybind.cpp (match_key_event): If mask of the key

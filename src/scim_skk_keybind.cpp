@@ -22,7 +22,7 @@
 
 char *qwerty_vec[7]  = {"a", "s", "d", "f", "j", "k", "l"};
 char *dvorak_vec[8]  = {"a", "o", "e", "u", "h", "t", "n", "s"};
-char *number_vec[10] = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "0"};
+char *number_vec[9]  = {"1", "2", "3", "4", "5", "6", "7", "8", "9"};
 
 static inline bool match_key_event       (const KeyEventList &keylist,
                                           const KeyEvent &key);
@@ -115,12 +115,8 @@ int
 KeyBind::match_selection_number (const KeyEvent &key)
 {
     char c;
-    if (isdigit(c = key.get_ascii_code())) {
-        if (c == '0') {
-            return 9;
-        } else {
-            return (c - '1');
-        }
+    if (isdigit(c = key.get_ascii_code()) && c != '0') {
+        return (c - '1');
     } else {
         return -1;
     }
@@ -155,7 +151,7 @@ KeyBind::selection_key_length (void)
     case SSTYLE_DVORAK:
         return 8;
     case SSTYLE_NUMBER:
-        return 10;
+        return 9;
     }
 }
 
@@ -174,8 +170,8 @@ KeyBind::selection_labels (std::vector<WideString> &result)
             result[i] = utf8_mbstowcs(dvorak_vec[i]);
         break;
     case SSTYLE_NUMBER:
-        result.resize(10);
-        for (int i = 0; i < 10; i++)
+        result.resize(9);
+        for (int i = 0; i < 9; i++)
             result[i] = utf8_mbstowcs(number_vec[i]);
         break;
     }

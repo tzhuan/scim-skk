@@ -113,6 +113,10 @@ SKKCore::get_preedit_string (WideString &result)
     case INPUT_MODE_LEARNING:
         result += utf8_mbstowcs("\xE2\x96\xBC");
         result += m_preeditstr;
+        if (!m_okuristr.empty()) {
+            result += utf8_mbstowcs("*");
+            result += m_okuristr;
+        }
         result += utf8_mbstowcs("\xE3\x80\x90");
         m_learning->get_preedit_string(result);
         result += utf8_mbstowcs("\xE3\x80\x91");
@@ -150,9 +154,8 @@ SKKCore::commit_or_preedit (WideString str)
     case INPUT_MODE_OKURI:
         m_okuristr += str;
         if (m_pendingstr.empty()) {
-            m_preeditstr += m_okurihead.substr(0, 1);
             clear_candidate();
-            m_dict->lookup(m_preeditstr, m_candlist, *m_ltable);
+            m_dict->lookup(m_preeditstr + m_okurihead, m_candlist, *m_ltable);
             if (m_candlist.empty() && m_ltable->number_of_candidates() == 0) {
                 set_input_mode(INPUT_MODE_LEARNING);
                 m_learning = new SKKCore(m_keybind, m_dict,
@@ -227,8 +230,10 @@ SKKCore::caret_pos (void)
         if (m_cindex != m_candlist.end())
             return base_pos + (*m_cindex).length() + m_okuristr.length() + 1;
         else
-            return base_pos + m_preedit_pos + 1;
+            return base_pos + m_preedit_pos + m_okuristr.length() + 1;
     case INPUT_MODE_LEARNING:
+        if (!m_okuristr.empty())
+            base_pos += m_okuristr.length() + 1;
         return base_pos + m_preeditstr.length() + 2 + m_learning->caret_pos();
     }
 }
@@ -344,7 +349,7 @@ SKKCore::clear_preedit (void)
     m_preeditstr.clear();
     m_preedit_pos = 0;
     m_okuristr.clear();
-    m_okurihead.clear();
+    m_okurihead = 0;
 }
 
 void
@@ -440,9 +445,10 @@ SKKCore::action_cancel (void)
         break;
     case INPUT_MODE_CONVERTING:
         if (!m_okuristr.empty()) {
-            m_preeditstr.erase(m_preeditstr.length()-1);
+            m_preeditstr += m_okuristr;
+            m_preedit_pos += m_okuristr.length();
             m_okuristr.clear();
-            m_okurihead.clear();
+            m_okurihead = 0;
         }
         set_input_mode(INPUT_MODE_PREEDIT);
         clear_candidate();
@@ -939,12 +945,12 @@ SKKCore::process_romakana (const KeyEvent &key)
 
             if (m_input_mode == INPUT_MODE_OKURI && !m_pendingstr.empty() &&
                 result.empty()) {
-                m_okurihead = m_pendingstr;
+                m_okurihead = m_pendingstr[0];
             }
 
             if (f) {
                 if (m_input_mode == INPUT_MODE_PREEDIT) {
-                    m_okurihead = utf8_mbstowcs(str);
+                    utf8_mbtowc(&m_okurihead, (unsigned char*)str, 1);
                     m_preeditstr.erase(m_preedit_pos);
                     if (m_pendingstr.empty()) {
                         set_input_mode(INPUT_MODE_OKURI);
@@ -1047,23 +1053,36 @@ SKKCore::process_key_event (const KeyEvent key)
             if (m_learning->m_commitstr.empty()) {
                 /* learning is canceled */
                 delete m_learning;
-                m_learning = NULL;
+                m_learning = 0;
+                clear_candidate();
+                if (m_okurihead == 0)
+                    m_dict->lookup(m_preeditstr, m_candlist, *m_ltable);
+                else
+                    m_dict->lookup(m_preeditstr + m_okurihead,
+                                   m_candlist, *m_ltable);
                 if (m_candlist.empty() &&
                     m_ltable->number_of_candidates() == 0) {
                     set_input_mode(INPUT_MODE_PREEDIT);
+                    clear_candidate();
                     if (!m_okuristr.empty()) {
+                        m_preeditstr += m_okuristr;
+                        m_preedit_pos += m_okuristr.length();
                         m_okuristr.clear();
-                        m_okurihead.clear();
-                        m_preeditstr.erase(m_preeditstr.length()-1);
+                        m_okurihead = 0;
                     }
                 } else {
                     set_input_mode(INPUT_MODE_CONVERTING);
-                    clear_candidate();
-                    m_dict->lookup(m_preeditstr, m_candlist, *m_ltable);
-                    m_cindex = m_candlist.end();
-                    while(m_ltable->page_down());
-                    m_show_ltable = true;
+                    if (m_ltable->number_of_candidates() == 0) {
+                        m_cindex = m_candlist.end();
+                        m_cindex--;
+                        m_show_ltable = false;
+                    } else {
+                        m_cindex = m_candlist.end();
+                        while(m_ltable->page_down());
+                        m_show_ltable = true;
+                    }
                 }
+                retval = true;
             } else {
                 /* learning is committed */
                 commit_string(m_learning->m_commitstr);
