@@ -70,6 +70,7 @@
 
 
 static ConfigPointer _scim_config (0);
+static SKKDictionaries *_scim_skkdict = 0;
 
 extern "C" {
     void scim_module_init (void)
@@ -80,14 +81,18 @@ extern "C" {
 
     void scim_module_exit (void)
     {
-        _scim_config.reset ();
+        if (_scim_config)
+            _scim_config.reset ();
+        if (_scim_skkdict)
+            _scim_skkdict->dump_userdict();
     }
 
     uint32 scim_imengine_module_init (const ConfigPointer &config)
     {
         SCIM_DEBUG_IMENGINE(1) << "Initialize SKK Engine.\n";
 
-        _scim_config = config;
+        _scim_config  = config;
+        _scim_skkdict = new SKKDictionaries ();
 
         return 1;
     }
@@ -118,6 +123,7 @@ SKKFactory::SKKFactory (const String &lang,
        m_userdictname(SCIM_SKK_CONFIG_USERDICT_DEFAULT),
        m_dlistsize(SCIM_SKK_CONFIG_DICT_LISTSIZE_DEFAULT),
        m_view_annot(SCIM_SKK_CONFIG_DICT_VIEW_ANNOT_DEFAULT),
+       m_skkdict(_scim_skkdict),
        m_config(config)
 {
     SCIM_DEBUG_IMENGINE(0) << "Create SKK Factory :\n";
@@ -186,16 +192,16 @@ SKKFactory::reload_config (const ConfigPointer &config)
 
         m_sysdictpath = config->read(String(SCIM_SKK_CONFIG_SYSDICT),
                                      String(SCIM_SKK_CONFIG_SYSDICT_DEFAULT));
-        m_skkdict.set_sysdict(m_sysdictpath);
+        m_skkdict->set_sysdict(m_sysdictpath);
         m_userdictname = config->read(String(SCIM_SKK_CONFIG_USERDICT),
                                       String(SCIM_SKK_CONFIG_USERDICT_DEFAULT));
-        m_skkdict.set_userdict(m_userdictname);
+        m_skkdict->set_userdict(m_userdictname);
         m_dlistsize = config->read(String(SCIM_SKK_CONFIG_DICT_LISTSIZE),
                                    SCIM_SKK_CONFIG_DICT_LISTSIZE_DEFAULT);
-        m_skkdict.set_listsize(m_dlistsize);
+        m_skkdict->set_listsize(m_dlistsize);
         m_view_annot = config->read(String(SCIM_SKK_CONFIG_DICT_VIEW_ANNOT),
                                     SCIM_SKK_CONFIG_DICT_VIEW_ANNOT_DEFAULT);
-        m_skkdict.set_view_annot(m_view_annot);
+        m_skkdict->set_view_annot(m_view_annot);
 
         str = config->read(String(SCIM_SKK_CONFIG_KAKUTEI_KEY),
                            String(SCIM_SKK_CONFIG_KAKUTEI_KEY_DEFAULT));
@@ -253,7 +259,7 @@ SKKInstance::SKKInstance (SKKFactory   *factory,
     : IMEngineInstanceBase (factory, encoding, id),
       m_factory(factory),
       m_skk_mode(SKK_MODE_HIRAGANA),
-      m_skkcore(&(factory->m_keybind), &(m_factory->m_skkdict),
+      m_skkcore(&(factory->m_keybind), m_factory->m_skkdict,
                 &(m_key2kana), &(m_lookup_table))
 {
     SCIM_DEBUG_IMENGINE(1) << "Create SKK Instance : ";

@@ -63,7 +63,6 @@ class SKKDictionary : SKKDictionaryBase
 
     bool m_writeflag;
     void load_dictdata (void);
-    void dump_dictdata (void);
 public:
     bool m_writable;
 
@@ -106,6 +105,8 @@ public:
     void set_view_annot (const bool view);
     int  get_listsize   (void);
     bool get_view_annot (void);
+
+    void dump_userdict (void);
 
     void lookup (const WideString &hira, CandList &result,
                  CommonLookupTable &table);

@@ -99,7 +99,7 @@ SKKDictionary::load_dictdata (void)
 }
 
 void
-SKKDictionary::dump_dictdata (void)
+SKKDictionary::dump_dict (void)
 {
     Dict::iterator dit;
     ofstream dictfs;
@@ -135,12 +135,6 @@ SKKDictionary::load_dict (const String &dictpath)
         m_iconv.set_encoding(String(SKKDICT_CHARCODE));
         load_dictdata();
     }
-}
-
-void
-SKKDictionary::dump_dict (void)
-{
-    dump_dictdata();
 }
 
 void
@@ -238,6 +232,12 @@ bool
 SKKDictionaries::get_view_annot (void)
 {
     return m_view_annot;
+}
+
+void
+SKKDictionaries::dump_userdict (void)
+{
+    m_userdict.dump_dict();
 }
 
 void

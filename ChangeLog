@@ -1,3 +1,14 @@
+2005-01-06  Jun Mukai  <mukai@jmuk.org>
+
+	* src/scim_skk_keybind.cpp (match_key_event): If mask of the key
+	event is only ShiftMask, then it matches broader. For example,
+	input key event "Shift+Q" is matched to "Q" and "Shift+q". Other
+	modifiers are defined, this is not checked.
+
+	* src/scim_skk_imengine.cpp: SKKDictionaries is now instanced at
+	scim_imengine_module_init and shared between all of factories.
+	The instance dumps user dictionary at scim_module_exit.
+
 2005-01-05  Jun Mukai  <mukai@jmuk.org>
 
 	* src/scim_skk_imengine.cpp (reload_config): remove

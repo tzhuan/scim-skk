@@ -814,8 +814,8 @@ SKKCore::process_remaining_keybinds (const KeyEvent &key)
     if (m_keybind->match_half_katakana_keys(key))
         return action_katakana(true);
 
-    if (m_keybind->match_start_preedit_keys(key))
-        return action_start_preedit();
+    //    if (m_keybind->match_start_preedit_keys(key))
+    //        return action_start_preedit();
 
     if (m_keybind->match_prevcand_keys(key))
         return action_prevcand();

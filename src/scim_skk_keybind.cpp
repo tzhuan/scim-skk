@@ -327,9 +327,34 @@ KeyBind::match_backward_keys         (const KeyEvent &key)
 static inline bool
 match_key_event (const KeyEventList &keylist, const KeyEvent &key)
 {
-    KeyEventList::const_iterator it = std::find(keylist.begin(),
-                                      keylist.end(),
-                                      key);
+    bool flag = false;
+    if (key.mask & SCIM_KEY_ShiftMask &&
+        key.get_ascii_code() &&
+        !(key.mask & SCIM_KEY_ControlMask || key.mask & SCIM_KEY_Mod1Mask ||
+          key.mask & SCIM_KEY_Mod2Mask    || key.mask & SCIM_KEY_Mod3Mask ||
+          key.mask & SCIM_KEY_Mod4Mask    || key.mask & SCIM_KEY_Mod5Mask )
+        ) {
+        flag = true;
+    }
+
+    KeyEventList::const_iterator it;
+
+    if (flag) {
+        char code = tolower(key.get_ascii_code());
+        for (it = keylist.begin(); it != keylist.end(); it++) {
+            if (*it == key) break;
+
+            if (it->is_shift_down()) {
+                if (it->get_ascii_code() == code)
+                    break;
+            } else {
+                if (it->code == key.code)
+                    break;
+            }
+        }
+    } else {
+        it = std::find(keylist.begin(), keylist.end(), key);
+    }
 
     return it != keylist.end();
 }
