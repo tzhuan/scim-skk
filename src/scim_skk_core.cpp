@@ -39,15 +39,15 @@ SKKCore::SKKCore      (KeyBind *keybind, SKKDictionaries *dict,
       m_dict(dict),
       m_skk_mode(SKK_MODE_HIRAGANA),
       m_input_mode(INPUT_MODE_DIRECT),
-      m_learning(0),
-      m_end_flag(false),
-      m_ltable(ltable),
-      m_show_ltable(false),
       m_key2kana(key2kana),
+      m_learning(0),
+      m_commit_flag(false),
+      m_end_flag(false),
       m_preedit_pos(0),
       m_commit_pos(0),
-      m_cindex(m_candlist.end()),
-      m_commit_flag(false)
+      m_show_ltable(false),
+      m_ltable(ltable),
+      m_cindex(m_candlist.end())
 {
     m_ltable->clear();
     clear_preedit();
@@ -240,6 +240,8 @@ SKKCore::caret_pos (void)
             base_pos += m_okuristr.length() + 1;
         return base_pos + m_preeditstr.length() + 2 + m_learning->caret_pos();
     }
+
+    return base_pos;
 }
 
 void
@@ -418,6 +420,8 @@ SKKCore::action_kakutei (void)
             commit_converting(0);
         set_input_mode(INPUT_MODE_DIRECT);
         break;
+    default:
+        break;
     }
     if(m_skk_mode == SKK_MODE_ASCII || m_skk_mode == SKK_MODE_WIDE_ASCII) {
         set_skk_mode(SKK_MODE_HIRAGANA);
@@ -458,6 +462,8 @@ SKKCore::action_cancel (void)
         set_input_mode(INPUT_MODE_PREEDIT);
         clear_candidate();
         break;
+    default:
+        break;
     }
     return retval;
 }
@@ -489,6 +495,8 @@ SKKCore::action_convert (void)
                 m_cindex = m_candlist.begin();
         }
         return true;
+    default:
+        break;
     }
 
     return false;
@@ -542,6 +550,8 @@ SKKCore::action_katakana (bool half)
             set_skk_mode(SKK_MODE_KATAKANA);
         }
         return true;
+    default:
+        break;
     }
 
     return false;
@@ -605,6 +615,8 @@ SKKCore::action_ascii (bool wide)
         else
             commit_converting(0);
         set_input_mode(INPUT_MODE_DIRECT);
+    default:
+        break;
     }
     clear_pending();
     if (wide) {
@@ -662,6 +674,8 @@ SKKCore::action_backspace (void)
                 m_commitstr.erase(m_commit_pos-1, 1);
                 m_commit_pos--;
             }
+        default:
+            break;
         }
     } else {
         if (m_input_mode == INPUT_MODE_OKURI &&
@@ -699,6 +713,8 @@ SKKCore::action_delete (void)
             } else if (m_commit_pos < m_commitstr.length()) {
                 m_commitstr.erase(m_commit_pos, 1);
             }
+        default:
+            break;
         }
     } else {
         clear_pending();
@@ -731,6 +747,8 @@ SKKCore::action_forward (void)
             return false;
         }
         return true;
+    default:
+        break;
     }
     return false;
 }
@@ -759,6 +777,8 @@ SKKCore::action_backward (void)
             return false;
         }
         return true;
+    default:
+        break;
     }
     return false;
 }

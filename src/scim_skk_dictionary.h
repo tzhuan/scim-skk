@@ -47,7 +47,7 @@ class SKKDictionaryBase
 {
 public:
     SKKDictionaryBase  (void);
-    ~SKKDictionaryBase (void);
+    virtual ~SKKDictionaryBase (void);
 
     virtual void lookup     (const WideString &key, CandList &result,
                              CommonLookupTable &table) = 0;
@@ -67,7 +67,7 @@ public:
     bool m_writable;
 
     SKKDictionary  (SKKDictionaries *parent, bool writable = false);
-    ~SKKDictionary (void);
+    virtual ~SKKDictionary (void);
 
     void load_dict  (const String &dictpath);
     void dump_dict  (void);
@@ -80,7 +80,7 @@ class SKKNumDict : SKKDictionaryBase
 {
 public:
     SKKNumDict  (void);
-    ~SKKNumDict (void);
+    virtual ~SKKNumDict (void);
 
     void lookup (const WideString &key, CandList &result,
                  CommonLookupTable &table);

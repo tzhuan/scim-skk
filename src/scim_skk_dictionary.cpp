@@ -35,10 +35,10 @@ SKKDictionaryBase::~SKKDictionaryBase  (void)
 
 
 SKKDictionary::SKKDictionary  (SKKDictionaries *parent, bool writable)
-    : m_writable   (writable),
-      m_dictpath   (""),
+    : m_dictpath   (""),
+      m_parent     (parent),
       m_writeflag  (false),
-      m_parent     (parent)
+      m_writable (writable)
 {
 }
 
@@ -180,10 +180,10 @@ SKKDictionary::write (const WideString &key, const WideString &data)
 }
 
 SKKDictionaries::SKKDictionaries (void)
-    : m_view_annot (true),
-      m_listsize (4),
-      m_sysdict(this),
-      m_userdict(this)
+    : m_sysdict(this),
+      m_userdict(this),
+      m_view_annot (true),
+      m_listsize (4)
 {
 }
 

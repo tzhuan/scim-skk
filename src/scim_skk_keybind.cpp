@@ -20,9 +20,13 @@
 #define Uses_SCIM_EVENT
 #include "scim_skk_keybind.h"
 
-char *qwerty_vec[7]  = {"a", "s", "d", "f", "j", "k", "l"};
-char *dvorak_vec[8]  = {"a", "o", "e", "u", "h", "t", "n", "s"};
-char *number_vec[9]  = {"1", "2", "3", "4", "5", "6", "7", "8", "9"};
+static char *qwerty_vec[7]  = {"a", "s", "d", "f", "j", "k", "l"};
+static char *dvorak_vec[8]  = {"a", "o", "e", "u", "h", "t", "n", "s"};
+static char *number_vec[9]  = {"1", "2", "3", "4", "5", "6", "7", "8", "9"};
+
+static int qwerty_vec_len = sizeof(qwerty_vec);
+static int dvorak_vec_len = sizeof(dvorak_vec);
+static int number_vec_len = sizeof(number_vec);
 
 static void keybind_string_to_key_list(KeyEventList &keys, const String &str);
 static inline bool match_key_event       (const KeyEventList &keylist,
@@ -141,6 +145,9 @@ KeyBind::match_selection_keys (const KeyEvent &key)
     case SSTYLE_NUMBER:
         return match_selection_number(key);
     }
+
+    // error
+    return 0;
 }
 
 int
@@ -148,12 +155,15 @@ KeyBind::selection_key_length (void)
 {
     switch (m_style) {
     case SSTYLE_QWERTY:
-        return 7;
+        return qwerty_vec_len;
     case SSTYLE_DVORAK:
-        return 8;
+        return dvorak_vec_len;
     case SSTYLE_NUMBER:
-        return 9;
+        return number_vec_len;
     }
+
+    // error
+    return 0;
 }
 
 void
@@ -161,21 +171,23 @@ KeyBind::selection_labels (std::vector<WideString> &result)
 {
     switch (m_style) {
     case SSTYLE_QWERTY:
-        result.resize(7);
-        for (int i = 0; i < 7; i++)
+        result.resize(qwerty_vec_len);
+        for (int i = 0; i < qwerty_vec_len; i++)
             result[i] = utf8_mbstowcs(qwerty_vec[i]);
         break;
     case SSTYLE_DVORAK:
-        result.resize(8);
-        for (int i = 0; i < 8; i++)
+        result.resize(dvorak_vec_len);
+        for (int i = 0; i < dvorak_vec_len; i++)
             result[i] = utf8_mbstowcs(dvorak_vec[i]);
         break;
     case SSTYLE_NUMBER:
-        result.resize(9);
-        for (int i = 0; i < 9; i++)
+        result.resize(number_vec_len);
+        for (int i = 0; i < number_vec_len; i++)
             result[i] = utf8_mbstowcs(number_vec[i]);
         break;
     }
+
+    return;
 }
 
 void

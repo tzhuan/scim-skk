@@ -119,11 +119,11 @@ SKKFactory::SKKFactory (const String &lang,
                         const String &uuid,
                         const ConfigPointer &config)
     :  m_uuid(uuid),
+       m_skkdict(_scim_skkdict),
        m_sysdictpath(SCIM_SKK_CONFIG_SYSDICT_DEFAULT),
        m_userdictname(SCIM_SKK_CONFIG_USERDICT_DEFAULT),
        m_dlistsize(SCIM_SKK_CONFIG_DICT_LISTSIZE_DEFAULT),
        m_view_annot(SCIM_SKK_CONFIG_DICT_VIEW_ANNOT_DEFAULT),
-       m_skkdict(_scim_skkdict),
        m_config(config)
 {
     SCIM_DEBUG_IMENGINE(0) << "Create SKK Factory :\n";
