@@ -47,7 +47,7 @@
 #define SCIM_SKK_CONFIG_WIDE_LATIN_KEY_DEFAULT       "Shift+L"
 #define SCIM_SKK_CONFIG_CONVERT_KEY_DEFAULT          "space"
 #define SCIM_SKK_CONFIG_START_CONV_KEY_DEFAULT       "Shift+Q"
-#define SCIM_SKK_CONFIG_CANCEL_KEY_DEFAULT           "Control+g"
+#define SCIM_SKK_CONFIG_CANCEL_KEY_DEFAULT           "Control+g,Escape"
 #define SCIM_SKK_CONFIG_LATIN_CONVERT_KEY_DEFAULT    "slash"
 #define SCIM_SKK_CONFIG_PREVCAND_KEY_DEFAULT         "x"
 #define SCIM_SKK_CONFIG_BACKSPACE_KEY_DEFAULT        "BackSpace,Control+h"

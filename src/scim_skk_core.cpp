@@ -183,9 +183,8 @@ SKKCore::commit_converting (void)
         m_dict->write(m_preeditstr, m_cit->first);
         m_cl.clear();
         clear_preedit();
-        if (m_skk_mode == SKK_MODE_LATIN) {
+        if (m_skk_mode == SKK_MODE_LATIN)
             set_skk_mode(SKK_MODE_HIRAGANA);
-        }
     }
 }
 
@@ -264,7 +263,7 @@ SKKCore::set_skk_mode (SKKMode newmode)
 {
     if (m_learning) {
         m_learning->set_skk_mode(newmode);
-    } else {
+    } else if (m_skk_mode != newmode) {
         clear_pending();
         m_skk_mode = newmode;
     }
@@ -794,10 +793,9 @@ SKKCore::process_romakana (const KeyEvent &key)
         return action_cancel_keys();
 
     if (m_input_mode == INPUT_MODE_PREEDIT ||
-        m_input_mode == INPUT_MODE_OKURI) {
+        m_input_mode == INPUT_MODE_OKURI)
         if (m_keybind->match_convert_keys(key))
             return action_convert_keys();
-    }
 
     if (!(key.mask & SCIM_KEY_ControlMask || key.mask & SCIM_KEY_Mod1Mask ||
           key.mask & SCIM_KEY_Mod2Mask    || key.mask & SCIM_KEY_Mod3Mask ||
@@ -805,7 +803,8 @@ SKKCore::process_romakana (const KeyEvent &key)
         isprint(key.code)) {
         if (isalpha(key.code)) {
             bool f = false;
-            if (key.mask & SCIM_KEY_ShiftMask)
+            if (key.mask & SCIM_KEY_ShiftMask &&
+                m_input_mode != INPUT_MODE_OKURI)
                 f = true;
 
             char str[2];
@@ -907,14 +906,11 @@ SKKCore::process_key_event (const KeyEvent key)
 
         commit_converting();
         set_input_mode(INPUT_MODE_DIRECT);
-        if (m_skk_mode == SKK_MODE_LATIN) {
-            set_skk_mode(SKK_MODE_HIRAGANA);
-        }
     }
 
     if (m_input_mode == INPUT_MODE_LEARNING) {
         bool retval = m_learning->process_key_event(key);
-        if (m_learning->m_end_flag) {
+        if (key.code == SCIM_KEY_Return || m_learning->m_end_flag) {
             if (m_learning->m_commitstr.empty()) {
                 /* learning is canceled */
                 delete m_learning;
