@@ -417,6 +417,8 @@ SKKInstance::select_candidate (unsigned int index)
 void
 SKKInstance::update_lookup_table_page_size (unsigned int page_size)
 {
+    if (page_size > 0)
+        m_lookup_table.set_page_size (page_size);
 }
 
 void
