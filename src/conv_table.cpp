@@ -1,4 +1,3 @@
-/* -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 /* FIXME! this table should be separated as external file */
 
 #include "scim_skk_automaton.h"
@@ -195,6 +194,11 @@ ConvRule skk_romakana_table[] = {
     {"tsu",	"つ",	""},
     {"te",	"て",	""},
     {"to",	"と",	""},
+    {"tsa",	"つぁ",	""},
+    {"tsi",	"つぃ",	""},
+    {"tsu",	"つ",	""},
+    {"tse",	"つぇ",	""},
+    {"tso",	"つぉ",	""},
     {"da",	"だ",	""},
     {"di",	"ぢ",	""},
     {"du",	"づ",	""},
@@ -521,7 +525,7 @@ HiraganaKatakanaRule ja_hiragana_katakana_table[] = {
     {"わ", "ワ", "ﾜ"},
     {"を", "ヲ", "ｦ"},
     {"ん", "ン", "ﾝ"},
-
+ 
     {"ぁ", "ァ", "ｧ"},
     {"ぃ", "ィ", "ｨ"},
     {"ぅ", "ゥ", "ｩ"},

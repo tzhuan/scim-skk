@@ -97,8 +97,8 @@ SKKAutomaton::append (const String & str,
                 result.clear();
             } else {
                 result.clear();
-                pending.clear();
-                m_pending.clear ();
+                pending = widestr;
+                m_pending = pending;
             }
         }
     }
