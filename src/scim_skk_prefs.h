@@ -36,6 +36,7 @@
 #define SCIM_SKK_CONFIG_BACKWARD_KEY         "/IMEngine/SKK/Backward"
 #define SCIM_SKK_CONFIG_HOME_KEY             "/IMEngine/SKK/Home"
 #define SCIM_SKK_CONFIG_END_KEY              "/IMEngine/SKK/End"
+#define SCIM_SKK_CONFIG_UPCASE_KEY           "/IMEngine/SKK/UPCASE"
 #define SCIM_SKK_CONFIG_SELECTION_STYLE      "/IMEngine/SKK/SelectionStyle"
 
 #define SCIM_SKK_CONFIG_SYSDICT          "/IMEngine/SKK/SysDict"
@@ -62,6 +63,7 @@
 #define SCIM_SKK_CONFIG_BACKWARD_KEY_DEFAULT         "Left,Control+b"
 #define SCIM_SKK_CONFIG_HOME_KEY_DEFAULT             "Home,Control+a"
 #define SCIM_SKK_CONFIG_END_KEY_DEFAULT              "End,Control+e"
+#define SCIM_SKK_CONFIG_UPCASE_KEY_DEFAULT           "Control+u"
 #define SCIM_SKK_CONFIG_SELECTION_STYLE_DEFAULT      "Qwerty"
 
 #define SCIM_SKK_CONFIG_SYSDICT_DEFAULT          "/usr/share/skk/SKK-JISYO.L"

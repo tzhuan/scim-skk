@@ -219,6 +219,15 @@ static KeyboardConfigData __config_keyboards_common [] =
         NULL,
     },
     {
+        SCIM_SKK_CONFIG_UPCASE_KEY,
+        SCIM_SKK_CONFIG_UPCASE_KEY_DEFAULT,
+        N_("Upcase Keys:"),
+        N_("Select Upcase Keys"),
+        N_("The key events to toggle case of characters in preedit string. "),
+        NULL,
+        NULL,
+    },
+    {
         NULL,
         "",
         NULL,

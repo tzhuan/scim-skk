@@ -558,6 +558,29 @@ SKKCore::action_katakana (bool half)
 }
 
 bool
+SKKCore::action_toggle_case (void)
+{
+    if (m_input_mode == INPUT_MODE_PREEDIT && m_skk_mode == SKK_MODE_ASCII) {
+        for (WideString::iterator i = m_preeditstr.begin();
+             i != m_preeditstr.end(); i++) {
+            int code = *i;
+            if (islower(code)) {
+                *i = toupper(code);
+            } else if (isupper(code)) {
+                *i = tolower(code);
+            }
+        }
+        commit_string(m_preeditstr);
+        clear_preedit();
+        clear_pending();
+        set_input_mode(INPUT_MODE_DIRECT);
+        set_skk_mode(SKK_MODE_HIRAGANA);
+        return true;
+    }
+    return false;
+}
+
+bool
 SKKCore::action_start_preedit (void)
 {
     switch (m_input_mode) {
@@ -951,6 +974,10 @@ SKKCore::process_ascii (const KeyEvent &key)
     if (m_input_mode == INPUT_MODE_PREEDIT &&
         m_keybind->match_convert_keys(key))
         return action_convert();
+
+    if (m_input_mode == INPUT_MODE_PREEDIT &&
+        m_keybind->match_upcase_keys(key))
+        return action_toggle_case();
 
     char code = key.get_ascii_code();
 

@@ -101,6 +101,7 @@ class SKKCore
     bool action_backward        (void);
     bool action_home            (void);
     bool action_end             (void);
+    bool action_toggle_case     (void);
 
     bool process_remaining_keybinds   (const KeyEvent &key);
     bool process_ascii                (const KeyEvent &key);

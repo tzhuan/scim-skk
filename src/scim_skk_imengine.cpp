@@ -251,6 +251,9 @@ SKKFactory::reload_config (const ConfigPointer &config)
         str = config->read(String(SCIM_SKK_CONFIG_END_KEY),
                            String(SCIM_SKK_CONFIG_END_KEY_DEFAULT));
         m_keybind.set_end_keys(str);
+        str = config->read(String(SCIM_SKK_CONFIG_UPCASE_KEY),
+                           String(SCIM_SKK_CONFIG_UPCASE_KEY_DEFAULT));
+        m_keybind.set_upcase_keys(str);
         str = config->read(String(SCIM_SKK_CONFIG_SELECTION_STYLE),
                            String(SCIM_SKK_CONFIG_SELECTION_STYLE_DEFAULT));
         m_keybind.set_selection_style(str);
