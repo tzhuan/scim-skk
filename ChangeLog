@@ -1,4 +1,16 @@
-2004-12-16  Jun Mukai  <mukai@ayu.ics.keio.ac.jp>
+2004-12-19  Jun Mukai  <mukai@jmuk.org>
+
+	* src/scim_skk_imengine.h (class SKKInstance): m_key2kana is now
+	member of SKKInstance. All of SKKCore share this m_key2kana.
+
+	* src/scim_skk_core.cpp (process_latin): return false if
+	INPUT_MODE_DIRECT to use of dead keys. catch this false retval
+	when learning (cf. scim-imengine-dev:65)
+
+	* src/scim_skk_core.cpp: uses KeyEvent::get_ascii_code() instead
+	of KeyEvent::code member. 
+
+2004-12-16  Jun Mukai  <mukai@jmuk.org>
 
 	* src/scim_skk_core.cpp (caret_pos): add
 	m_pendingstr.length() to caret_position.

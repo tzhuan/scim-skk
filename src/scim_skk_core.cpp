@@ -33,18 +33,19 @@ static void convert_hiragana_to_katakana (const WideString &hira,
         bool half = false);
 
 
-SKKCore::SKKCore      (KeyBind *keybind, SKKDictionaries *dict)
+SKKCore::SKKCore      (KeyBind *keybind, SKKDictionaries *dict,
+                       SKKAutomaton *key2kana, CommonLookupTable *ltable)
     : m_keybind(keybind),
       m_dict(dict),
       m_skk_mode(SKK_MODE_HIRAGANA),
       m_input_mode(INPUT_MODE_DIRECT),
       m_learning(NULL),
       m_end_flag(false),
-      m_lt_action(ACTION_NONE),
+      m_lookup_table(ltable),
       m_show_lookup_table(false),
+      m_key2kana(key2kana),
       m_commit_flag(false)
 {
-    init_key2kana();
     clear_preedit();
     clear_commit();
     clear_pending();
@@ -54,13 +55,6 @@ SKKCore::~SKKCore     (void)
 {
     if(m_learning)
         delete m_learning;
-}
-
-void
-SKKCore::init_key2kana (void)
-{
-    m_key2kana.set_table(skk_romakana_table);
-    m_key2kana.append_table(romakana_ja_period_rule);
 }
 
 WideString &
@@ -153,7 +147,8 @@ SKKCore::commit_or_preedit (WideString str)
             m_dict->lookup(m_preeditstr, m_cl);
             if (m_cl.empty()) {
                 set_input_mode(INPUT_MODE_LEARNING);
-                m_learning = new SKKCore(m_keybind, m_dict);
+                m_learning = new SKKCore(m_keybind, m_dict,
+                                         m_key2kana, m_lookup_table);
             } else {
                 m_cit = m_cl.begin();
                 set_input_mode(INPUT_MODE_CONVERTING);
@@ -306,7 +301,7 @@ void
 SKKCore::clear_pending (void)
 {
     m_pendingstr.clear();
-    m_key2kana.clear();
+    m_key2kana->clear();
 }
 
 
@@ -340,7 +335,9 @@ SKKCore::action_kakutei (void)
 {
     switch (m_input_mode) {
     case INPUT_MODE_DIRECT:
-        if (m_pendingstr.empty() && m_preeditstr.empty()) {
+        if (!(m_skk_mode == SKK_MODE_ASCII ||
+              m_skk_mode == SKK_MODE_WIDE_ASCII) &&
+            m_pendingstr.empty() && m_preeditstr.empty()) {
             m_end_flag = true;
         } else {
             clear_pending();
@@ -418,7 +415,8 @@ SKKCore::action_convert (void)
         m_cit++;
         if (m_cit == m_cl.end()) {
             set_input_mode(INPUT_MODE_LEARNING);
-            m_learning = new SKKCore(m_keybind, m_dict);
+            m_learning = new SKKCore(m_keybind, m_dict,
+                                     m_key2kana, m_lookup_table);
         }
         return true;
     case INPUT_MODE_PREEDIT:
@@ -429,7 +427,8 @@ SKKCore::action_convert (void)
         m_dict->lookup(m_preeditstr, m_cl);
         if (m_cl.empty()) {
             set_input_mode(INPUT_MODE_LEARNING);
-            m_learning = new SKKCore(m_keybind, m_dict);
+            m_learning = new SKKCore(m_keybind, m_dict,
+                                     m_key2kana, m_lookup_table);
         } else {
             m_cit = m_cl.begin();
             set_input_mode(INPUT_MODE_CONVERTING);
@@ -606,7 +605,7 @@ SKKCore::action_backspace (void)
             m_preedit_pos = m_preeditstr.length();
         } else {
             m_pendingstr.erase(m_pendingstr.length()-1);
-            m_key2kana.set_pending(m_pendingstr);
+            m_key2kana->set_pending(m_pendingstr);
         }
     }
 
@@ -746,18 +745,22 @@ SKKCore::process_ascii (const KeyEvent &key)
     if (m_keybind->match_cancel_keys(key))
         return action_cancel();
 
-    if (m_input_mode == INPUT_MODE_PREEDIT && m_keybind->match_convert_keys(key))
+    if (m_input_mode == INPUT_MODE_PREEDIT &&
+        m_keybind->match_convert_keys(key))
         return action_convert();
 
+    char code = key.get_ascii_code();
+
     if (!(key.mask & SCIM_KEY_ControlMask || key.mask & SCIM_KEY_Mod1Mask ||
-            key.mask & SCIM_KEY_Mod2Mask    || key.mask & SCIM_KEY_Mod3Mask ||
-            key.mask & SCIM_KEY_Mod4Mask    || key.mask & SCIM_KEY_Mod5Mask ) &&
-            isprint(key.code)) {
-        char str[2];
-        str[0] = key.code;
-        str[1] = '\0';
-        commit_or_preedit(utf8_mbstowcs(str));
-        return true;
+          key.mask & SCIM_KEY_Mod2Mask    || key.mask & SCIM_KEY_Mod3Mask ||
+          key.mask & SCIM_KEY_Mod4Mask    || key.mask & SCIM_KEY_Mod5Mask )) {
+        if (m_input_mode == INPUT_MODE_DIRECT) {
+            return false;
+        } else {
+            char str[2] = {code, '\0'};
+            commit_or_preedit(utf8_mbstowcs(str));
+            return true;
+        }
     }
 
     return process_remaining_keybinds(key);
@@ -772,13 +775,15 @@ SKKCore::process_wide_ascii (const KeyEvent &key)
     if (m_keybind->match_cancel_keys(key))
         return action_cancel();
 
+    char code = key.get_ascii_code();
+
     if (!(key.mask & SCIM_KEY_ControlMask || key.mask & SCIM_KEY_Mod1Mask ||
-            key.mask & SCIM_KEY_Mod2Mask    || key.mask & SCIM_KEY_Mod3Mask ||
-            key.mask & SCIM_KEY_Mod4Mask    || key.mask & SCIM_KEY_Mod5Mask ) &&
-            isprint(key.code)) {
+          key.mask & SCIM_KEY_Mod2Mask    || key.mask & SCIM_KEY_Mod3Mask ||
+          key.mask & SCIM_KEY_Mod4Mask    || key.mask & SCIM_KEY_Mod5Mask ) &&
+        isprint(code)) {
         WideString result;
 
-        convert_char_to_wide(key.code, result);
+        convert_char_to_wide(code, result);
         commit_string(result);
         return true;
     }
@@ -799,15 +804,17 @@ SKKCore::process_romakana (const KeyEvent &key)
         if (m_keybind->match_convert_keys(key))
             return action_convert();
 
+    char code = key.get_ascii_code();
+
     if (!(key.mask & SCIM_KEY_ControlMask || key.mask & SCIM_KEY_Mod1Mask ||
           key.mask & SCIM_KEY_Mod2Mask    || key.mask & SCIM_KEY_Mod3Mask ||
           key.mask & SCIM_KEY_Mod4Mask    || key.mask & SCIM_KEY_Mod5Mask ) &&
-        isprint(key.code)) {
-        if (isalpha(key.code)) {
+        isprint(code)) {
+        if (isalpha(code)) {
             bool f = false;
             char str[2];
             WideString result;
-            str[0] = (char)tolower(key.code);
+            str[0] = tolower(code);
             str[1] = '\0';
 
             if (key.mask & SCIM_KEY_ShiftMask &&
@@ -816,7 +823,7 @@ SKKCore::process_romakana (const KeyEvent &key)
                  m_input_mode == INPUT_MODE_DIRECT))
                 f = true;
 
-            m_key2kana.append(String(str), result, m_pendingstr);
+            m_key2kana->append(String(str), result, m_pendingstr);
 
             if (m_input_mode == INPUT_MODE_OKURI && !m_pendingstr.empty() &&
                 result.empty()) {
@@ -857,11 +864,11 @@ SKKCore::process_romakana (const KeyEvent &key)
         } else {
             char str[2];
             WideString result;
-            str[0] = (char)key.code;
+            str[0] = code;
             str[1] = '\0';
 
             if (m_pendingstr == utf8_mbstowcs("z")) {
-                m_key2kana.append(String(str), result, m_pendingstr);
+                m_key2kana->append(String(str), result, m_pendingstr);
                 if (result.length() > 0) {
                     commit_or_preedit(result);
                     return true;
@@ -873,7 +880,7 @@ SKKCore::process_romakana (const KeyEvent &key)
             }
 
             clear_pending();
-            m_key2kana.append(String(str), result, m_pendingstr);
+            m_key2kana->append(String(str), result, m_pendingstr);
             if (result.length() > 0) {
                 commit_or_preedit(result);
             } else {
@@ -896,8 +903,8 @@ SKKCore::process_key_event (const KeyEvent key)
 
     // ignore modifier keys
     if (key.code == SCIM_KEY_Shift_L || key.code == SCIM_KEY_Shift_R ||
-            key.code == SCIM_KEY_Control_L || key.code == SCIM_KEY_Control_R ||
-            key.code == SCIM_KEY_Alt_L || key.code == SCIM_KEY_Alt_R)
+        key.code == SCIM_KEY_Control_L || key.code == SCIM_KEY_Control_R ||
+        key.code == SCIM_KEY_Alt_L || key.code == SCIM_KEY_Alt_R)
         return false;
 
 
@@ -917,6 +924,7 @@ SKKCore::process_key_event (const KeyEvent key)
 
     if (m_input_mode == INPUT_MODE_LEARNING) {
         bool retval = m_learning->process_key_event(key);
+        char code = key.get_ascii_code();
         if (key.code == SCIM_KEY_Return || m_learning->m_end_flag) {
             if (m_learning->m_commitstr.empty()) {
                 /* learning is canceled */
@@ -944,7 +952,15 @@ SKKCore::process_key_event (const KeyEvent key)
                 m_learning = NULL;
                 set_input_mode(INPUT_MODE_DIRECT);
             }
-        }
+        } else if (retval == false &&
+                   m_learning->m_skk_mode == SKK_MODE_ASCII &&
+                   m_learning->m_input_mode == INPUT_MODE_DIRECT) {
+            retval = true;
+            if (isprint(code)) {
+                char str[2] = { code, '\0' };
+                m_learning->commit_string(utf8_mbstowcs(str));
+            }
+        } 
         return retval;
     }
 

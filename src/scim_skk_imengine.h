@@ -76,6 +76,7 @@ private:
 class SKKInstance : public IMEngineInstanceBase
 {
     SKKFactory    *m_factory;
+    SKKAutomaton   m_key2kana;
     SKKCore        m_skkcore;
     char           m_okurihead;
     PropertyList   m_properties;
@@ -85,6 +86,8 @@ class SKKInstance : public IMEngineInstanceBase
 
     /* for candidates window */
     CommonLookupTable m_lookup_table;
+
+    void init_key2kana (void);
 
     bool process_kakutei_keys         (const KeyEvent &key);
     bool process_remaining_keybinds   (const KeyEvent &key);

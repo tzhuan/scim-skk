@@ -59,7 +59,7 @@ class SKKCore
 
     SKKMode       m_skk_mode;
     InputMode     m_input_mode;
-    SKKAutomaton  m_key2kana;
+    SKKAutomaton  *m_key2kana;
 
     WideString  m_pendingstr;
     WideString  m_preeditstr;
@@ -80,9 +80,7 @@ class SKKCore
 
     /* for lookup table */
     bool          m_show_lookup_table;
-    LookupTableAction m_lt_action;
-
-    void          init_key2kana (void);
+    CommonLookupTable *m_lookup_table;
 
     void          commit_string     (WideString str);
     void          commit_or_preedit (WideString str);
@@ -109,8 +107,10 @@ class SKKCore
     void          clear_pending     (void);
     void          clear_preedit     (void);
 
+    void          init_key2kana (void);
 public:
-    SKKCore      (KeyBind *keybind, SKKDictionaries *dict);
+    SKKCore      (KeyBind *keybind, SKKDictionaries *dict,
+                  SKKAutomaton *key2kana, CommonLookupTable *ltable);
     ~SKKCore     (void);
 
     void          get_preedit_string (WideString &result);

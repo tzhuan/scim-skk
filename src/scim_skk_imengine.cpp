@@ -34,6 +34,7 @@
 #include <scim.h>
 #include "scim_skk_imengine.h"
 #include "scim_skk_prefs.h"
+#include "conv_table.h"
 
 
 #ifdef HAVE_GETTEXT
@@ -244,14 +245,23 @@ SKKInstance::SKKInstance (SKKFactory   *factory,
                           int           id)
     : IMEngineInstanceBase (factory, encoding, id),
       m_skk_mode(SKK_MODE_HIRAGANA),
-      m_skkcore(&factory->m_keybind, &m_factory->m_skkdict),
+      m_skkcore(&factory->m_keybind, &m_factory->m_skkdict,
+                &m_key2kana, &m_lookup_table),
       m_factory(factory)
 {
     SCIM_DEBUG_IMENGINE(1) << "Create SKK Instance : ";
+    init_key2kana();
 }
 
 SKKInstance::~SKKInstance ()
 {
+}
+
+void
+SKKInstance::init_key2kana (void)
+{
+    m_key2kana.set_table(skk_romakana_table);
+    m_key2kana.append_table(romakana_ja_period_rule);
 }
 
 bool
