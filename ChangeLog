@@ -1,3 +1,10 @@
+2005-01-05  Jun Mukai  <mukai@jmuk.org>
+
+	* src/scim_skk_imengine.cpp (reload_config): remove
+	`m_reload_signal_connection.disconnect()' [scim-imengine-dev:104]
+
+	* src/scim_skk_core.cpp: Bug fix when DictListSize == 0
+
 2004-12-28  Jun Mukai  <mukai@jmuk.org>
 
 	* SetupUI: SetupUI is now available.

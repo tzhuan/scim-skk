@@ -118,7 +118,7 @@ SKKFactory::SKKFactory (const String &lang,
        m_userdictname(SCIM_SKK_CONFIG_USERDICT_DEFAULT),
        m_dlistsize(SCIM_SKK_CONFIG_DICT_LISTSIZE_DEFAULT),
        m_view_annot(SCIM_SKK_CONFIG_DICT_VIEW_ANNOT_DEFAULT),
-       m_config(0)
+       m_config(config)
 {
     SCIM_DEBUG_IMENGINE(0) << "Create SKK Factory :\n";
     SCIM_DEBUG_IMENGINE(0) << "Lnag : " << lang << "\n";
@@ -127,7 +127,8 @@ SKKFactory::SKKFactory (const String &lang,
     if (lang.length() >= 2)
         set_languages(lang);
 
-    reload_config(config);
+    reload_config(m_config);
+    m_reload_signal_connection = m_config->signal_connect_reload(slot(this, &SKKFactory::reload_config));
 }
 
 SKKFactory::~SKKFactory ()
@@ -180,8 +181,6 @@ SKKFactory::create_instance (const String &encoding, int id)
 void
 SKKFactory::reload_config (const ConfigPointer &config)
 {
-    m_reload_signal_connection.disconnect();
-
     if (config) {
         String str;
 
@@ -244,9 +243,6 @@ SKKFactory::reload_config (const ConfigPointer &config)
                            String(SCIM_SKK_CONFIG_SELECTION_STYLE_DEFAULT));
         m_keybind.set_selection_style(str);
     }
-
-    m_config = config;
-    m_reload_signal_connection = m_config->signal_connect_reload(slot(this, &SKKFactory::reload_config));
 }
 
 

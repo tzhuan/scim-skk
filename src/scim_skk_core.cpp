@@ -46,7 +46,7 @@ SKKCore::SKKCore      (KeyBind *keybind, SKKDictionaries *dict,
       m_key2kana(key2kana),
       m_preedit_pos(0),
       m_commit_pos(0),
-      m_cindex(m_candlist.begin()),
+      m_cindex(m_candlist.end()),
       m_commit_flag(false)
 {
     m_ltable->clear();
@@ -158,8 +158,11 @@ SKKCore::commit_or_preedit (WideString str)
                 m_learning = new SKKCore(m_keybind, m_dict,
                                          m_key2kana, m_ltable);
             } else {
-                m_cindex = m_candlist.begin();
                 set_input_mode(INPUT_MODE_CONVERTING);
+                if (m_candlist.empty())
+                    m_show_ltable = true;
+                else
+                    m_cindex = m_candlist.begin();
             }
         }
         break;
@@ -468,8 +471,11 @@ SKKCore::action_convert (void)
             set_input_mode(INPUT_MODE_LEARNING);
             m_learning = new SKKCore(m_keybind, m_dict, m_key2kana, m_ltable);
         } else {
-            m_cindex = m_candlist.begin();
             set_input_mode(INPUT_MODE_CONVERTING);
+            if (m_candlist.empty())
+                m_show_ltable = true;
+            else
+                m_cindex = m_candlist.begin();
         }
         return true;
     }
