@@ -1,0 +1,45 @@
+# Japanese translations for scim-skk package.
+# Copyright (C) 2004 Jun Mukai
+# This file is distributed under the same license as the scim-skk package.
+# Jun Mukai <mukai@jmuk.org>, 2004.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: scim-skk 0.0.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-12-07 02:03+0900\n"
+"PO-Revision-Date: 2004-12-07 02:06+0900\n"
+"Last-Translator:  <mukai@jmuk.org>\n"
+"Language-Team: Japanese <ja@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: scim_skk_imengine.cpp:417
+msgid "Input mode"
+msgstr "入力モード"
+
+#: scim_skk_imengine.cpp:421
+msgid "Hiragana"
+msgstr "ひらがな"
+
+#: scim_skk_imengine.cpp:425
+msgid "Katakana"
+msgstr "カタカナ"
+
+#: scim_skk_imengine.cpp:429 scim_skk_imengine.cpp:430
+msgid "Half width katakana"
+msgstr "半角カタカナ"
+
+#: scim_skk_imengine.cpp:434
+msgid "Latin"
+msgstr "英数"
+
+#: scim_skk_imengine.cpp:434
+msgid "Direct input"
+msgstr "直接入力"
+
+#: scim_skk_imengine.cpp:438
+msgid "Wide latin"
+msgstr "全角英数"

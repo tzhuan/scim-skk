@@ -1,0 +1,58 @@
+AM_CPPFLAGS = \
+	-DSCIM_SKK_LOCALEDIR=\"$(datadir)/locale\" \
+	-DSCIM_ICONDIR=\"@SCIM_ICONDIR@\"
+INCLUDE	= \
+	-I$(top_builddir) \
+	-I$(top_srcdir) \
+	-I$(top_srcdir)/src 
+
+noinst_HEADERS = \
+	conv_table.h \
+	scim_skk_imengine.h \
+	scim_skk_dictionary.h \
+	scim_skk_core.h \
+	scim_skk_keybind.h \
+	scim_skk_prefs.h
+
+moduledir = @SCIM_MODULEDIR@/IMEngine
+module_LTLIBRARIES = skk.la
+
+skk_la_SOURCES = \
+	scim_skk_imengine.cpp \
+	scim_anthy_automaton.cpp \
+	scim_skk_dictionary.cpp \
+	scim_skk_core.cpp \
+	scim_skk_keybind.cpp \
+	conv_table.cpp
+
+skk_la_CFLAGS = @SCIM_CFLAGS@  @SCIM_DEBUG_FLAGS@
+skk_la_CXXFLAGS = @SCIM_CFLAGS@ @SCIM_DEBUG_FLAGS@
+
+skk_la_LDFLAGS = \
+	-avoid-version \
+	-module \
+	-rpath $(moduledir) \
+	@SCIM_LIBS@
+
+
+
+#if SCIM_BUILD_SETUP
+#SETUP_MODULE = skk-imengine-setup.la
+#endif
+#
+#setupmoduledir           = @SCIM_MODULEDIR@/SetupUI
+#setupmodule_LTLIBRARIES  = $(SETUP_MODULE)
+#
+#anthy_imengine_setup_la_SOURCES = scim_anthy_imengine_setup.cpp
+#
+#anthy_imengine_setup_la_CFLAGS  = @SCIM_GTKUTILS_CFLAGS@ @SCIM_CFLAGS@ @SCIM_DEBUG_FLAGS@
+#
+#anthy_imengine_setup_la_CXXFLAGS= @SCIM_GTKUTILS_CFLAGS@ @SCIM_CFLAGS@ @SCIM_DEBUG_FLAGS@
+#
+#anthy_imengine_setup_la_LDFLAGS = -avoid-version \
+#                                   -rpath $(setupmoduledir) \
+#                                   -module \
+#                                   @LIBTOOL_EXPORT_OPTIONS@ \
+#                                   @SCIM_GTKUTILS_LIBS@ \
+#                                   @INTLLIBS@ \
+#                                   @SCIM_LIBS@
