@@ -34,6 +34,7 @@
 #include <scim.h>
 #include "scim_skk_imengine.h"
 #include "scim_skk_prefs.h"
+#include "conv_table.h"
 
 
 #ifdef HAVE_GETTEXT
@@ -60,8 +61,8 @@
 #define SCIM_PROP_INPUT_MODE_HIRAGANA       SCIM_PROP_MODE_PREFIX"/Hiragana"
 #define SCIM_PROP_INPUT_MODE_KATAKANA       SCIM_PROP_MODE_PREFIX"/Katakana"
 #define SCIM_PROP_INPUT_MODE_HALF_KATAKANA  SCIM_PROP_MODE_PREFIX"/HalfKatakana"
-#define SCIM_PROP_INPUT_MODE_LATIN          SCIM_PROP_MODE_PREFIX"/Latin"
-#define SCIM_PROP_INPUT_MODE_WIDE_LATIN     SCIM_PROP_MODE_PREFIX"/WideLatin"
+#define SCIM_PROP_INPUT_MODE_ASCII          SCIM_PROP_MODE_PREFIX"/ASCII"
+#define SCIM_PROP_INPUT_MODE_WIDE_ASCII     SCIM_PROP_MODE_PREFIX"/WideASCII"
 
 #ifndef SCIM_SKK_ICON_FILE
 #define SCIM_SKK_ICON_FILE           (SCIM_ICONDIR"/scim-skk.png")
@@ -113,6 +114,10 @@ SKKFactory::SKKFactory (const String &lang,
                         const String &uuid,
                         const ConfigPointer &config)
     :  m_uuid(uuid),
+       m_sysdictpath(SCIM_SKK_CONFIG_SYSDICT_DEFAULT),
+       m_userdictname(SCIM_SKK_CONFIG_USERDICT_DEFAULT),
+       m_dlistsize(SCIM_SKK_CONFIG_DICT_LISTSIZE_DEFAULT),
+       m_view_annot(SCIM_SKK_CONFIG_DICT_VIEW_ANNOT_DEFAULT),
        m_config(0)
 {
     SCIM_DEBUG_IMENGINE(0) << "Create SKK Factory :\n";
@@ -122,16 +127,12 @@ SKKFactory::SKKFactory (const String &lang,
     if (lang.length() >= 2)
         set_languages(lang);
 
-    if(!m_iconv.set_encoding("EUC-JP"))
-        return;
-
     reload_config(config);
-    m_skkdict.set_sysdict(m_sysdictpath);
-    m_skkdict.set_userdict(m_userdictname);
 }
 
 SKKFactory::~SKKFactory ()
 {
+    m_reload_signal_connection.disconnect ();
 }
 
 WideString
@@ -186,8 +187,16 @@ SKKFactory::reload_config (const ConfigPointer &config)
 
         m_sysdictpath = config->read(String(SCIM_SKK_CONFIG_SYSDICT),
                                      String(SCIM_SKK_CONFIG_SYSDICT_DEFAULT));
+        m_skkdict.set_sysdict(m_sysdictpath);
         m_userdictname = config->read(String(SCIM_SKK_CONFIG_USERDICT),
                                       String(SCIM_SKK_CONFIG_USERDICT_DEFAULT));
+        m_skkdict.set_userdict(m_userdictname);
+        m_dlistsize = config->read(String(SCIM_SKK_CONFIG_DICT_LISTSIZE),
+                                   SCIM_SKK_CONFIG_DICT_LISTSIZE_DEFAULT);
+        m_skkdict.set_listsize(m_dlistsize);
+        m_view_annot = config->read(String(SCIM_SKK_CONFIG_DICT_VIEW_ANNOT),
+                                    SCIM_SKK_CONFIG_DICT_VIEW_ANNOT_DEFAULT);
+        m_skkdict.set_view_annot(m_view_annot);
 
         str = config->read(String(SCIM_SKK_CONFIG_KAKUTEI_KEY),
                            String(SCIM_SKK_CONFIG_KAKUTEI_KEY_DEFAULT));
@@ -198,24 +207,24 @@ SKKFactory::reload_config (const ConfigPointer &config)
         str = config->read(String(SCIM_SKK_CONFIG_HALF_KATAKANA_KEY),
                            String(SCIM_SKK_CONFIG_HALF_KATAKANA_KEY_DEFAULT));
         m_keybind.set_half_katakana_keys(str);
-        str = config->read(String(SCIM_SKK_CONFIG_LATIN_KEY),
-                           String(SCIM_SKK_CONFIG_LATIN_KEY_DEFAULT));
-        m_keybind.set_latin_keys(str);
-        str = config->read(String(SCIM_SKK_CONFIG_WIDE_LATIN_KEY),
-                           String(SCIM_SKK_CONFIG_WIDE_LATIN_KEY_DEFAULT));
-        m_keybind.set_wide_latin_keys(str);
+        str = config->read(String(SCIM_SKK_CONFIG_ASCII_KEY),
+                           String(SCIM_SKK_CONFIG_ASCII_KEY_DEFAULT));
+        m_keybind.set_ascii_keys(str);
+        str = config->read(String(SCIM_SKK_CONFIG_WIDE_ASCII_KEY),
+                           String(SCIM_SKK_CONFIG_WIDE_ASCII_KEY_DEFAULT));
+        m_keybind.set_wide_ascii_keys(str);
         str = config->read(String(SCIM_SKK_CONFIG_CONVERT_KEY),
                            String(SCIM_SKK_CONFIG_CONVERT_KEY_DEFAULT));
         m_keybind.set_convert_keys(str);
-        str = config->read(String(SCIM_SKK_CONFIG_START_CONV_KEY),
-                           String(SCIM_SKK_CONFIG_START_CONV_KEY_DEFAULT));
-        m_keybind.set_start_conv_keys(str);
+        str = config->read(String(SCIM_SKK_CONFIG_START_PREEDIT_KEY),
+                           String(SCIM_SKK_CONFIG_START_PREEDIT_KEY_DEFAULT));
+        m_keybind.set_start_preedit_keys(str);
         str = config->read(String(SCIM_SKK_CONFIG_CANCEL_KEY),
                            String(SCIM_SKK_CONFIG_CANCEL_KEY_DEFAULT));
         m_keybind.set_cancel_keys(str);
-        str = config->read(String(SCIM_SKK_CONFIG_LATIN_CONVERT_KEY),
-                           String(SCIM_SKK_CONFIG_LATIN_CONVERT_KEY_DEFAULT));
-        m_keybind.set_latin_convert_keys(str);
+        str = config->read(String(SCIM_SKK_CONFIG_ASCII_CONVERT_KEY),
+                           String(SCIM_SKK_CONFIG_ASCII_CONVERT_KEY_DEFAULT));
+        m_keybind.set_ascii_convert_keys(str);
         str = config->read(String(SCIM_SKK_CONFIG_PREVCAND_KEY),
                            String(SCIM_SKK_CONFIG_PREVCAND_KEY_DEFAULT));
         m_keybind.set_prevcand_keys(str);
@@ -231,6 +240,9 @@ SKKFactory::reload_config (const ConfigPointer &config)
         str = config->read(String(SCIM_SKK_CONFIG_BACKWARD_KEY),
                            String(SCIM_SKK_CONFIG_BACKWARD_KEY_DEFAULT));
         m_keybind.set_backward_keys(str);
+        str = config->read(String(SCIM_SKK_CONFIG_SELECTION_STYLE),
+                           String(SCIM_SKK_CONFIG_SELECTION_STYLE_DEFAULT));
+        m_keybind.set_selection_style(str);
     }
 
     m_config = config;
@@ -243,17 +255,35 @@ SKKInstance::SKKInstance (SKKFactory   *factory,
                           const String &encoding,
                           int           id)
     : IMEngineInstanceBase (factory, encoding, id),
+      m_factory(factory),
       m_skk_mode(SKK_MODE_HIRAGANA),
-      m_skkcore(&factory->m_keybind, &m_factory->m_skkdict),
-      m_factory(factory)
+      m_skkcore(&(factory->m_keybind), &(m_factory->m_skkdict),
+                &(m_key2kana), &(m_lookup_table))
 {
     SCIM_DEBUG_IMENGINE(1) << "Create SKK Instance : ";
+    init_key2kana();
+    init_ltable();
 }
 
 SKKInstance::~SKKInstance ()
 {
 }
 
+void
+SKKInstance::init_key2kana (void)
+{
+    m_key2kana.set_table(skk_romakana_table);
+    m_key2kana.append_table(romakana_ja_period_rule);
+}
+
+void
+SKKInstance::init_ltable (void)
+{
+    std::vector<WideString> labels;
+    m_lookup_table.set_page_size(m_factory->m_keybind.selection_key_length());
+    m_factory->m_keybind.selection_labels(labels);
+    m_lookup_table.set_candidate_labels(labels);
+}
 
 bool
 SKKInstance::process_key_event (const KeyEvent &key)
@@ -278,7 +308,6 @@ SKKInstance::process_key_event (const KeyEvent &key)
     update_preedit_caret(m_skkcore.caret_pos());
 
     if (m_skkcore.show_lookup_table()) {
-        m_skkcore.update_lookup_table(m_lookup_table);
         update_lookup_table(m_lookup_table);
         show_lookup_table();
     } else {
@@ -310,10 +339,10 @@ SKKInstance::set_skk_mode (SKKMode newmode)
     case SKK_MODE_HALF_KATAKANA:
         label = "\xEF\xBD\xB1";
         break;
-    case SKK_MODE_LATIN:
+    case SKK_MODE_ASCII:
         label = "a";
         break;
-    case SKK_MODE_WIDE_LATIN:
+    case SKK_MODE_WIDE_ASCII:
         label = "\xEF\xBD\x81";
         break;
     default:
@@ -344,6 +373,13 @@ SKKInstance::move_preedit_caret (unsigned int pos)
 void
 SKKInstance::select_candidate (unsigned int index)
 {
+    m_skkcore.action_select_index(index);
+    if (m_skkcore.has_commit_string()) {
+        commit_string(m_skkcore.get_commit_string());
+        m_skkcore.clear_commit();
+    }
+    hide_lookup_table();
+    hide_preedit_string();
 }
 
 void
@@ -354,11 +390,27 @@ SKKInstance::update_lookup_table_page_size (unsigned int page_size)
 void
 SKKInstance::lookup_table_page_up ()
 {
+    m_skkcore.action_prevpage();
+    if (m_skkcore.show_lookup_table()) {
+        update_lookup_table(m_lookup_table);
+        show_lookup_table();
+    } else {
+        hide_lookup_table();
+    }
+
 }
 
 void
 SKKInstance::lookup_table_page_down ()
 {
+    m_skkcore.action_nextpage();
+    if (m_skkcore.show_lookup_table()) {
+        update_lookup_table(m_lookup_table);
+        show_lookup_table();
+    } else {
+        hide_lookup_table();
+    }
+
 }
 
 void
@@ -403,12 +455,12 @@ SKKInstance::install_properties (void)
                          _("Half width katakana"));
         m_properties.push_back (prop);
 
-        prop = Property (SCIM_PROP_INPUT_MODE_LATIN,
-                         _("Latin"), String (""), _("Direct input"));
+        prop = Property (SCIM_PROP_INPUT_MODE_ASCII,
+                         _("ASCII"), String (""), _("Direct input"));
         m_properties.push_back (prop);
 
-        prop = Property (SCIM_PROP_INPUT_MODE_WIDE_LATIN,
-                         _("Wide latin"), String (""), _("Wide latin"));
+        prop = Property (SCIM_PROP_INPUT_MODE_WIDE_ASCII,
+                         _("Wide ASCII"), String (""), _("Wide ASCII"));
         m_properties.push_back (prop);
     }
 
@@ -426,9 +478,9 @@ SKKInstance::trigger_property (const String& property)
         set_skk_mode(SKK_MODE_KATAKANA);
     } else if (property == SCIM_PROP_INPUT_MODE_HALF_KATAKANA) {
         set_skk_mode(SKK_MODE_HALF_KATAKANA);
-    } else if (property == SCIM_PROP_INPUT_MODE_LATIN) {
-        set_skk_mode(SKK_MODE_LATIN);
-    } else if (property == SCIM_PROP_INPUT_MODE_WIDE_LATIN) {
-        set_skk_mode(SKK_MODE_WIDE_LATIN);
+    } else if (property == SCIM_PROP_INPUT_MODE_ASCII) {
+        set_skk_mode(SKK_MODE_ASCII);
+    } else if (property == SCIM_PROP_INPUT_MODE_WIDE_ASCII) {
+        set_skk_mode(SKK_MODE_WIDE_ASCII);
     }
 }

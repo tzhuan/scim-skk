@@ -1,0 +1,13 @@
+* Tab completion
+
+* behaviors like skk-egg-like-newline
+
+* customization of punctuation marks.
+
+* customization of symbol characters when direct hiragana mode.
+
+* communication to skk server
+  the skkserv protocol is shown at
+  http://pitecan.com/OpenPOBox/server/protocol.html. (only 0-3)
+
+* other types of Dictionary.

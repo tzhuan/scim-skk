@@ -1,4 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: nil; c-basic-offset: 4  -*- */
+/* -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 4  -*- */
 /*
  *  Copyright (C) 2004 Jun Mukai
  *
@@ -22,19 +22,28 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#define SKKDICT_MAXLEN        4096
 #define SKKDICT_CHARCODE      "EUC-JP"
 
-SKKDictionary::SKKDictionary  (bool writable)
-    : m_writable (writable),
-      m_writecount (0)
+using namespace std;
+
+SKKDictionaryBase::SKKDictionaryBase  (void)
+{
+}
+SKKDictionaryBase::~SKKDictionaryBase  (void)
+{
+}
+
+
+SKKDictionary::SKKDictionary  (SKKDictionaries *parent, bool writable)
+    : m_writable   (writable),
+      m_dictpath   (""),
+      m_writeflag  (false),
+      m_parent     (parent)
 {
 }
 
 SKKDictionary::~SKKDictionary (void)
 {
-    delete[] m_dictpath;
-    dump_dictdata();
 }
 
 void
@@ -65,33 +74,23 @@ SKKDictionary::load_dictdata (void)
                 i += j+2;
                 while (buf[i] != '\n') {
                     if (buf[i] == '[') {
-                        while (i < len && buf[i] != ']') i++;
+                        while (buf[i] != ']') i++;
                         i+=2;
                         continue;
                     }
 
                     Candidate cand;
                     int candlen = 1;
-                    for (; i+candlen < len && buf[i+candlen] != '/'; candlen++);
+                    while (buf[i+candlen] != '/') candlen++;
                     char *candstr = new char[candlen+1];
                     strncpy(candstr, buf+i, candlen);
                     candstr[candlen] = '\0';
-                    char *x = strchr(candstr, ';');
-                    if (x) {
-                        int len = x - candstr;
-                        char *tmp1 = new char[len+1];
-                        strncpy(tmp1, candstr, len);
-                        tmp1[len] = '\0';
-                        m_iconv.convert(cand.first, String(tmp1));
-                        m_iconv.convert(cand.second, String(x+1));
-                        delete[] tmp1;
-                    } else {
-                        m_iconv.convert(cand.first, String(candstr));
-                    }
+                    m_iconv.convert(cand, String(candstr));
                     m_dictdata[key_w].push_back(cand);
                     i += candlen+1;
                     delete[] candstr;
                 }
+                delete[] key;
             }
         }
 
@@ -103,31 +102,23 @@ void
 SKKDictionary::dump_dictdata (void)
 {
     Dict::iterator dit;
-    std::ofstream dictfs;
+    ofstream dictfs;
 
     if (m_writable && m_writeflag) {
-        dictfs.open(m_dictpath);
+        dictfs.open(m_dictpath.c_str());
         for (dit = m_dictdata.begin(); dit != m_dictdata.end(); dit++) {
             String line;
-            WideString tmp = dit->first;
-            String tmp2;
-            m_iconv.convert(tmp2, tmp);
-            line += tmp2;
-            tmp.clear();
+            String tmp;
+            m_iconv.convert(tmp, dit->first);
+            line += tmp;
             line += ' ';
 
-            for(CandList::iterator cit = dit->second.begin();
-                    cit != dit->second.end(); cit++) {
-                tmp2.clear();
-                m_iconv.convert(tmp2, cit->first);
+            for(list<Candidate>::iterator cit = dit->second.begin();
+                cit != dit->second.end(); cit++) {
+                tmp.clear();
+                m_iconv.convert(tmp, *cit);
                 line += '/';
-                line += tmp2;
-                if(cit->second.length() > 0) {
-                    line += ';';
-                    tmp2.clear();
-                    m_iconv.convert(tmp2, cit->second);
-                    line += tmp2;
-                }
+                line += tmp;
             }
             line += "/\n";
             dictfs << line;
@@ -139,11 +130,11 @@ SKKDictionary::dump_dictdata (void)
 void
 SKKDictionary::load_dict (const String &dictpath)
 {
-    m_dictpath = new char[dictpath.length()+1];
-    dictpath.copy(m_dictpath, dictpath.size(), 0);
-    m_dictpath[dictpath.length()] = '\0';
-    m_iconv.set_encoding(String(SKKDICT_CHARCODE));
-    load_dictdata();
+    if (m_dictpath != dictpath) {
+        m_dictpath.assign(dictpath);
+        m_iconv.set_encoding(String(SKKDICT_CHARCODE));
+        load_dictdata();
+    }
 }
 
 void
@@ -153,11 +144,30 @@ SKKDictionary::dump_dict (void)
 }
 
 void
-SKKDictionary::lookup (const WideString &key, CandList &result)
+SKKDictionary::lookup (const WideString &key, CandList &result,
+                       CommonLookupTable &table)
 {
-    CandList &cl = m_dictdata[key];
-    for (CandList::iterator it = cl.begin(); it != cl.end(); it++) {
-        result.push_back(*it);
+    list<Candidate> &cl = m_dictdata[key];
+
+    for (list<Candidate>::iterator it = cl.begin(); it != cl.end(); it++) {
+        if (!m_parent->get_view_annot())
+            m_parent->strip_annot(*it);
+
+        CandList::iterator cit = find(result.begin(), result.end(), *it);
+        if (cit == result.end()) {
+            if (result.size() < m_parent->get_listsize()) {
+                result.push_back(*it);
+            } else {
+                int i, len = table.number_of_candidates();
+                for (i = 0; i < len; i++) {
+                    if (*it == table.get_candidate(i))
+                        break;
+                }
+                if (i == len) {
+                    table.append_candidate(*it);
+                }
+            }
+        }
     }
 }
 
@@ -165,27 +175,21 @@ void
 SKKDictionary::write (const WideString &key, const WideString &data)
 {
     if (m_writable) { /* if not writable, do nothing */
-        CandList &cl = m_dictdata[key];
-        Candidate cand;
+        list<Candidate> &cl = m_dictdata[key];
 
-        for (CandList::iterator it = cl.begin(); it != cl.end(); it++) {
-            if (it->first == data) {
-                cand.second = it->second;
-                cl.erase(it);
-                break;
-            }
-        }
-        cand.first = data;
-        cl.push_front(cand);
+        list<Candidate>::iterator it = find(cl.begin(), cl.end(), data);
+        if (it != cl.end())
+            cl.erase(it);
+        cl.push_front(data);
         m_writeflag = true;
-        m_writecount++;
-        if (m_writecount > 10) {
-            dump_dict();
-        }
     }
 }
 
 SKKDictionaries::SKKDictionaries (void)
+    : m_view_annot (true),
+      m_listsize (4),
+      m_sysdict(this),
+      m_userdict(this)
 {
 }
 
@@ -215,17 +219,33 @@ SKKDictionaries::set_userdict (const String &dictname)
 }
 
 void
-SKKDictionaries::lookup (const WideString &key, CandList &result)
+SKKDictionaries::set_listsize (const int lsize)
 {
-    CandList scl;
-    m_userdict.lookup(key, result);
-    m_sysdict.lookup(key, scl);
-    for (CandList::iterator cit = scl.begin(); cit != scl.end(); cit++) {
-        CandList::iterator i = std::find(result.begin(), result.end(), *cit);
-        if (i == result.end()) {
-            result.push_back(*cit);
-        }
-    }
+    m_listsize = lsize;
+}
+int
+SKKDictionaries::get_listsize (void)
+{
+    return m_listsize;
+}
+
+void
+SKKDictionaries::set_view_annot (const bool view)
+{
+    m_view_annot = view;
+}
+bool
+SKKDictionaries::get_view_annot (void)
+{
+    return m_view_annot;
+}
+
+void
+SKKDictionaries::lookup (const WideString &key, CandList &result,
+                         CommonLookupTable &table)
+{
+    m_userdict.lookup(key, result, table);
+    m_sysdict.lookup(key, result, table);
 }
 
 void
@@ -236,11 +256,25 @@ SKKDictionaries::write (const WideString &key, const WideString &data)
 
 
 void
-SKKNumDict::lookup (const WideString &key, CandList &result)
+SKKDictionaries::strip_annot (WideString &str)
+{
+    ucs4_t c;
+    unsigned char s[2] = {';', '\0'};
+    utf8_mbtowc(&c, s, 1);
+    int pos = str.find(c);
+    if (pos != WideString::npos) {
+        str.erase(pos);
+    }
+}
+
+
+void
+SKKNumDict::lookup (const WideString &key, CandList &result,
+                    CommonLookupTable &table)
 {
     /* int x = atoi(key.c_str()); */
 
-    result.push_back(make_pair(key, WideString()));
+    result.push_back(key);
 
 }
 

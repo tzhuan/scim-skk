@@ -39,13 +39,14 @@ class SKKFactory : public IMEngineFactoryBase
 {
     String m_uuid;
 
-    IConvert m_iconv;
     friend class SKKInstance;
 
     /* dictionary */
     SKKDictionaries m_skkdict;
     String          m_sysdictpath;
     String          m_userdictname;
+    int             m_dlistsize;
+    bool            m_view_annot;
 
     /* config */
     ConfigPointer m_config;
@@ -76,8 +77,7 @@ private:
 class SKKInstance : public IMEngineInstanceBase
 {
     SKKFactory    *m_factory;
-    SKKCore        m_skkcore;
-    char           m_okurihead;
+    SKKAutomaton   m_key2kana;
     PropertyList   m_properties;
 
     /* for displaying SKKMode */
@@ -85,6 +85,12 @@ class SKKInstance : public IMEngineInstanceBase
 
     /* for candidates window */
     CommonLookupTable m_lookup_table;
+
+    /* core of SKK */
+    SKKCore        m_skkcore;
+
+    void init_key2kana (void);
+    void init_ltable   (void);
 
     bool process_kakutei_keys         (const KeyEvent &key);
     bool process_remaining_keybinds   (const KeyEvent &key);

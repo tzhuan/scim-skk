@@ -58,7 +58,7 @@ public:
 };
 #endif
 
-class Automaton
+class SKKAutomaton
 {
     WideString              m_pending;
     ConvRule               *m_table;
@@ -73,8 +73,8 @@ public:
         COMMIT_PREV_PENDING,
     };
 
-    Automaton ();
-    virtual ~Automaton ();
+    SKKAutomaton ();
+    virtual ~SKKAutomaton ();
 
     virtual bool       append             (const String & str,
                                            WideString   & result,
