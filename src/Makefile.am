@@ -37,23 +37,23 @@ skk_la_LDFLAGS = \
 
 
 
-#if SCIM_BUILD_SETUP
-#SETUP_MODULE = skk-imengine-setup.la
-#endif
-#
-#setupmoduledir           = @SCIM_MODULEDIR@/SetupUI
-#setupmodule_LTLIBRARIES  = $(SETUP_MODULE)
-#
-#anthy_imengine_setup_la_SOURCES = scim_anthy_imengine_setup.cpp
-#
-#anthy_imengine_setup_la_CFLAGS  = @SCIM_GTKUTILS_CFLAGS@ @SCIM_CFLAGS@ @SCIM_DEBUG_FLAGS@
-#
-#anthy_imengine_setup_la_CXXFLAGS= @SCIM_GTKUTILS_CFLAGS@ @SCIM_CFLAGS@ @SCIM_DEBUG_FLAGS@
-#
-#anthy_imengine_setup_la_LDFLAGS = -avoid-version \
-#                                   -rpath $(setupmoduledir) \
-#                                   -module \
-#                                   @LIBTOOL_EXPORT_OPTIONS@ \
-#                                   @SCIM_GTKUTILS_LIBS@ \
-#                                   @INTLLIBS@ \
-#                                   @SCIM_LIBS@
+if SCIM_BUILD_SETUP
+SETUP_MODULE = skk-imengine-setup.la
+endif
+
+setupmoduledir           = @SCIM_MODULEDIR@/SetupUI
+setupmodule_LTLIBRARIES  = $(SETUP_MODULE)
+
+skk_imengine_setup_la_SOURCES = scim_skk_imengine_setup.cpp
+
+skk_imengine_setup_la_CFLAGS  = @SCIM_GTKUTILS_CFLAGS@ @SCIM_CFLAGS@ @SCIM_DEBUG_FLAGS@
+
+skk_imengine_setup_la_CXXFLAGS= @SCIM_GTKUTILS_CFLAGS@ @SCIM_CFLAGS@ @SCIM_DEBUG_FLAGS@
+
+skk_imengine_setup_la_LDFLAGS = -avoid-version \
+                                -rpath $(setupmoduledir) \
+                                -module \
+                                @LIBTOOL_EXPORT_OPTIONS@ \
+                                @SCIM_GTKUTILS_LIBS@ \
+                                @INTLLIBS@ \
+                                @SCIM_LIBS@
