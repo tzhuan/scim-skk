@@ -114,6 +114,10 @@ SKKFactory::SKKFactory (const String &lang,
                         const String &uuid,
                         const ConfigPointer &config)
     :  m_uuid(uuid),
+       m_sysdictpath(SCIM_SKK_CONFIG_SYSDICT_DEFAULT),
+       m_userdictname(SCIM_SKK_CONFIG_USERDICT_DEFAULT),
+       m_dlistsize(SCIM_SKK_CONFIG_DICT_LISTSIZE_DEFAULT),
+       m_view_annot(SCIM_SKK_CONFIG_DICT_VIEW_ANNOT_DEFAULT),
        m_config(0)
 {
     SCIM_DEBUG_IMENGINE(0) << "Create SKK Factory :\n";
@@ -122,9 +126,6 @@ SKKFactory::SKKFactory (const String &lang,
 
     if (lang.length() >= 2)
         set_languages(lang);
-
-    if(!m_iconv.set_encoding("EUC-JP"))
-        return;
 
     reload_config(config);
 }
@@ -192,10 +193,10 @@ SKKFactory::reload_config (const ConfigPointer &config)
         m_skkdict.set_userdict(m_userdictname);
         m_dlistsize = config->read(String(SCIM_SKK_CONFIG_DICT_LISTSIZE),
                                    SCIM_SKK_CONFIG_DICT_LISTSIZE_DEFAULT);
-        m_skkdict.listsize = m_dlistsize;
+        m_skkdict.set_listsize(m_dlistsize);
         m_view_annot = config->read(String(SCIM_SKK_CONFIG_DICT_VIEW_ANNOT),
                                     SCIM_SKK_CONFIG_DICT_VIEW_ANNOT_DEFAULT);
-        m_skkdict.view_annot = m_view_annot;
+        m_skkdict.set_view_annot(m_view_annot);
 
         str = config->read(String(SCIM_SKK_CONFIG_KAKUTEI_KEY),
                            String(SCIM_SKK_CONFIG_KAKUTEI_KEY_DEFAULT));
@@ -254,10 +255,10 @@ SKKInstance::SKKInstance (SKKFactory   *factory,
                           const String &encoding,
                           int           id)
     : IMEngineInstanceBase (factory, encoding, id),
+      m_factory(factory),
       m_skk_mode(SKK_MODE_HIRAGANA),
-      m_skkcore(&factory->m_keybind, &m_factory->m_skkdict,
-                &m_key2kana, &m_lookup_table),
-      m_factory(factory)
+      m_skkcore(&(factory->m_keybind), &(m_factory->m_skkdict),
+                &(m_key2kana), &(m_lookup_table))
 {
     SCIM_DEBUG_IMENGINE(1) << "Create SKK Instance : ";
     init_key2kana();

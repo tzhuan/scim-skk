@@ -39,11 +39,14 @@ SKKCore::SKKCore      (KeyBind *keybind, SKKDictionaries *dict,
       m_dict(dict),
       m_skk_mode(SKK_MODE_HIRAGANA),
       m_input_mode(INPUT_MODE_DIRECT),
-      m_learning(NULL),
+      m_learning(0),
       m_end_flag(false),
       m_ltable(ltable),
       m_show_ltable(false),
       m_key2kana(key2kana),
+      m_preedit_pos(0),
+      m_commit_pos(0),
+      m_cindex(m_candlist.begin()),
       m_commit_flag(false)
 {
     m_ltable->clear();
@@ -179,7 +182,7 @@ SKKCore::commit_converting (int index)
 {
     if (!m_candlist.empty() && m_cindex != m_candlist.end()) {
         WideString str = *m_cindex;
-        if (m_dict->view_annot)
+        if (m_dict->get_view_annot())
             m_dict->strip_annot(str);
         commit_string(str);
         commit_string(m_okuristr);
@@ -192,7 +195,7 @@ SKKCore::commit_converting (int index)
         index += m_ltable->get_current_page_start();
         WideString str = m_ltable->get_candidate(index);
         WideString cand = str;
-        if (m_dict->view_annot)
+        if (m_dict->get_view_annot())
             m_dict->strip_annot(cand);
         commit_string(cand);
         commit_string(m_okuristr);

@@ -39,7 +39,6 @@ class SKKFactory : public IMEngineFactoryBase
 {
     String m_uuid;
 
-    IConvert m_iconv;
     friend class SKKInstance;
 
     /* dictionary */
@@ -79,7 +78,6 @@ class SKKInstance : public IMEngineInstanceBase
 {
     SKKFactory    *m_factory;
     SKKAutomaton   m_key2kana;
-    char           m_okurihead;
     PropertyList   m_properties;
 
     /* for displaying SKKMode */

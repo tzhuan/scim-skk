@@ -36,6 +36,8 @@ SKKDictionaryBase::~SKKDictionaryBase  (void)
 
 SKKDictionary::SKKDictionary  (SKKDictionaries *parent, bool writable)
     : m_writable   (writable),
+      m_dictpath   (""),
+      m_writeflag  (false),
       m_parent     (parent)
 {
 }
@@ -148,12 +150,12 @@ SKKDictionary::lookup (const WideString &key, CandList &result,
     list<Candidate> &cl = m_dictdata[key];
 
     for (list<Candidate>::iterator it = cl.begin(); it != cl.end(); it++) {
-        if (!m_parent->view_annot)
+        if (!m_parent->get_view_annot())
             m_parent->strip_annot(*it);
 
         CandList::iterator cit = find(result.begin(), result.end(), *it);
         if (cit == result.end()) {
-            if (result.size() < m_parent->listsize) {
+            if (result.size() < m_parent->get_listsize()) {
                 result.push_back(*it);
             } else {
                 int i, len = table.number_of_candidates();
@@ -184,7 +186,9 @@ SKKDictionary::write (const WideString &key, const WideString &data)
 }
 
 SKKDictionaries::SKKDictionaries (void)
-    : m_sysdict(this),
+    : m_view_annot (true),
+      m_listsize (4),
+      m_sysdict(this),
       m_userdict(this)
 {
 }
@@ -212,6 +216,28 @@ SKKDictionaries::set_userdict (const String &dictname)
     }
     m_userdict.load_dict(userdictpath);
     m_userdict.m_writable = true;
+}
+
+void
+SKKDictionaries::set_listsize (const int lsize)
+{
+    m_listsize = lsize;
+}
+int
+SKKDictionaries::get_listsize (void)
+{
+    return m_listsize;
+}
+
+void
+SKKDictionaries::set_view_annot (const bool view)
+{
+    m_view_annot = view;
+}
+bool
+SKKDictionaries::get_view_annot (void)
+{
+    return m_view_annot;
 }
 
 void

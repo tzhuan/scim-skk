@@ -93,15 +93,19 @@ class SKKDictionaries
     SKKDictionary  m_sysdict;
     SKKDictionary  m_userdict;
 
+    bool m_view_annot;
+    int  m_listsize;
 public:
-    bool view_annot;
-    int  listsize;
-
     SKKDictionaries  (void);
     ~SKKDictionaries (void);
 
     void set_sysdict  (const String &dictname);
     void set_userdict (const String &dictname);
+
+    void set_listsize   (const int  lsize);
+    void set_view_annot (const bool view);
+    int  get_listsize   (void);
+    bool get_view_annot (void);
 
     void lookup (const WideString &hira, CandList &result,
                  CommonLookupTable &table);
