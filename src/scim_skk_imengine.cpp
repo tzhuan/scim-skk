@@ -138,6 +138,7 @@ SKKFactory::SKKFactory (const String &lang,
 
 SKKFactory::~SKKFactory ()
 {
+    dump_dict();
     m_reload_signal_connection.disconnect ();
 }
 

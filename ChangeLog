@@ -1,7 +1,17 @@
+2005-03-22  Jun Mukai  <mukai@jmuk.org>
+
+	* src/scim_skk_imengine.cpp (SKKFactory): bugfix on timing of
+	dump_dict();
+
 2005-03-11  Jun Mukai  <mukai@jmuk.org>
 
 	* src/scim_skk_imengine.h (class SKKInstance): some bug fix codes
 	from James Su. New member m_defualt_page_size is added.
+
+2005-03-10  Jun Mukai  <mukai@jmuk.org>
+
+	* src/scim_skk_imengine.cpp (update_lookup_table_page_size):
+	patch for long candidates. (cf. scim-devel: 3/10/2005: 15:52:02+0800)
 
 2005-03-07  Jun Mukai  <mukai@jmuk.org>
 
