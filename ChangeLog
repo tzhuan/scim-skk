@@ -1,3 +1,13 @@
+2004-12-26  Jun Mukai  <mukai@jmuk.org>
+
+	* src/scim_skk_core.cpp (process_ascii): bug fix to recognize
+	arrow key or backspace key when ascii preediting.
+	(action_backspace): The behavior of backspace is changed when
+	caret position = 0 (using action_cancel() ).
+
+	* src/scim_skk_prefs.h: the name "StartConv" is changed to
+	"StartPreedit".
+
 2004-12-24  Jun Mukai  <mukai@jmuk.org>
 
 	* src/scim_skk_core.cpp (action_nextpage): bug fix when returning

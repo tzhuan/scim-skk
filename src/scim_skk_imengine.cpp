@@ -214,9 +214,9 @@ SKKFactory::reload_config (const ConfigPointer &config)
         str = config->read(String(SCIM_SKK_CONFIG_CONVERT_KEY),
                            String(SCIM_SKK_CONFIG_CONVERT_KEY_DEFAULT));
         m_keybind.set_convert_keys(str);
-        str = config->read(String(SCIM_SKK_CONFIG_START_CONV_KEY),
-                           String(SCIM_SKK_CONFIG_START_CONV_KEY_DEFAULT));
-        m_keybind.set_start_conv_keys(str);
+        str = config->read(String(SCIM_SKK_CONFIG_START_PREEDIT_KEY),
+                           String(SCIM_SKK_CONFIG_START_PREEDIT_KEY_DEFAULT));
+        m_keybind.set_start_preedit_keys(str);
         str = config->read(String(SCIM_SKK_CONFIG_CANCEL_KEY),
                            String(SCIM_SKK_CONFIG_CANCEL_KEY_DEFAULT));
         m_keybind.set_cancel_keys(str);

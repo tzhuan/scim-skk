@@ -40,7 +40,7 @@ KeyBind::~KeyBind (void)
     m_ascii_keys.clear();
     m_wide_ascii_keys.clear();
     m_convert_keys.clear();
-    m_start_conv_keys.clear();
+    m_start_preedit_keys.clear();
     m_cancel_keys.clear();
 }
 
@@ -220,9 +220,9 @@ KeyBind::set_convert_keys       (String str)
     scim_string_to_key_list(m_convert_keys, str);
 }
 void
-KeyBind::set_start_conv_keys    (String str)
+KeyBind::set_start_preedit_keys    (String str)
 {
-    scim_string_to_key_list(m_start_conv_keys, str);
+    scim_string_to_key_list(m_start_preedit_keys, str);
 }
 void
 KeyBind::set_cancel_keys        (String str)
@@ -291,9 +291,9 @@ KeyBind::match_convert_keys       (const KeyEvent &key)
     return match_key_event(m_convert_keys, key);
 }
 bool
-KeyBind::match_start_conv_keys    (const KeyEvent &key)
+KeyBind::match_start_preedit_keys    (const KeyEvent &key)
 {
-    return match_key_event(m_start_conv_keys, key);
+    return match_key_event(m_start_preedit_keys, key);
 }
 bool
 KeyBind::match_cancel_keys        (const KeyEvent &key)

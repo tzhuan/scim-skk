@@ -528,7 +528,7 @@ SKKCore::action_katakana (bool half)
 }
 
 bool
-SKKCore::action_start_conv (void)
+SKKCore::action_start_preedit (void)
 {
     switch (m_input_mode) {
     case INPUT_MODE_DIRECT:
@@ -627,8 +627,7 @@ SKKCore::action_backspace (void)
         case INPUT_MODE_PREEDIT:
             if (m_preedit_pos == 0) {
                 commit_string(m_preeditstr);
-                clear_preedit();
-                set_input_mode(INPUT_MODE_DIRECT);
+                action_cancel();
             } else {
                 m_preeditstr.erase(m_preedit_pos-1, 1);
                 m_preedit_pos--;
@@ -806,8 +805,8 @@ SKKCore::process_remaining_keybinds (const KeyEvent &key)
     if (m_keybind->match_half_katakana_keys(key))
         return action_katakana(true);
 
-    if (m_keybind->match_start_conv_keys(key))
-        return action_start_conv();
+    if (m_keybind->match_start_preedit_keys(key))
+        return action_start_preedit();
 
     if (m_keybind->match_prevcand_keys(key))
         return action_prevcand();
@@ -857,9 +856,13 @@ SKKCore::process_ascii (const KeyEvent &key)
         if (m_input_mode == INPUT_MODE_DIRECT) {
             return false;
         } else {
-            char str[2] = {code, '\0'};
-            commit_or_preedit(utf8_mbstowcs(str));
-            return true;
+            if (isprint(code)) {
+                char str[2] = {code, '\0'};
+                commit_or_preedit(utf8_mbstowcs(str));
+                return true;
+            } else {
+                return process_remaining_keybinds(key);
+            }
         }
     }
 

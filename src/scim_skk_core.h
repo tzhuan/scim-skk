@@ -91,7 +91,7 @@ class SKKCore
     bool action_cancel          (void);
     bool action_convert         (void);
     bool action_katakana        (bool half = false);
-    bool action_start_conv      (void);
+    bool action_start_preedit   (void);
     bool action_prevcand        (void);
     bool action_ascii           (bool wide = false);
     bool action_ascii_convert   (void);

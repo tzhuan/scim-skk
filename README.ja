@@ -1,0 +1,46 @@
+= scim-skk とは
+scim 上で SKK 風のキーバインドで変換を行うための IM エンジンモジュールです。
+
+scim: http://www.scim-im.org/
+skk:  http://openlab.jp/skk/index-j.html
+
+= インストール
+以下のコマンドを実行します。
+
+ $ ./bootstrap
+ $ ./configure
+ $ make
+ $ sudo make install
+
+= 使い方
+
+ddskk とだいたい同じように使えます。 ddskk の使い方は
+http://openlab.jp/skk/skk-manual/skk-manual-ja.html 
+に説明されています。
+
+ddskk で実現されている以下の機能は scim-skk では実装されていません。
+* タブ補完
+* skk-egg-like-newline
+* today など、 emacs lisp 式を評価するタイプの変換
+* skkservとの通信
+* 句読点スタイルの切替
+* 記号文字を入力したときの全角/半角の切替
+
+= カスタマイズ
+
+現段階では SetupUI が存在しないため、自分で ~/.scim/config 等に記述を
+追加することになります。
+
+詳しくは
+http://scim-imengine.sourceforge.jp/index.cgi?cmd=view;name=SCIMSKK
+の下の方にある「設定」を参考にしてください。
+
+= 注意点
+
+ユーザ辞書はデフォルトで ~/.skk-scim-jisyo に保存されます。最初に起動
+するなど、このファイルが存在しない場合には、 ~/.skk-jisyo を読み込みま
+す。
+
+ただし、現在の scim-skk はユーザ辞書をソートしないで書き出しています。
+したがって他の skk 実装とユーザ辞書を共有した場合、予期しないエラーが
+起こる可能性もありますので注意してください。

@@ -37,7 +37,7 @@ class KeyBind {
     KeyEventList m_ascii_keys;
     KeyEventList m_wide_ascii_keys;
     KeyEventList m_convert_keys;
-    KeyEventList m_start_conv_keys;
+    KeyEventList m_start_preedit_keys;
     KeyEventList m_cancel_keys;
     KeyEventList m_ascii_convert_keys;
     KeyEventList m_prevcand_keys;
@@ -62,7 +62,7 @@ public:
     void set_ascii_keys         (String str);
     void set_wide_ascii_keys    (String str);
     void set_convert_keys       (String str);
-    void set_start_conv_keys    (String str);
+    void set_start_preedit_keys (String str);
     void set_cancel_keys        (String str);
     void set_ascii_convert_keys (String str);
     void set_prevcand_keys      (String str);
@@ -79,7 +79,7 @@ public:
     bool match_ascii_keys         (const KeyEvent &key);
     bool match_wide_ascii_keys    (const KeyEvent &key);
     bool match_convert_keys       (const KeyEvent &key);
-    bool match_start_conv_keys    (const KeyEvent &key);
+    bool match_start_preedit_keys (const KeyEvent &key);
     bool match_cancel_keys        (const KeyEvent &key);
     bool match_ascii_convert_keys (const KeyEvent &key);
     bool match_prevcand_keys      (const KeyEvent &key);
