@@ -809,7 +809,8 @@ SKKCore::process_romakana (const KeyEvent &key)
             str[1] = '\0';
 
             if (key.mask & SCIM_KEY_ShiftMask &&
-                (m_input_mode == INPUT_MODE_PREEDIT ||
+                ((m_input_mode == INPUT_MODE_PREEDIT &&
+                  !m_preeditstr.empty()) ||
                  m_input_mode == INPUT_MODE_DIRECT))
                 f = true;
 
