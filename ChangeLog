@@ -1,7 +1,6 @@
 2004-12-28  Jun Mukai  <mukai@jmuk.org>
 
-	* src/scim_skk_imengine.cpp: rename _scim_config to
-	_scim_skk_config.
+	* SetupUI: SetupUI is now available.
 
 2004-12-27  Jun Mukai  <mukai@jmuk.org>
 
