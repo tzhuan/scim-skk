@@ -291,7 +291,22 @@ bool
 SKKInstance::process_key_event (const KeyEvent &key)
 {
     SCIM_DEBUG_IMENGINE(2) << "process_key_event.\n";
-    bool retval = m_skkcore.process_key_event(key);
+    // ignore key release.
+    if (key.is_key_release())
+        return false;
+
+    // ignore modifier keys
+    if (key.code == SCIM_KEY_Shift_L || key.code == SCIM_KEY_Shift_R ||
+        key.code == SCIM_KEY_Control_L || key.code == SCIM_KEY_Control_R ||
+        key.code == SCIM_KEY_Alt_L || key.code == SCIM_KEY_Alt_R)
+        return false;
+
+    KeyEvent k(key.code, key.mask);
+
+    // ignore some masks
+    k.mask &= ~SCIM_KEY_CapsLockMask;
+
+    bool retval = m_skkcore.process_key_event(k);
 
     if (m_skkcore.has_commit_string()) {
         commit_string(m_skkcore.get_commit_string());
@@ -424,8 +439,29 @@ SKKInstance::reset ()
 void
 SKKInstance::focus_in ()
 {
+    WideString preedit;
+
     SCIM_DEBUG_IMENGINE(2) << "focus_in.\n";
     install_properties();
+
+    m_skkcore.get_preedit_string(preedit);
+    if (!preedit.empty()) {
+        update_preedit_string(preedit);
+        show_preedit_string();
+    } else {
+        hide_preedit_string();
+    }
+
+    update_preedit_caret(m_skkcore.caret_pos());
+
+    if (m_skkcore.show_lookup_table()) {
+        update_lookup_table(m_lookup_table);
+        show_lookup_table();
+    } else {
+        hide_lookup_table();
+    }
+
+    set_skk_mode(m_skkcore.get_skk_mode());
 }
 
 void

@@ -24,6 +24,7 @@ char *qwerty_vec[7]  = {"a", "s", "d", "f", "j", "k", "l"};
 char *dvorak_vec[8]  = {"a", "o", "e", "u", "h", "t", "n", "s"};
 char *number_vec[9]  = {"1", "2", "3", "4", "5", "6", "7", "8", "9"};
 
+static void keybind_string_to_key_list(KeyEventList &keys, const String &str);
 static inline bool match_key_event       (const KeyEventList &keylist,
                                           const KeyEvent &key);
 
@@ -180,72 +181,72 @@ KeyBind::selection_labels (std::vector<WideString> &result)
 void
 KeyBind::set_kakutei_keys       (const String &str)
 {
-    scim_string_to_key_list(m_kakutei_keys, str);
+    keybind_string_to_key_list(m_kakutei_keys, str);
 }
 void
 KeyBind::set_katakana_keys      (const String &str)
 {
-    scim_string_to_key_list(m_katakana_keys, str);
+    keybind_string_to_key_list(m_katakana_keys, str);
 }
 void
 KeyBind::set_half_katakana_keys (const String &str)
 {
-    scim_string_to_key_list(m_half_katakana_keys, str);
+    keybind_string_to_key_list(m_half_katakana_keys, str);
 }
 void
 KeyBind::set_ascii_keys         (const String &str)
 {
-    scim_string_to_key_list(m_ascii_keys, str);
+    keybind_string_to_key_list(m_ascii_keys, str);
 }
 void
 KeyBind::set_wide_ascii_keys    (const String &str)
 {
-    scim_string_to_key_list(m_wide_ascii_keys, str);
+    keybind_string_to_key_list(m_wide_ascii_keys, str);
 }
 void
 KeyBind::set_convert_keys       (const String &str)
 {
-    scim_string_to_key_list(m_convert_keys, str);
+    keybind_string_to_key_list(m_convert_keys, str);
 }
 void
 KeyBind::set_start_preedit_keys    (const String &str)
 {
-    scim_string_to_key_list(m_start_preedit_keys, str);
+    keybind_string_to_key_list(m_start_preedit_keys, str);
 }
 void
 KeyBind::set_cancel_keys        (const String &str)
 {
-    scim_string_to_key_list(m_cancel_keys, str);
+    keybind_string_to_key_list(m_cancel_keys, str);
 }
 void
 KeyBind::set_ascii_convert_keys        (const String &str)
 {
-    scim_string_to_key_list(m_ascii_convert_keys, str);
+    keybind_string_to_key_list(m_ascii_convert_keys, str);
 }
 void
 KeyBind::set_prevcand_keys        (const String &str)
 {
-    scim_string_to_key_list(m_prevcand_keys, str);
+    keybind_string_to_key_list(m_prevcand_keys, str);
 }
 void
 KeyBind::set_backspace_keys        (const String &str)
 {
-    scim_string_to_key_list(m_backspace_keys, str);
+    keybind_string_to_key_list(m_backspace_keys, str);
 }
 void
 KeyBind::set_delete_keys           (const String &str)
 {
-    scim_string_to_key_list(m_delete_keys, str);
+    keybind_string_to_key_list(m_delete_keys, str);
 }
 void
 KeyBind::set_forward_keys          (const String &str)
 {
-    scim_string_to_key_list(m_forward_keys, str);
+    keybind_string_to_key_list(m_forward_keys, str);
 }
 void
 KeyBind::set_backward_keys         (const String &str)
 {
-    scim_string_to_key_list(m_backward_keys, str);
+    keybind_string_to_key_list(m_backward_keys, str);
 }
 
 bool
@@ -319,39 +320,37 @@ KeyBind::match_backward_keys         (const KeyEvent &key)
     return match_key_event(m_backward_keys, key);
 }
 
+static void
+keybind_string_to_key_list(KeyEventList &keys, const String &str)
+{
+    KeyEventList kl;
+    KeyEventList::iterator it;
+    scim_string_to_key_list(kl, str);
+    for (it = kl.begin(); it != kl.end(); it++) {
+        char code = it->get_ascii_code();
+        if (islower(code) && it->is_shift_down()) {
+            it->code = toupper(it->get_ascii_code());
+        } else if (isupper(code) && !it->is_shift_down()) {
+            it->mask |= SCIM_KEY_ShiftMask;
+        }
+        keys.push_back(*it);
+    }
+}
 
 static inline bool
 match_key_event (const KeyEventList &keylist, const KeyEvent &key)
 {
-    bool flag = false;
-    if (key.mask & SCIM_KEY_ShiftMask &&
-        key.get_ascii_code() &&
-        !(key.mask & SCIM_KEY_ControlMask || key.mask & SCIM_KEY_Mod1Mask ||
-          key.mask & SCIM_KEY_Mod2Mask    || key.mask & SCIM_KEY_Mod3Mask ||
-          key.mask & SCIM_KEY_Mod4Mask    || key.mask & SCIM_KEY_Mod5Mask )
-        ) {
-        flag = true;
+    KeyEvent k(key.code, key.mask);
+    char code = k.get_ascii_code();
+
+    if (islower(code) && k.is_shift_down()) {
+        k.code = toupper(k.get_ascii_code());
+    } else if (isupper(code) && !k.is_shift_down()) {
+        k.code = tolower(k.get_ascii_code());
     }
 
-    KeyEventList::const_iterator it;
-
-    if (flag) {
-        char code = tolower(key.get_ascii_code());
-        for (it = keylist.begin(); it != keylist.end(); it++) {
-            if (*it == key) break;
-
-            if (it->is_shift_down()) {
-                if (it->get_ascii_code() == code)
-                    break;
-            } else {
-                if (it->code == key.code)
-                    break;
-            }
-        }
-    } else {
-        it = std::find(keylist.begin(), keylist.end(), key);
-    }
-
+    KeyEventList::const_iterator it = std::find(keylist.begin(),
+                                                keylist.end(), k);
     return it != keylist.end();
 }
 

@@ -935,7 +935,7 @@ SKKCore::process_romakana (const KeyEvent &key)
             str[0] = tolower(code);
             str[1] = '\0';
 
-            if (key.mask & SCIM_KEY_ShiftMask &&
+            if (key.is_shift_down() &&
                 ((m_input_mode == INPUT_MODE_PREEDIT &&
                   !m_preeditstr.empty()) ||
                  m_input_mode == INPUT_MODE_DIRECT))
@@ -1015,17 +1015,6 @@ SKKCore::process_romakana (const KeyEvent &key)
 bool
 SKKCore::process_key_event (const KeyEvent key)
 {
-    // ignore key release.
-    if (key.is_key_release())
-        return false;
-
-    // ignore modifier keys
-    if (key.code == SCIM_KEY_Shift_L || key.code == SCIM_KEY_Shift_R ||
-        key.code == SCIM_KEY_Control_L || key.code == SCIM_KEY_Control_R ||
-        key.code == SCIM_KEY_Alt_L || key.code == SCIM_KEY_Alt_R)
-        return false;
-
-
     if (m_input_mode == INPUT_MODE_CONVERTING) {
         int index;
         if (m_keybind->match_kakutei_keys(key))

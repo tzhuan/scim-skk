@@ -1,5 +1,10 @@
 2005-01-08  Jun Mukai  <mukai@jmuk.org>
 
+	* src/scim_skk_keybind.cpp (keybind_string_to_key_list): KeyBind
+	is now use keybind_string_to_key_list, which is a wrapper function
+	to scim_string_to_key_list. This change is for matching of key
+	events.
+
 	* src/scim_skk_core.cpp: changes the type of `m_okurihead' from
 	WideString to ucs4_t.
 	(process_key_event): Fix bug on cancel of learning.
