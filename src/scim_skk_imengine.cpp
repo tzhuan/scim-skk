@@ -69,7 +69,7 @@
 #endif
 
 
-static ConfigPointer _scim_config (0);
+static ConfigPointer _scim_skk_config (0);
 
 extern "C" {
     void scim_module_init (void)
@@ -80,14 +80,14 @@ extern "C" {
 
     void scim_module_exit (void)
     {
-        _scim_config.reset ();
+        _scim_skk_config.reset ();
     }
 
     uint32 scim_imengine_module_init (const ConfigPointer &config)
     {
         SCIM_DEBUG_IMENGINE(1) << "Initialize SKK Engine.\n";
 
-        _scim_config = config;
+        _scim_skk_config = config;
 
         return 1;
     }
@@ -99,7 +99,7 @@ extern "C" {
         try {
             factory = new SKKFactory (String ("ja_JP"),
                                       String ("ec43125f-f9d3-4a77-8096-de3a35290ba9"),
-                                      _scim_config);
+                                      _scim_skk_config);
         } catch (...) {
             delete factory;
             factory = 0;

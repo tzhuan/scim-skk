@@ -36,9 +36,9 @@ skk_la_LDFLAGS = \
 	@SCIM_LIBS@
 
 
-#if SCIM_BUILD_SETUP
-#SETUP_MODULE = skk-imengine-setup.la
-#endif
+if SCIM_BUILD_SETUP
+SETUP_MODULE = skk-imengine-setup.la
+endif
 
 setupmoduledir           = @SCIM_MODULEDIR@/SetupUI
 setupmodule_LTLIBRARIES  = $(SETUP_MODULE)
