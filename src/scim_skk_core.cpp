@@ -748,21 +748,26 @@ bool
 SKKCore::action_nextpage (void)
 {
     if (m_input_mode != INPUT_MODE_CONVERTING) return false;
-    if (m_cindex != m_candlist.end()) {
+    if (!m_candlist.empty() && m_cindex != m_candlist.end()) {
         m_cindex++;
-        if (m_cindex == m_candlist.end())
-            m_show_ltable = true;
+        if (m_cindex == m_candlist.end()) {
+            if (m_ltable->number_of_candidates() > 0)
+                m_show_ltable = true;
+            else
+                return false;
+        }
         return true;
-    } else {
+    } else if (m_ltable->number_of_candidates() > 0) {
         return m_ltable->page_down();
     }
+    return false;
 }
 
 bool
 SKKCore::action_prevpage (void)
 {
     if (m_input_mode != INPUT_MODE_CONVERTING) return false;
-    if (m_cindex != m_candlist.end()) {
+    if (!m_candlist.empty() && m_cindex != m_candlist.end()) {
         if (m_cindex != m_candlist.begin()) {
             m_cindex--;
             return true;
@@ -770,12 +775,19 @@ SKKCore::action_prevpage (void)
             return false;
     } else {
         bool retval = m_ltable->page_up();
-        if (!retval && !m_candlist.empty() ) {
-            m_cindex--;
-            m_show_ltable = false;
+        if (!retval) {
+            if (m_candlist.empty()) {
+                return false;
+            } else {
+                m_cindex--;
+                m_show_ltable = false;
+                return true;
+            }
+        } else {
+            return retval;
         }
-        return true;
     }
+    return false;
 }
 
 void
@@ -1006,10 +1018,11 @@ SKKCore::process_key_event (const KeyEvent key)
             return action_convert();
         if (m_keybind->match_prevcand_keys(key))
             return action_prevcand();
-        if ((index = m_keybind->match_selection_keys(key)) > -1) {
-            action_select_index(index);
-            return true;
-        }
+        if (m_candlist.empty() || m_cindex == m_candlist.end())
+            if ((index = m_keybind->match_selection_keys(key)) > -1) {
+                action_select_index(index);
+                return true;
+            }
 
         commit_converting();
         set_input_mode(INPUT_MODE_DIRECT);

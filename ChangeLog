@@ -1,4 +1,10 @@
 2004-12-24  Jun Mukai  <mukai@jmuk.org>
+
+	* src/scim_skk_core.cpp (action_nextpage): bug fix when returning
+	false.
+	(process_key_event): ignore selecting key when lookup table is
+	hidden.
+
 	* src/scim_skk_dictionary.cpp (class SKKDictionary): annotation is
 	not parsed at loading dictionary. It is stripped when `lookup' or
 	commiting on src/scim_skk_core.cpp.
