@@ -1,3 +1,8 @@
+2005-01-29  Jun Mukai  <mukai@jmuk.org>
+
+	* src/scim_skk_core.cpp (process_key_event): bug fix on inputting
+	non 'asdfjkl' keys in converting.
+
 2005-01-27  Takuro Ashie  <ashie@homa.ne.jp>
 
 	* src/scim_skk_core.cpp, src/scim_skk_dictionary.cpp,

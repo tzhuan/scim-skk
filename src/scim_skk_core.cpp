@@ -1119,8 +1119,10 @@ SKKCore::process_key_event (const KeyEvent key)
                 action_select_index(index);
                 return true;
             }
-
-        commit_converting();
+        if (m_cindex != m_candlist.end())
+            commit_converting();
+        else
+            commit_converting(0);
         set_input_mode(INPUT_MODE_DIRECT);
     }
 
