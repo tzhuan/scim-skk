@@ -64,6 +64,7 @@ class SKKCore
     WideString    m_pendingstr;
     WideString    m_preeditstr;
     WideString    m_okuristr;
+    WideString    m_okurihead;
     WideString    m_commitstr;
 
     CandList      m_cl;

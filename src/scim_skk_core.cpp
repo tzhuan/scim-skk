@@ -81,6 +81,7 @@ SKKCore::get_preedit_string (WideString &result)
         result += utf8_mbstowcs("\xE2\x96\xBD");
         result += m_preeditstr;
         result += utf8_mbstowcs("*");
+        result += m_okuristr;
         result += m_pendingstr;
         break;
     case INPUT_MODE_PREEDIT:
@@ -146,18 +147,17 @@ SKKCore::commit_or_preedit (WideString str)
         m_preedit_pos += str.length();
         break;
     case INPUT_MODE_OKURI:
-        m_preeditstr += m_okuristr.substr(0, 1);
-        m_dict->lookup(m_preeditstr, m_cl);
-        if (m_cl.empty()) {
-            m_okuristr.clear();
-            m_okuristr += str;
-            set_input_mode(INPUT_MODE_LEARNING);
-            m_learning = new SKKCore(m_keybind, m_dict);
-        } else {
-            m_cit = m_cl.begin();
-            m_okuristr.clear();
-            m_okuristr += str;
-            set_input_mode(INPUT_MODE_CONVERTING);
+        m_okuristr += str;
+        if (m_pendingstr.empty()) {
+            m_preeditstr += m_okurihead.substr(0, 1);
+            m_dict->lookup(m_preeditstr, m_cl);
+            if (m_cl.empty()) {
+                set_input_mode(INPUT_MODE_LEARNING);
+                m_learning = new SKKCore(m_keybind, m_dict);
+            } else {
+                m_cit = m_cl.begin();
+                set_input_mode(INPUT_MODE_CONVERTING);
+            }
         }
         break;
     default:
@@ -315,6 +315,7 @@ SKKCore::clear_preedit (void)
     m_preeditstr.clear();
     m_preedit_pos = 0;
     m_okuristr.clear();
+    m_okurihead.clear();
 }
 
 void
@@ -815,11 +816,11 @@ SKKCore::process_romakana (const KeyEvent &key)
 
             if (m_input_mode == INPUT_MODE_OKURI && !m_pendingstr.empty() &&
                 result.empty()) {
-                m_okuristr = m_pendingstr;
+                m_okurihead = m_pendingstr;
             }
 
             if (f) {
-                m_okuristr = utf8_mbstowcs(str);
+                m_okurihead = utf8_mbstowcs(str);
                 m_preeditstr.erase(m_preedit_pos);
                 set_input_mode(INPUT_MODE_OKURI);
                 if (f && m_pendingstr.empty() && !result.empty()) {
