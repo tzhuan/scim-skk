@@ -70,7 +70,7 @@
 
 
 static ConfigPointer _scim_config (0);
-static SKKFactory *_scim_skk_factory = 0;
+static SKKDictionaries *_scim_skkdict = 0;
 
 extern "C" {
     void scim_module_init (void)
@@ -83,8 +83,10 @@ extern "C" {
     {
         if (_scim_config)
             _scim_config.reset ();
-        if (_scim_skk_factory)
-            _scim_skk_factory->dump_dict();
+        if (_scim_skkdict) {
+            _scim_skkdict->dump_userdict();
+            delete _scim_skkdict;
+        }
     }
 
     uint32 scim_imengine_module_init (const ConfigPointer &config)
@@ -92,24 +94,24 @@ extern "C" {
         SCIM_DEBUG_IMENGINE(1) << "Initialize SKK Engine.\n";
 
         _scim_config  = config;
+        _scim_skkdict = new SKKDictionaries();
 
         return 1;
     }
 
     IMEngineFactoryPointer scim_imengine_module_create_factory (uint32 engine)
     {
-        if (_scim_skk_factory == 0) {
-            try {
-                _scim_skk_factory = new SKKFactory (String ("ja_JP"),
-                                                    String ("ec43125f-f9d3-4a77-8096-de3a35290ba9"),
-                                                    _scim_config);
-            } catch (...) {
-                delete _scim_skk_factory;
-                _scim_skk_factory = 0;
-            }
+        SKKFactory *factory = 0;
+        try {
+            factory = new SKKFactory (String ("ja_JP"),
+                                      String ("ec43125f-f9d3-4a77-8096-de3a35290ba9"),
+                                      _scim_config);
+        } catch (...) {
+            delete factory;
+            factory = 0;
         }
 
-        return _scim_skk_factory;
+        return factory;
     }
 }
 
@@ -118,7 +120,7 @@ SKKFactory::SKKFactory (const String &lang,
                         const String &uuid,
                         const ConfigPointer &config)
     :  m_uuid(uuid),
-       m_skkdict(new SKKDictionaries()),
+       m_skkdict(_scim_skkdict),
        m_sysdictpath(SCIM_SKK_CONFIG_SYSDICT_DEFAULT),
        m_userdictname(SCIM_SKK_CONFIG_USERDICT_DEFAULT),
        m_dlistsize(SCIM_SKK_CONFIG_DICT_LISTSIZE_DEFAULT),
@@ -139,7 +141,6 @@ SKKFactory::SKKFactory (const String &lang,
 SKKFactory::~SKKFactory ()
 {
     m_skkdict->dump_userdict();
-    delete m_skkdict;
     m_reload_signal_connection.disconnect ();
 }
 

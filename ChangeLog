@@ -1,7 +1,11 @@
+2005-03-23  Jun Mukai  <mukai@jmuk.org>
+
+	* src/scim_skk_imengine.cpp: bugfix on timing of dump_dict().
+
 2005-03-22  Jun Mukai  <mukai@jmuk.org>
 
 	* src/scim_skk_imengine.cpp (SKKFactory): bugfix on timing of
-	dump_dict();
+	dump_dict().
 
 2005-03-11  Jun Mukai  <mukai@jmuk.org>
 
