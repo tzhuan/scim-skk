@@ -192,6 +192,8 @@ SKKCore::commit_converting (int index)
             m_dict->strip_annot(str);
         commit_string(str);
         commit_string(m_okuristr);
+        if (m_okurihead != 0)
+            m_preeditstr += m_okurihead;
         m_dict->write(m_preeditstr, *m_cindex);
         clear_candidate();
         clear_preedit();
@@ -205,6 +207,8 @@ SKKCore::commit_converting (int index)
             m_dict->strip_annot(cand);
         commit_string(cand);
         commit_string(m_okuristr);
+        if (m_okurihead != 0)
+            m_preeditstr += m_okurihead;
         m_dict->write(m_preeditstr, str);
         clear_candidate();
         clear_preedit();
@@ -1076,6 +1080,8 @@ SKKCore::process_key_event (const KeyEvent key)
                 /* learning is committed */
                 commit_string(m_learning->m_commitstr);
                 commit_string(m_okuristr);
+                if (m_okurihead != 0)
+                    m_preeditstr += m_okurihead;
                 m_dict->write(m_preeditstr, m_learning->m_commitstr);
                 clear_preedit();
                 clear_candidate();

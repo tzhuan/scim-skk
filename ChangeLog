@@ -1,3 +1,8 @@
+2005-01-09  Jun Mukai  <mukai@jmuk.org>
+
+	* src/scim_skk_core.cpp: Bug fix on commiting of learn with
+	okurigana.
+
 2005-01-08  Jun Mukai  <mukai@jmuk.org>
 
 	* src/scim_skk_keybind.cpp (keybind_string_to_key_list): KeyBind
