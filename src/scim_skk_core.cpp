@@ -803,14 +803,16 @@ SKKCore::process_romakana (const KeyEvent &key)
         isprint(key.code)) {
         if (isalpha(key.code)) {
             bool f = false;
-            if (key.mask & SCIM_KEY_ShiftMask &&
-                m_input_mode != INPUT_MODE_OKURI)
-                f = true;
-
             char str[2];
             WideString result;
             str[0] = (char)tolower(key.code);
             str[1] = '\0';
+
+            if (key.mask & SCIM_KEY_ShiftMask &&
+                (m_input_mode == INPUT_MODE_PREEDIT ||
+                 m_input_mode == INPUT_MODE_DIRECT))
+                f = true;
+
             m_key2kana.append(String(str), result, m_pendingstr);
 
             if (m_input_mode == INPUT_MODE_OKURI && !m_pendingstr.empty() &&
@@ -819,16 +821,18 @@ SKKCore::process_romakana (const KeyEvent &key)
             }
 
             if (f) {
-                if (m_input_mode == INPUT_MODE_PREEDIT &&
-                    !m_preeditstr.empty()) {
+                if (m_input_mode == INPUT_MODE_PREEDIT) {
                     m_okurihead = utf8_mbstowcs(str);
                     m_preeditstr.erase(m_preedit_pos);
-                    set_input_mode(INPUT_MODE_OKURI);
-                    if (f && m_pendingstr.empty() && !result.empty()) {
+                    if (m_pendingstr.empty()) {
+                        set_input_mode(INPUT_MODE_OKURI);
                         commit_or_preedit(result);
+                    } else{
+                        commit_or_preedit(result);
+                        set_input_mode(INPUT_MODE_OKURI);
                     }
                     return true;
-                } else if (m_input_mode != INPUT_MODE_OKURI) {
+                } else {
                     if (m_pendingstr.empty()) {
                         set_input_mode(INPUT_MODE_PREEDIT);
                         commit_or_preedit(result);
