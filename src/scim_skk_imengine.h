@@ -42,11 +42,11 @@ class SKKFactory : public IMEngineFactoryBase
     friend class SKKInstance;
 
     /* dictionary */
-    SKKDictionaries m_skkdict;
-    String          m_sysdictpath;
-    String          m_userdictname;
-    int             m_dlistsize;
-    bool            m_view_annot;
+    SKKDictionaries *m_skkdict;
+    String           m_sysdictpath;
+    String           m_userdictname;
+    int              m_dlistsize;
+    bool             m_view_annot;
 
     /* config */
     ConfigPointer m_config;
