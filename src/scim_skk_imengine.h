@@ -39,13 +39,14 @@ class SKKFactory : public IMEngineFactoryBase
 {
     String m_uuid;
 
-    IConvert m_iconv;
     friend class SKKInstance;
 
     /* dictionary */
-    SKKDictionaries m_skkdict;
-    String          m_sysdictpath;
-    String          m_userdictname;
+    SKKDictionaries *m_skkdict;
+    String           m_sysdictpath;
+    String           m_userdictname;
+    int              m_dlistsize;
+    bool             m_view_annot;
 
     /* config */
     ConfigPointer m_config;
@@ -67,6 +68,7 @@ public:
     virtual WideString  get_credits () const;
     virtual WideString  get_help () const;
 
+    void dump_dict (void);
     virtual IMEngineInstancePointer create_instance (const String &encoding, int id = -1);
 
 private:
@@ -76,15 +78,21 @@ private:
 class SKKInstance : public IMEngineInstanceBase
 {
     SKKFactory    *m_factory;
-    SKKCore        m_skkcore;
-    char           m_okurihead;
+    SKKAutomaton   m_key2kana;
     PropertyList   m_properties;
 
     /* for displaying SKKMode */
     SKKMode        m_skk_mode;
 
     /* for candidates window */
+    int               m_default_page_size;
     CommonLookupTable m_lookup_table;
+
+    /* core of SKK */
+    SKKCore        m_skkcore;
+
+    void init_key2kana (void);
+    void init_ltable   (void);
 
     bool process_kakutei_keys         (const KeyEvent &key);
     bool process_remaining_keybinds   (const KeyEvent &key);

@@ -1,7 +1,6 @@
-/* -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 /* FIXME! this table should be separated as external file */
 
-#include "scim_anthy_automaton.h"
+#include "scim_skk_automaton.h"
 
 /* from Suikyo but modified by mukai */
 ConvRule skk_romakana_table[] = {
@@ -195,6 +194,11 @@ ConvRule skk_romakana_table[] = {
     {"tsu",	"つ",	""},
     {"te",	"て",	""},
     {"to",	"と",	""},
+    {"tsa",	"つぁ",	""},
+    {"tsi",	"つぃ",	""},
+    {"tsu",	"つ",	""},
+    {"tse",	"つぇ",	""},
+    {"tso",	"つぉ",	""},
     {"da",	"だ",	""},
     {"di",	"ぢ",	""},
     {"du",	"づ",	""},
@@ -408,13 +412,13 @@ ConvRule romakana_ja_period_rule[] = {
     {NULL,	NULL,	NULL},
 };
 
-ConvRule romakana_wide_latin_period_rule[] = {
+ConvRule romakana_wide_ascii_period_rule[] = {
     {",",	"，",	""},
     {".",	"．",	""},
     {NULL,	NULL,	NULL},
 };
 
-ConvRule romakana_latin_period_rule[] = {
+ConvRule romakana_ascii_period_rule[] = {
     {",",	",",	""},
     {".",	".",	""},
     {NULL,	NULL,	NULL},
@@ -426,13 +430,13 @@ ConvRule kana_ja_period_rule[] = {
     {NULL,	NULL,	NULL},
 };
 
-ConvRule kana_wide_latin_period_rule[] = {
+ConvRule kana_wide_ascii_period_rule[] = {
     {">",	"．",	""},
     {"<",	"，",	""},
     {NULL,	NULL,	NULL},
 };
 
-ConvRule kana_latin_period_rule[] = {
+ConvRule kana_ascii_period_rule[] = {
     {">",	".",	""},
     {"<",	",",	""},
     {NULL,	NULL,	NULL},
@@ -521,7 +525,7 @@ HiraganaKatakanaRule ja_hiragana_katakana_table[] = {
     {"わ", "ワ", "ﾜ"},
     {"を", "ヲ", "ｦ"},
     {"ん", "ン", "ﾝ"},
-
+ 
     {"ぁ", "ァ", "ｧ"},
     {"ぃ", "ィ", "ｨ"},
     {"ぅ", "ゥ", "ｩ"},
