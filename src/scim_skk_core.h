@@ -25,6 +25,7 @@
 #include "scim_skk_automaton.h"
 #include "scim_skk_dictionary.h"
 
+
 using namespace scim;
 
 typedef enum {
@@ -67,8 +68,6 @@ class SKKCore
     WideString  m_okurihead;
     WideString  m_commitstr;
 
-    CandList      m_cl;
-    CandList::iterator m_cit;
 
     SKKCore      *m_learning;
 
@@ -79,60 +78,66 @@ class SKKCore
     int           m_commit_pos;    /* caret position relative to commit */
 
     /* for lookup table */
-    bool          m_show_lookup_table;
-    CommonLookupTable *m_lookup_table;
+    bool                m_show_ltable;
+    CommonLookupTable  *m_ltable;
+    CandList            m_candlist;
+    CandList::iterator  m_cindex;
 
-    void          commit_string     (WideString str);
-    void          commit_or_preedit (WideString str);
-    void          commit_converting (void);
+    void commit_string     (WideString str);
+    void commit_or_preedit (WideString str);
+    void commit_converting (int index = -1);
 
-    bool          action_kakutei         (void);
-    bool          action_cancel          (void);
-    bool          action_convert         (void);
-    bool          action_katakana        (bool half = false);
-    bool          action_start_conv      (void);
-    bool          action_prevcand        (void);
-    bool          action_ascii           (bool wide = false);
-    bool          action_ascii_convert   (void);
-    bool          action_backspace       (void);
-    bool          action_delete          (void);
-    bool          action_forward         (void);
-    bool          action_backward        (void);
+    bool action_kakutei         (void);
+    bool action_cancel          (void);
+    bool action_convert         (void);
+    bool action_katakana        (bool half = false);
+    bool action_start_conv      (void);
+    bool action_prevcand        (void);
+    bool action_ascii           (bool wide = false);
+    bool action_ascii_convert   (void);
+    bool action_backspace       (void);
+    bool action_delete          (void);
+    bool action_forward         (void);
+    bool action_backward        (void);
 
-    bool          process_remaining_keybinds   (const KeyEvent &key);
-    bool          process_ascii                (const KeyEvent &key);
-    bool          process_wide_ascii           (const KeyEvent &key);
-    bool          process_romakana             (const KeyEvent &key);
+    bool process_remaining_keybinds   (const KeyEvent &key);
+    bool process_ascii                (const KeyEvent &key);
+    bool process_wide_ascii           (const KeyEvent &key);
+    bool process_romakana             (const KeyEvent &key);
 
-    void          clear_pending     (void);
-    void          clear_preedit     (void);
+    void clear_pending   (void);
+    void clear_preedit   (void);
+    void clear_candidate (void);
 
-    void          init_key2kana (void);
+    void init_key2kana (void);
 public:
-    SKKCore      (KeyBind *keybind, SKKDictionaries *dict,
-                  SKKAutomaton *key2kana, CommonLookupTable *ltable);
-    ~SKKCore     (void);
+    SKKCore  (KeyBind *keybind, SKKDictionaries *dict,
+              SKKAutomaton *key2kana, CommonLookupTable *ltable);
+    ~SKKCore (void);
 
-    void          get_preedit_string (WideString &result);
-    WideString   &get_commit_string  (void);
+    void        get_preedit_string (WideString &result);
+    WideString &get_commit_string  (void);
 
-    int           caret_pos (void);
-    void          move_preedit_caret (int pos);
+    int  caret_pos (void);
+    void move_preedit_caret (int pos);
 
-    void         set_skk_mode   (SKKMode newmode);
-    void         set_input_mode (InputMode newmode);
-    SKKMode      get_skk_mode   (void);
-    InputMode    get_input_mode (void);
+    void      set_skk_mode   (SKKMode newmode);
+    void      set_input_mode (InputMode newmode);
+    SKKMode   get_skk_mode   (void);
+    InputMode get_input_mode (void);
 
-    inline bool  has_commit_string (void) { return m_commit_flag; }
+    inline bool has_commit_string (void) { return m_commit_flag; }
 
-    void         clear(void);
-    void         clear_commit(void);
+    void clear        (void);
+    void clear_commit (void);
 
-    bool         show_lookup_table(void);
-    void         update_lookup_table(CommonLookupTable &tbl);
+    bool show_lookup_table (void);
 
-    bool         process_key_event (const KeyEvent key);
+    bool process_key_event (const KeyEvent key);
+
+    bool action_nextpage        (void);
+    bool action_prevpage        (void);
+    void action_select_index    (int i);
 };
 
 #endif

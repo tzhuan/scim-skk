@@ -34,9 +34,13 @@
 #define SCIM_SKK_CONFIG_DELETE_KEY           "/IMEngine/SKK/Delete"
 #define SCIM_SKK_CONFIG_FORWARD_KEY          "/IMEngine/SKK/Forward"
 #define SCIM_SKK_CONFIG_BACKWARD_KEY         "/IMEngine/SKK/Backward"
+#define SCIM_SKK_CONFIG_SELECTION_STYLE      "/IMEngine/SKK/SelectionStyle"
 
 #define SCIM_SKK_CONFIG_SYSDICT          "/IMEngine/SKK/SysDict"
 #define SCIM_SKK_CONFIG_USERDICT         "/IMEngine/SKK/UserDict"
+
+#define SCIM_SKK_CONFIG_DICT_LISTSIZE     "/IMEngine/SKK/DictListSize"
+#define SCIM_SKK_CONFIG_DICT_VIEW_ANNOT   "/IMEngine/SKK/DictViewAnnot"
 
 
 /* default values */
@@ -54,7 +58,10 @@
 #define SCIM_SKK_CONFIG_DELETE_KEY_DEFAULT           "Delete,Control+d"
 #define SCIM_SKK_CONFIG_FORWARD_KEY_DEFAULT          "Right,Control+f"
 #define SCIM_SKK_CONFIG_BACKWARD_KEY_DEFAULT         "Left,Control+b"
+#define SCIM_SKK_CONFIG_SELECTION_STYLE_DEFAULT      "Qwerty"
 
 #define SCIM_SKK_CONFIG_SYSDICT_DEFAULT          "/usr/share/skk/SKK-JISYO.L"
 #define SCIM_SKK_CONFIG_USERDICT_DEFAULT         ".skk-scim-jisyo"
+#define SCIM_SKK_CONFIG_DICT_LISTSIZE_DEFAULT    4
+#define SCIM_SKK_CONFIG_DICT_VIEW_ANNOT_DEFAULT  true
 #endif

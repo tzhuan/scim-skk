@@ -127,8 +127,6 @@ SKKFactory::SKKFactory (const String &lang,
         return;
 
     reload_config(config);
-    m_skkdict.set_sysdict(m_sysdictpath);
-    m_skkdict.set_userdict(m_userdictname);
 }
 
 SKKFactory::~SKKFactory ()
@@ -187,8 +185,16 @@ SKKFactory::reload_config (const ConfigPointer &config)
 
         m_sysdictpath = config->read(String(SCIM_SKK_CONFIG_SYSDICT),
                                      String(SCIM_SKK_CONFIG_SYSDICT_DEFAULT));
+        m_skkdict.set_sysdict(m_sysdictpath);
         m_userdictname = config->read(String(SCIM_SKK_CONFIG_USERDICT),
                                       String(SCIM_SKK_CONFIG_USERDICT_DEFAULT));
+        m_skkdict.set_userdict(m_userdictname);
+        m_dlistsize = config->read(String(SCIM_SKK_CONFIG_DICT_LISTSIZE),
+                                   SCIM_SKK_CONFIG_DICT_LISTSIZE_DEFAULT);
+        m_skkdict.listsize = m_dlistsize;
+        m_view_annot = config->read(String(SCIM_SKK_CONFIG_DICT_VIEW_ANNOT),
+                                    SCIM_SKK_CONFIG_DICT_VIEW_ANNOT_DEFAULT);
+        m_skkdict.view_annot = m_view_annot;
 
         str = config->read(String(SCIM_SKK_CONFIG_KAKUTEI_KEY),
                            String(SCIM_SKK_CONFIG_KAKUTEI_KEY_DEFAULT));
@@ -232,6 +238,9 @@ SKKFactory::reload_config (const ConfigPointer &config)
         str = config->read(String(SCIM_SKK_CONFIG_BACKWARD_KEY),
                            String(SCIM_SKK_CONFIG_BACKWARD_KEY_DEFAULT));
         m_keybind.set_backward_keys(str);
+        str = config->read(String(SCIM_SKK_CONFIG_SELECTION_STYLE),
+                           String(SCIM_SKK_CONFIG_SELECTION_STYLE_DEFAULT));
+        m_keybind.set_selection_style(str);
     }
 
     m_config = config;
@@ -251,6 +260,7 @@ SKKInstance::SKKInstance (SKKFactory   *factory,
 {
     SCIM_DEBUG_IMENGINE(1) << "Create SKK Instance : ";
     init_key2kana();
+    init_ltable();
 }
 
 SKKInstance::~SKKInstance ()
@@ -262,6 +272,15 @@ SKKInstance::init_key2kana (void)
 {
     m_key2kana.set_table(skk_romakana_table);
     m_key2kana.append_table(romakana_ja_period_rule);
+}
+
+void
+SKKInstance::init_ltable (void)
+{
+    std::vector<WideString> labels;
+    m_lookup_table.set_page_size(m_factory->m_keybind.selection_key_length());
+    m_factory->m_keybind.selection_labels(labels);
+    m_lookup_table.set_candidate_labels(labels);
 }
 
 bool
@@ -287,7 +306,6 @@ SKKInstance::process_key_event (const KeyEvent &key)
     update_preedit_caret(m_skkcore.caret_pos());
 
     if (m_skkcore.show_lookup_table()) {
-        m_skkcore.update_lookup_table(m_lookup_table);
         update_lookup_table(m_lookup_table);
         show_lookup_table();
     } else {
@@ -353,6 +371,13 @@ SKKInstance::move_preedit_caret (unsigned int pos)
 void
 SKKInstance::select_candidate (unsigned int index)
 {
+    m_skkcore.action_select_index(index);
+    if (m_skkcore.has_commit_string()) {
+        commit_string(m_skkcore.get_commit_string());
+        m_skkcore.clear_commit();
+    }
+    hide_lookup_table();
+    hide_preedit_string();
 }
 
 void
@@ -363,11 +388,27 @@ SKKInstance::update_lookup_table_page_size (unsigned int page_size)
 void
 SKKInstance::lookup_table_page_up ()
 {
+    m_skkcore.action_prevpage();
+    if (m_skkcore.show_lookup_table()) {
+        update_lookup_table(m_lookup_table);
+        show_lookup_table();
+    } else {
+        hide_lookup_table();
+    }
+
 }
 
 void
 SKKInstance::lookup_table_page_down ()
 {
+    m_skkcore.action_nextpage();
+    if (m_skkcore.show_lookup_table()) {
+        update_lookup_table(m_lookup_table);
+        show_lookup_table();
+    } else {
+        hide_lookup_table();
+    }
+
 }
 
 void

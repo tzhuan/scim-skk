@@ -88,8 +88,11 @@ public:
     bool match_forward_keys       (const KeyEvent &key);
     bool match_backward_keys      (const KeyEvent &key);
 
-    /* returns 0 if no match. return 1-origin number otherwise. */
+    /* returns -1 if no match. return 0-origin number otherwise. */
     int  match_selection_keys     (const KeyEvent &key);
+    int  selection_key_length     (void);
+
+    void selection_labels (std::vector<WideString> &result);
 };
 
 #endif /* __SCIM_SKK_KEYBINDS_H__ */

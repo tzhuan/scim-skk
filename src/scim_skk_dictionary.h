@@ -23,15 +23,25 @@
 #include <map>
 #include <utility>
 #include <deque>
+#include <list>
 
 #define Uses_SCIM_ICONV
+#define Uses_SCIM_LOOKUP_TABLE
 #include <scim.h>
 
 using namespace scim;
 
+#if 0
 typedef std::pair<WideString, WideString> Candidate;
 typedef std::deque<Candidate>             CandList;
 typedef std::map<WideString, CandList>    Dict;
+#else
+typedef WideString             Candidate;
+typedef std::deque<WideString> CandList;
+typedef std::map<WideString, std::list<WideString> > Dict;
+#endif
+
+class SKKDictionaries;
 
 class SKKDictionaryBase
 {
@@ -39,7 +49,8 @@ public:
     SKKDictionaryBase  (void);
     ~SKKDictionaryBase (void);
 
-    virtual void lookup     (const WideString &key, CandList &result);
+    virtual void lookup     (const WideString &key, CandList &result,
+                             CommonLookupTable &table) = 0;
 };
 
 class SKKDictionary : SKKDictionaryBase
@@ -48,21 +59,22 @@ class SKKDictionary : SKKDictionaryBase
     Dict       m_dictdata;
     IConvert   m_iconv;
 
-    int m_writecount;
+    SKKDictionaries *m_parent;
 
+    int  m_writecount;
     bool m_writeflag;
-
     void load_dictdata (void);
     void dump_dictdata (void);
 public:
     bool m_writable;
 
-    SKKDictionary  (bool writable = false);
+    SKKDictionary  (SKKDictionaries *parent, bool writable = false);
     ~SKKDictionary (void);
 
     void load_dict  (const String &dictpath);
     void dump_dict  (void);
-    void lookup     (const WideString &key, CandList &result);
+    void lookup     (const WideString &key, CandList &result,
+                     CommonLookupTable &table);
     void write      (const WideString &key, const WideString &data);
 };
 
@@ -72,7 +84,8 @@ public:
     SKKNumDict  (void);
     ~SKKNumDict (void);
 
-    void lookup (const WideString &key, CandList &result);
+    void lookup (const WideString &key, CandList &result,
+                 CommonLookupTable &table);
 };
 
 
@@ -80,14 +93,20 @@ class SKKDictionaries
 {
     SKKDictionary  m_sysdict;
     SKKDictionary  m_userdict;
+
 public:
+    bool view_annot;
+    int  listsize;
+
     SKKDictionaries  (void);
     ~SKKDictionaries (void);
 
     void set_sysdict  (const String &dictname);
     void set_userdict (const String &dictname);
 
-    void lookup (const WideString &hira, CandList &result);
+    void lookup (const WideString &hira, CandList &result,
+                 CommonLookupTable &table);
     void write (const WideString &key, const WideString &data);
+    void strip_annot (WideString &str);
 };
 #endif
