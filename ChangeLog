@@ -1,3 +1,8 @@
+2005-03-11  Jun Mukai  <mukai@jmuk.org>
+
+	* src/scim_skk_imengine.h (class SKKInstance): some bug fix codes
+	from James Su. New member m_defualt_page_size is added.
+
 2005-03-07  Jun Mukai  <mukai@jmuk.org>
 
 	* src/scim_skk_keybind.cpp (match_selection_keys): bugfix for

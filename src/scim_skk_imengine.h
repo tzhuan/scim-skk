@@ -85,6 +85,7 @@ class SKKInstance : public IMEngineInstanceBase
     SKKMode        m_skk_mode;
 
     /* for candidates window */
+    int               m_default_page_size;
     CommonLookupTable m_lookup_table;
 
     /* core of SKK */

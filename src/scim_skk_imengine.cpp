@@ -271,7 +271,8 @@ SKKInstance::SKKInstance (SKKFactory   *factory,
                           const String &encoding,
                           int           id)
     : IMEngineInstanceBase (factory, encoding, id),
-      m_lookup_table(m_factory->m_keybind.selection_key_length()),
+      m_default_page_size (m_factory->m_keybind.selection_key_length()),
+      m_lookup_table(m_default_page_size),
       m_factory(factory),
       m_skk_mode(SKK_MODE_HIRAGANA),
       m_skkcore(&(factory->m_keybind), &(m_factory->m_skkdict),
@@ -297,7 +298,7 @@ void
 SKKInstance::init_ltable (void)
 {
     std::vector<WideString> labels;
-    /* m_lookup_table.set_page_size(m_factory->m_keybind.selection_key_length()); */
+    m_default_page_size = m_factory->m_keybind.selection_key_length();
     m_factory->m_keybind.selection_labels(labels);
     m_lookup_table.set_candidate_labels(labels);
 }
@@ -340,6 +341,7 @@ SKKInstance::process_key_event (const KeyEvent &key)
     update_preedit_caret(m_skkcore.caret_pos());
 
     if (m_skkcore.show_lookup_table()) {
+        m_lookup_table.set_page_size(m_default_page_size);
         update_lookup_table(m_lookup_table);
         show_lookup_table();
     } else {
@@ -426,6 +428,7 @@ SKKInstance::lookup_table_page_up ()
 {
     m_skkcore.action_prevpage();
     if (m_skkcore.show_lookup_table()) {
+        m_lookup_table.set_page_size(m_default_page_size);
         update_lookup_table(m_lookup_table);
         show_lookup_table();
     } else {
@@ -439,6 +442,7 @@ SKKInstance::lookup_table_page_down ()
 {
     m_skkcore.action_nextpage();
     if (m_skkcore.show_lookup_table()) {
+        m_lookup_table.set_page_size(m_default_page_size);
         update_lookup_table(m_lookup_table);
         show_lookup_table();
     } else {
