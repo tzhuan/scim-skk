@@ -36,10 +36,10 @@ typedef std::map<WideString, CandList>    Dict;
 class SKKDictionaryBase
 {
 public:
-    SKKDictionaryBase  (void) {}
-    ~SKKDictionaryBase (void) {}
+    SKKDictionaryBase  (void);
+    ~SKKDictionaryBase (void);
 
-    virtual void lookup     (const WideString &key, CandList &result) = NULL;
+    virtual void lookup     (const WideString &key, CandList &result);
 };
 
 class SKKDictionary : SKKDictionaryBase

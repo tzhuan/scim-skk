@@ -25,6 +25,17 @@
 #define SKKDICT_MAXLEN        4096
 #define SKKDICT_CHARCODE      "EUC-JP"
 
+SKKDictionaryBase::SKKDictionaryBase  (void)
+{
+}
+SKKDictionaryBase::~SKKDictionaryBase  (void)
+{
+}
+void
+SKKDictionaryBase::lookup  (const WideString &key, CandList &result)
+{
+}
+
 SKKDictionary::SKKDictionary  (bool writable)
     : m_writable (writable),
       m_writecount (0)

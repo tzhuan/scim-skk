@@ -1,4 +1,4 @@
-#include "scim_anthy_automaton.h"
+#include "scim_skk_automaton.h"
 
 extern ConvRule skk_romakana_table[];
 extern ConvRule ja_kana_table[];

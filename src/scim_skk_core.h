@@ -22,7 +22,7 @@
 
 #include <scim.h>
 #include "scim_skk_keybind.h"
-#include "scim_anthy_automaton.h"
+#include "scim_skk_automaton.h"
 #include "scim_skk_dictionary.h"
 
 using namespace scim;
@@ -59,7 +59,7 @@ class SKKCore
 
     SKKMode       m_skk_mode;
     InputMode     m_input_mode;
-    Automaton     m_key2kana;
+    SKKAutomaton  m_key2kana;
 
     WideString    m_pendingstr;
     WideString    m_preeditstr;

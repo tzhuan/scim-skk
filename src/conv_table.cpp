@@ -1,7 +1,7 @@
 /* -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 /* FIXME! this table should be separated as external file */
 
-#include "scim_anthy_automaton.h"
+#include "scim_skk_automaton.h"
 
 /* from Suikyo but modified by mukai */
 ConvRule skk_romakana_table[] = {
