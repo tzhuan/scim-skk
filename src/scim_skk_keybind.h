@@ -45,6 +45,8 @@ class KeyBind {
     KeyEventList m_delete_keys;
     KeyEventList m_forward_keys;
     KeyEventList m_backward_keys;
+    KeyEventList m_home_keys;
+    KeyEventList m_end_keys;
 
     SelectionStyle m_style;
 
@@ -70,6 +72,8 @@ public:
     void set_delete_keys        (const String &str);
     void set_forward_keys       (const String &str);
     void set_backward_keys      (const String &str);
+    void set_home_keys          (const String &str);
+    void set_end_keys           (const String &str);
 
     void set_selection_style    (const String &str);
 
@@ -87,6 +91,8 @@ public:
     bool match_delete_keys        (const KeyEvent &key);
     bool match_forward_keys       (const KeyEvent &key);
     bool match_backward_keys      (const KeyEvent &key);
+    bool match_home_keys          (const KeyEvent &key);
+    bool match_end_keys           (const KeyEvent &key);
 
     /* returns -1 if no match. return 0-origin number otherwise. */
     int  match_selection_keys     (const KeyEvent &key);

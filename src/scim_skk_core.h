@@ -99,13 +99,15 @@ class SKKCore
     bool action_delete          (void);
     bool action_forward         (void);
     bool action_backward        (void);
+    bool action_home            (void);
+    bool action_end             (void);
 
     bool process_remaining_keybinds   (const KeyEvent &key);
     bool process_ascii                (const KeyEvent &key);
     bool process_wide_ascii           (const KeyEvent &key);
     bool process_romakana             (const KeyEvent &key);
 
-    void clear_pending   (void);
+    void clear_pending   (bool flag=true);
     void clear_preedit   (void);
     void clear_candidate (void);
 

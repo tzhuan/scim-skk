@@ -34,6 +34,8 @@
 #define SCIM_SKK_CONFIG_DELETE_KEY           "/IMEngine/SKK/Delete"
 #define SCIM_SKK_CONFIG_FORWARD_KEY          "/IMEngine/SKK/Forward"
 #define SCIM_SKK_CONFIG_BACKWARD_KEY         "/IMEngine/SKK/Backward"
+#define SCIM_SKK_CONFIG_HOME_KEY             "/IMEngine/SKK/Home"
+#define SCIM_SKK_CONFIG_END_KEY              "/IMEngine/SKK/End"
 #define SCIM_SKK_CONFIG_SELECTION_STYLE      "/IMEngine/SKK/SelectionStyle"
 
 #define SCIM_SKK_CONFIG_SYSDICT          "/IMEngine/SKK/SysDict"
@@ -58,6 +60,8 @@
 #define SCIM_SKK_CONFIG_DELETE_KEY_DEFAULT           "Delete,Control+d"
 #define SCIM_SKK_CONFIG_FORWARD_KEY_DEFAULT          "Right,Control+f"
 #define SCIM_SKK_CONFIG_BACKWARD_KEY_DEFAULT         "Left,Control+b"
+#define SCIM_SKK_CONFIG_HOME_KEY_DEFAULT             "Home,Control+a"
+#define SCIM_SKK_CONFIG_END_KEY_DEFAULT              "End,Control+e"
 #define SCIM_SKK_CONFIG_SELECTION_STYLE_DEFAULT      "Qwerty"
 
 #define SCIM_SKK_CONFIG_SYSDICT_DEFAULT          "/usr/share/skk/SKK-JISYO.L"

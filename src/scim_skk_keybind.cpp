@@ -248,6 +248,16 @@ KeyBind::set_backward_keys         (const String &str)
 {
     keybind_string_to_key_list(m_backward_keys, str);
 }
+void
+KeyBind::set_home_keys         (const String &str)
+{
+    keybind_string_to_key_list(m_home_keys, str);
+}
+void
+KeyBind::set_end_keys         (const String &str)
+{
+    keybind_string_to_key_list(m_end_keys, str);
+}
 
 bool
 KeyBind::match_kakutei_keys       (const KeyEvent &key)
@@ -318,6 +328,16 @@ bool
 KeyBind::match_backward_keys         (const KeyEvent &key)
 {
     return match_key_event(m_backward_keys, key);
+}
+bool
+KeyBind::match_home_keys         (const KeyEvent &key)
+{
+    return match_key_event(m_home_keys, key);
+}
+bool
+KeyBind::match_end_keys         (const KeyEvent &key)
+{
+    return match_key_event(m_end_keys, key);
 }
 
 static void

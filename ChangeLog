@@ -1,3 +1,12 @@
+2005-01-25  Jun Mukai  <mukai@jmuk.org>
+
+	* src/scim_skk_keybind.h: add `home_keys' and `end_keys'.
+
+2005-01-21  Jun Mukai  <mukai@jmuk.org>
+
+	* src/scim_skk_core.cpp (clear_pending): add an argument `flag'
+	for action_cancel.
+
 2005-01-09  Jun Mukai  <mukai@jmuk.org>
 
 	* src/scim_skk_core.cpp: Bug fix on commiting of learn with

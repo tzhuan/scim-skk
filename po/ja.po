@@ -218,6 +218,30 @@ msgstr "後方へ移動キーの設定"
 msgid "The key events to move the caret backward. "
 msgstr "キャレットを後方に移動するキーイベント"
 
+#: src/scim_skk_imengine_setup.cpp:322
+msgid "Home Keys:"
+msgstr "先頭キー"
+
+#: src/scim_skk_imengine_setup.cpp:323
+msgid "Select Home Keys"
+msgstr "先頭キーを選択"
+
+#: src/scim_skk_imengine_setup.cpp:324
+msgid "The key events to move the caret to the start of preedit. "
+msgstr "キャレットを候補文字列の先頭に移動するキーイベント"
+
+#: src/scim_skk_imengine_setup.cpp:331
+msgid "End Keys:"
+msgstr "終端キー"
+
+#: src/scim_skk_imengine_setup.cpp:332
+msgid "Select End Keys"
+msgstr "終端キーを選択"
+
+#: src/scim_skk_imengine_setup.cpp:333
+msgid "The key events to move the caret to the end of preedit. "
+msgstr "キャレットを候補文字列の終端に移動するキーイベント"
+
 #: ../src/scim_skk_imengine_setup.cpp:298
 msgid "System Dictionary Path"
 msgstr "システム辞書のパス"

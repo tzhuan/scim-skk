@@ -52,7 +52,7 @@ SKKCore::SKKCore      (KeyBind *keybind, SKKDictionaries *dict,
     m_ltable->clear();
     clear_preedit();
     clear_commit();
-    clear_pending();
+    clear_pending(false);
 }
 
 SKKCore::~SKKCore     (void)
@@ -337,9 +337,9 @@ SKKCore::get_input_mode (void)
 
 
 void
-SKKCore::clear_pending (void)
+SKKCore::clear_pending (bool flag)
 {
-    if (m_pendingstr == utf8_mbstowcs("n")) {
+    if (flag && m_pendingstr == utf8_mbstowcs("n")) {
         commit_or_preedit(utf8_mbstowcs("\xE3\x82\x93"));
     }
     m_pendingstr.clear();
@@ -389,6 +389,7 @@ SKKCore::action_kakutei (void)
               m_skk_mode == SKK_MODE_WIDE_ASCII) &&
             m_pendingstr.empty() && m_preeditstr.empty()) {
             m_end_flag = true;
+            return false;
         } else {
             clear_pending();
         }
@@ -431,7 +432,7 @@ SKKCore::action_cancel (void)
     switch (m_input_mode) {
     case INPUT_MODE_DIRECT:
         if (!m_pendingstr.empty()) {
-            clear_pending();
+            clear_pending(false);
         } else {
             clear_commit();
             m_end_flag = true;
@@ -441,7 +442,7 @@ SKKCore::action_cancel (void)
     case INPUT_MODE_PREEDIT:
     case INPUT_MODE_OKURI:
         clear_preedit();
-        clear_pending();
+        clear_pending(false);
         set_input_mode(INPUT_MODE_DIRECT);
         if (m_skk_mode == SKK_MODE_ASCII) {
             set_skk_mode(SKK_MODE_HIRAGANA);
@@ -763,6 +764,64 @@ SKKCore::action_backward (void)
 }
 
 bool
+SKKCore::action_home (void)
+{
+    switch (m_input_mode) {
+    case INPUT_MODE_CONVERTING:
+        return false;
+    case INPUT_MODE_DIRECT:
+        clear_pending();
+        if (m_commit_pos > 0) {
+            m_commit_pos = 0;
+            return true;
+        } else {
+            return false;
+        }
+    case INPUT_MODE_PREEDIT:
+        clear_pending();
+        if (m_preedit_pos > 0) {
+            m_preedit_pos = 0;
+        } else if (m_commit_pos > 0) {
+            m_commit_pos = 0;
+        } else {
+            return false;
+        }
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool
+SKKCore::action_end (void)
+{
+    switch (m_input_mode) {
+    case INPUT_MODE_CONVERTING:
+        return false;
+    case INPUT_MODE_DIRECT:
+        clear_pending();
+        if (m_commit_pos < m_commitstr.length()) {
+            m_commit_pos = m_commitstr.length();
+            return true;
+        } else {
+            return false;
+        }
+    case INPUT_MODE_PREEDIT:
+        clear_pending();
+        if (m_preedit_pos < m_preeditstr.length()) {
+            m_preedit_pos = m_preeditstr.length();
+        } else if (m_commit_pos < m_commitstr.length()) {
+            m_commit_pos = m_commitstr.length();
+        } else {
+            return false;
+        }
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool
 SKKCore::action_nextpage (void)
 {
     if (m_input_mode != INPUT_MODE_CONVERTING) return false;
@@ -850,6 +909,12 @@ SKKCore::process_remaining_keybinds (const KeyEvent &key)
 
     if (m_keybind->match_backward_keys(key))
         return action_backward();
+
+    if (m_keybind->match_home_keys(key))
+        return action_home();
+
+    if (m_keybind->match_end_keys(key))
+        return action_end();
 
     return false;
 }

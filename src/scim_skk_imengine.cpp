@@ -245,6 +245,12 @@ SKKFactory::reload_config (const ConfigPointer &config)
         str = config->read(String(SCIM_SKK_CONFIG_BACKWARD_KEY),
                            String(SCIM_SKK_CONFIG_BACKWARD_KEY_DEFAULT));
         m_keybind.set_backward_keys(str);
+        str = config->read(String(SCIM_SKK_CONFIG_HOME_KEY),
+                           String(SCIM_SKK_CONFIG_HOME_KEY_DEFAULT));
+        m_keybind.set_home_keys(str);
+        str = config->read(String(SCIM_SKK_CONFIG_END_KEY),
+                           String(SCIM_SKK_CONFIG_END_KEY_DEFAULT));
+        m_keybind.set_end_keys(str);
         str = config->read(String(SCIM_SKK_CONFIG_SELECTION_STYLE),
                            String(SCIM_SKK_CONFIG_SELECTION_STYLE_DEFAULT));
         m_keybind.set_selection_style(str);
