@@ -131,6 +131,7 @@ SKKFactory::SKKFactory (const String &lang,
 
 SKKFactory::~SKKFactory ()
 {
+    m_reload_signal_connection.disconnect ();
 }
 
 WideString

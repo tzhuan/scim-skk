@@ -56,22 +56,22 @@ public:
     KeyBind  (void);
     ~KeyBind (void);
 
-    void set_kakutei_keys       (String str);
-    void set_katakana_keys      (String str);
-    void set_half_katakana_keys (String str);
-    void set_ascii_keys         (String str);
-    void set_wide_ascii_keys    (String str);
-    void set_convert_keys       (String str);
-    void set_start_preedit_keys (String str);
-    void set_cancel_keys        (String str);
-    void set_ascii_convert_keys (String str);
-    void set_prevcand_keys      (String str);
-    void set_backspace_keys     (String str);
-    void set_delete_keys        (String str);
-    void set_forward_keys       (String str);
-    void set_backward_keys      (String str);
+    void set_kakutei_keys       (const String &str);
+    void set_katakana_keys      (const String &str);
+    void set_half_katakana_keys (const String &str);
+    void set_ascii_keys         (const String &str);
+    void set_wide_ascii_keys    (const String &str);
+    void set_convert_keys       (const String &str);
+    void set_start_preedit_keys (const String &str);
+    void set_cancel_keys        (const String &str);
+    void set_ascii_convert_keys (const String &str);
+    void set_prevcand_keys      (const String &str);
+    void set_backspace_keys     (const String &str);
+    void set_delete_keys        (const String &str);
+    void set_forward_keys       (const String &str);
+    void set_backward_keys      (const String &str);
 
-    void set_selection_style    (String str);
+    void set_selection_style    (const String &str);
 
     bool match_kakutei_keys       (const KeyEvent &key);
     bool match_katakana_keys      (const KeyEvent &key);

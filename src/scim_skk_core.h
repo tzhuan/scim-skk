@@ -58,8 +58,8 @@ class SKKCore
     KeyBind         *m_keybind;
     SKKDictionaries *m_dict;
 
-    SKKMode       m_skk_mode;
-    InputMode     m_input_mode;
+    SKKMode        m_skk_mode;
+    InputMode      m_input_mode;
     SKKAutomaton  *m_key2kana;
 
     WideString  m_pendingstr;

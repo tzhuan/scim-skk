@@ -34,18 +34,10 @@ KeyBind::KeyBind (void)
 
 KeyBind::~KeyBind (void)
 {
-    m_kakutei_keys.clear();
-    m_katakana_keys.clear();
-    m_half_katakana_keys.clear();
-    m_ascii_keys.clear();
-    m_wide_ascii_keys.clear();
-    m_convert_keys.clear();
-    m_start_preedit_keys.clear();
-    m_cancel_keys.clear();
 }
 
 void
-KeyBind::set_selection_style (String str)
+KeyBind::set_selection_style (const String &str)
 {
     if (str == "Qwerty") {
         m_style = SSTYLE_QWERTY;
@@ -190,72 +182,72 @@ KeyBind::selection_labels (std::vector<WideString> &result)
 }
 
 void
-KeyBind::set_kakutei_keys       (String str)
+KeyBind::set_kakutei_keys       (const String &str)
 {
     scim_string_to_key_list(m_kakutei_keys, str);
 }
 void
-KeyBind::set_katakana_keys      (String str)
+KeyBind::set_katakana_keys      (const String &str)
 {
     scim_string_to_key_list(m_katakana_keys, str);
 }
 void
-KeyBind::set_half_katakana_keys (String str)
+KeyBind::set_half_katakana_keys (const String &str)
 {
     scim_string_to_key_list(m_half_katakana_keys, str);
 }
 void
-KeyBind::set_ascii_keys         (String str)
+KeyBind::set_ascii_keys         (const String &str)
 {
     scim_string_to_key_list(m_ascii_keys, str);
 }
 void
-KeyBind::set_wide_ascii_keys    (String str)
+KeyBind::set_wide_ascii_keys    (const String &str)
 {
     scim_string_to_key_list(m_wide_ascii_keys, str);
 }
 void
-KeyBind::set_convert_keys       (String str)
+KeyBind::set_convert_keys       (const String &str)
 {
     scim_string_to_key_list(m_convert_keys, str);
 }
 void
-KeyBind::set_start_preedit_keys    (String str)
+KeyBind::set_start_preedit_keys    (const String &str)
 {
     scim_string_to_key_list(m_start_preedit_keys, str);
 }
 void
-KeyBind::set_cancel_keys        (String str)
+KeyBind::set_cancel_keys        (const String &str)
 {
     scim_string_to_key_list(m_cancel_keys, str);
 }
 void
-KeyBind::set_ascii_convert_keys        (String str)
+KeyBind::set_ascii_convert_keys        (const String &str)
 {
     scim_string_to_key_list(m_ascii_convert_keys, str);
 }
 void
-KeyBind::set_prevcand_keys        (String str)
+KeyBind::set_prevcand_keys        (const String &str)
 {
     scim_string_to_key_list(m_prevcand_keys, str);
 }
 void
-KeyBind::set_backspace_keys        (String str)
+KeyBind::set_backspace_keys        (const String &str)
 {
     scim_string_to_key_list(m_backspace_keys, str);
 }
 void
-KeyBind::set_delete_keys           (String str)
+KeyBind::set_delete_keys           (const String &str)
 {
     scim_string_to_key_list(m_delete_keys, str);
 }
 void
-KeyBind::set_forward_keys          (String str)
+KeyBind::set_forward_keys          (const String &str)
 {
     scim_string_to_key_list(m_forward_keys, str);
 }
 void
-KeyBind::set_backward_keys         (String str)
+KeyBind::set_backward_keys         (const String &str)
 {
     scim_string_to_key_list(m_backward_keys, str);
 }

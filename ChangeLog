@@ -1,5 +1,7 @@
 2004-12-27  Jun Mukai  <mukai@jmuk.org>
 
+	* src/scim_skk_imengine.cpp (~SKKFactory): bug fix.
+
 	* src/scim_skk_imengine_setup.cpp: SetupUI module is implemented.
 
 2004-12-26  Jun Mukai  <mukai@jmuk.org>

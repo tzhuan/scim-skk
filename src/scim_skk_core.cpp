@@ -54,7 +54,7 @@ SKKCore::SKKCore      (KeyBind *keybind, SKKDictionaries *dict,
 
 SKKCore::~SKKCore     (void)
 {
-    if(m_learning)
+    if (m_learning)
         delete m_learning;
 }
 

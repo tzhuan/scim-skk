@@ -37,13 +37,15 @@ SKKDictionaryBase::~SKKDictionaryBase  (void)
 SKKDictionary::SKKDictionary  (SKKDictionaries *parent, bool writable)
     : m_writable   (writable),
       m_parent     (parent),
+      m_dictpath   (NULL),
       m_writecount (0)
 {
 }
 
 SKKDictionary::~SKKDictionary (void)
 {
-    delete[] m_dictpath;
+    if (m_dictpath)
+        delete[] m_dictpath;
     dump_dictdata();
 }
 
