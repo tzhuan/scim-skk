@@ -183,7 +183,7 @@ SKKCore::commit_converting (void)
         m_dict->write(m_preeditstr, m_cit->first);
         m_cl.clear();
         clear_preedit();
-        if (m_skk_mode == SKK_MODE_LATIN)
+        if (m_skk_mode == SKK_MODE_ASCII)
             set_skk_mode(SKK_MODE_HIRAGANA);
     }
 }
@@ -192,17 +192,19 @@ SKKCore::commit_converting (void)
 int
 SKKCore::caret_pos (void)
 {
+    int base_pos = m_commit_pos + m_pendingstr.length();
+
     switch (m_input_mode) {
     case INPUT_MODE_DIRECT:
-        return m_commit_pos;
+        return base_pos;
     case INPUT_MODE_PREEDIT:
-        return m_commit_pos + m_preedit_pos + 1;
+        return base_pos + m_preedit_pos + 1;
     case INPUT_MODE_OKURI:
-        return m_commit_pos + m_preeditstr.length() + 2 + m_pendingstr.length();
+        return base_pos + m_preeditstr.length() + 2;
     case INPUT_MODE_CONVERTING:
-        return m_commit_pos + m_cit->first.length() + m_okuristr.length() + 1;
+        return base_pos + m_cit->first.length() + m_okuristr.length() + 1;
     case INPUT_MODE_LEARNING:
-        return m_commit_pos + m_preeditstr.length() + 2 + m_learning->caret_pos();
+        return base_pos + m_preeditstr.length() + 2 + m_learning->caret_pos();
     }
 }
 
@@ -334,7 +336,7 @@ SKKCore::clear (void)
 }
 
 bool
-SKKCore::action_kakutei_keys (void)
+SKKCore::action_kakutei (void)
 {
     switch (m_input_mode) {
     case INPUT_MODE_DIRECT:
@@ -366,14 +368,14 @@ SKKCore::action_kakutei_keys (void)
         set_input_mode(INPUT_MODE_DIRECT);
         break;
     }
-    if(m_skk_mode == SKK_MODE_LATIN || m_skk_mode == SKK_MODE_WIDE_LATIN) {
+    if(m_skk_mode == SKK_MODE_ASCII || m_skk_mode == SKK_MODE_WIDE_ASCII) {
         set_skk_mode(SKK_MODE_HIRAGANA);
     }
     return true;
 }
 
 bool
-SKKCore::action_cancel_keys (void)
+SKKCore::action_cancel (void)
 {
     bool retval = true;
     switch (m_input_mode) {
@@ -391,7 +393,7 @@ SKKCore::action_cancel_keys (void)
         clear_preedit();
         clear_pending();
         set_input_mode(INPUT_MODE_DIRECT);
-        if (m_skk_mode == SKK_MODE_LATIN) {
+        if (m_skk_mode == SKK_MODE_ASCII) {
             set_skk_mode(SKK_MODE_HIRAGANA);
         }
         break;
@@ -409,7 +411,7 @@ SKKCore::action_cancel_keys (void)
 }
 
 bool
-SKKCore::action_convert_keys (void)
+SKKCore::action_convert (void)
 {
     switch (m_input_mode) {
     case INPUT_MODE_CONVERTING:
@@ -439,7 +441,7 @@ SKKCore::action_convert_keys (void)
 }
 
 bool
-SKKCore::action_katakana_keys (bool half)
+SKKCore::action_katakana (bool half)
 {
     switch (m_input_mode) {
     case INPUT_MODE_DIRECT:
@@ -489,7 +491,7 @@ SKKCore::action_katakana_keys (bool half)
 }
 
 bool
-SKKCore::action_start_conv_keys (void)
+SKKCore::action_start_conv (void)
 {
     switch (m_input_mode) {
     case INPUT_MODE_DIRECT:
@@ -515,7 +517,7 @@ SKKCore::action_start_conv_keys (void)
 }
 
 bool
-SKKCore::action_prevcand_keys (void)
+SKKCore::action_prevcand (void)
 {
     if (m_input_mode == INPUT_MODE_CONVERTING) {
         if (m_cit != m_cl.begin()) {
@@ -528,7 +530,7 @@ SKKCore::action_prevcand_keys (void)
 }
 
 bool
-SKKCore::action_latin_keys (bool wide)
+SKKCore::action_ascii (bool wide)
 {
     switch (m_input_mode) {
     case INPUT_MODE_PREEDIT:
@@ -543,21 +545,21 @@ SKKCore::action_latin_keys (bool wide)
     }
     clear_pending();
     if (wide) {
-        set_skk_mode(SKK_MODE_WIDE_LATIN);
+        set_skk_mode(SKK_MODE_WIDE_ASCII);
     } else {
-        set_skk_mode(SKK_MODE_LATIN);
+        set_skk_mode(SKK_MODE_ASCII);
     }
     return true;
 }
 
 bool
-SKKCore::action_latin_convert_keys (void)
+SKKCore::action_ascii_convert (void)
 {
     switch (m_input_mode) {
     case INPUT_MODE_CONVERTING:
         commit_converting();
     case INPUT_MODE_DIRECT:
-        set_skk_mode(SKK_MODE_LATIN);
+        set_skk_mode(SKK_MODE_ASCII);
         set_input_mode(INPUT_MODE_PREEDIT);
         clear_preedit();
         clear_pending();
@@ -568,7 +570,7 @@ SKKCore::action_latin_convert_keys (void)
 }
 
 bool
-SKKCore::action_backspace_keys (void)
+SKKCore::action_backspace (void)
 {
     if (m_pendingstr.empty()) {
         switch (m_input_mode) {
@@ -612,7 +614,7 @@ SKKCore::action_backspace_keys (void)
 }
 
 bool
-SKKCore::action_delete_keys (void)
+SKKCore::action_delete (void)
 {
     if (m_pendingstr.empty()) {
         switch (m_input_mode) {
@@ -641,7 +643,7 @@ SKKCore::action_delete_keys (void)
 }
 
 bool
-SKKCore::action_forward_keys (void)
+SKKCore::action_forward (void)
 {
     switch (m_input_mode) {
     case INPUT_MODE_CONVERTING:
@@ -669,7 +671,7 @@ SKKCore::action_forward_keys (void)
 }
 
 bool
-SKKCore::action_backward_keys (void)
+SKKCore::action_backward (void)
 {
     switch (m_input_mode) {
     case INPUT_MODE_CONVERTING:
@@ -700,52 +702,52 @@ bool
 SKKCore::process_remaining_keybinds (const KeyEvent &key)
 {
     if (m_keybind->match_katakana_keys(key))
-        return action_katakana_keys(false);
+        return action_katakana(false);
 
     if (m_keybind->match_half_katakana_keys(key))
-        return action_katakana_keys(true);
+        return action_katakana(true);
 
     if (m_keybind->match_start_conv_keys(key))
-        return action_start_conv_keys();
+        return action_start_conv();
 
     if (m_keybind->match_prevcand_keys(key))
-        return action_prevcand_keys();
+        return action_prevcand();
 
-    if(m_keybind->match_latin_keys(key))
-        return action_latin_keys(false);
+    if(m_keybind->match_ascii_keys(key))
+        return action_ascii(false);
 
-    if(m_keybind->match_wide_latin_keys(key))
-        return action_latin_keys(true);
+    if(m_keybind->match_wide_ascii_keys(key))
+        return action_ascii(true);
 
-    if (m_keybind->match_latin_convert_keys(key))
-        return action_latin_convert_keys();
+    if (m_keybind->match_ascii_convert_keys(key))
+        return action_ascii_convert();
 
     if (m_keybind->match_backspace_keys(key))
-        return action_backspace_keys();
+        return action_backspace();
 
     if (m_keybind->match_delete_keys(key))
-        return action_delete_keys();
+        return action_delete();
 
     if (m_keybind->match_forward_keys(key))
-        return action_forward_keys();
+        return action_forward();
 
     if (m_keybind->match_backward_keys(key))
-        return action_backward_keys();
+        return action_backward();
 
     return false;
 }
 
 bool
-SKKCore::process_latin (const KeyEvent &key)
+SKKCore::process_ascii (const KeyEvent &key)
 {
     if (m_keybind->match_kakutei_keys(key))
-        return action_kakutei_keys();
+        return action_kakutei();
 
     if (m_keybind->match_cancel_keys(key))
-        return action_cancel_keys();
+        return action_cancel();
 
     if (m_input_mode == INPUT_MODE_PREEDIT && m_keybind->match_convert_keys(key))
-        return action_convert_keys();
+        return action_convert();
 
     if (!(key.mask & SCIM_KEY_ControlMask || key.mask & SCIM_KEY_Mod1Mask ||
             key.mask & SCIM_KEY_Mod2Mask    || key.mask & SCIM_KEY_Mod3Mask ||
@@ -762,13 +764,13 @@ SKKCore::process_latin (const KeyEvent &key)
 }
 
 bool
-SKKCore::process_wide_latin (const KeyEvent &key)
+SKKCore::process_wide_ascii (const KeyEvent &key)
 {
     if (m_keybind->match_kakutei_keys(key))
-        return action_kakutei_keys();
+        return action_kakutei();
 
     if (m_keybind->match_cancel_keys(key))
-        return action_cancel_keys();
+        return action_cancel();
 
     if (!(key.mask & SCIM_KEY_ControlMask || key.mask & SCIM_KEY_Mod1Mask ||
             key.mask & SCIM_KEY_Mod2Mask    || key.mask & SCIM_KEY_Mod3Mask ||
@@ -788,14 +790,14 @@ bool
 SKKCore::process_romakana (const KeyEvent &key)
 {
     if (m_keybind->match_kakutei_keys(key))
-        return action_kakutei_keys();
+        return action_kakutei();
     if (m_keybind->match_cancel_keys(key))
-        return action_cancel_keys();
+        return action_cancel();
 
     if (m_input_mode == INPUT_MODE_PREEDIT ||
         m_input_mode == INPUT_MODE_OKURI)
         if (m_keybind->match_convert_keys(key))
-            return action_convert_keys();
+            return action_convert();
 
     if (!(key.mask & SCIM_KEY_ControlMask || key.mask & SCIM_KEY_Mod1Mask ||
           key.mask & SCIM_KEY_Mod2Mask    || key.mask & SCIM_KEY_Mod3Mask ||
@@ -901,13 +903,13 @@ SKKCore::process_key_event (const KeyEvent key)
 
     if (m_input_mode == INPUT_MODE_CONVERTING) {
         if (m_keybind->match_kakutei_keys(key))
-            return action_kakutei_keys();
+            return action_kakutei();
         if (m_keybind->match_cancel_keys(key))
-            return action_cancel_keys();
+            return action_cancel();
         if (m_keybind->match_convert_keys(key))
-            return action_convert_keys();
+            return action_convert();
         if (m_keybind->match_prevcand_keys(key))
-            return action_prevcand_keys();
+            return action_prevcand();
 
         commit_converting();
         set_input_mode(INPUT_MODE_DIRECT);
@@ -947,10 +949,10 @@ SKKCore::process_key_event (const KeyEvent key)
     }
 
     switch (m_skk_mode) {
-    case SKK_MODE_LATIN:
-        return process_latin(key);
-    case SKK_MODE_WIDE_LATIN:
-        return process_wide_latin(key);
+    case SKK_MODE_ASCII:
+        return process_ascii(key);
+    case SKK_MODE_WIDE_ASCII:
+        return process_wide_ascii(key);
     default:
         return process_romakana(key);
     }

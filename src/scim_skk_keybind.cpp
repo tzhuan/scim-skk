@@ -34,8 +34,8 @@ KeyBind::~KeyBind (void)
     m_kakutei_keys.clear();
     m_katakana_keys.clear();
     m_half_katakana_keys.clear();
-    m_latin_keys.clear();
-    m_wide_latin_keys.clear();
+    m_ascii_keys.clear();
+    m_wide_ascii_keys.clear();
     m_convert_keys.clear();
     m_start_conv_keys.clear();
     m_cancel_keys.clear();
@@ -166,14 +166,14 @@ KeyBind::set_half_katakana_keys (String str)
     scim_string_to_key_list(m_half_katakana_keys, str);
 }
 void
-KeyBind::set_latin_keys         (String str)
+KeyBind::set_ascii_keys         (String str)
 {
-    scim_string_to_key_list(m_latin_keys, str);
+    scim_string_to_key_list(m_ascii_keys, str);
 }
 void
-KeyBind::set_wide_latin_keys    (String str)
+KeyBind::set_wide_ascii_keys    (String str)
 {
-    scim_string_to_key_list(m_wide_latin_keys, str);
+    scim_string_to_key_list(m_wide_ascii_keys, str);
 }
 void
 KeyBind::set_convert_keys       (String str)
@@ -191,9 +191,9 @@ KeyBind::set_cancel_keys        (String str)
     scim_string_to_key_list(m_cancel_keys, str);
 }
 void
-KeyBind::set_latin_convert_keys        (String str)
+KeyBind::set_ascii_convert_keys        (String str)
 {
-    scim_string_to_key_list(m_latin_convert_keys, str);
+    scim_string_to_key_list(m_ascii_convert_keys, str);
 }
 void
 KeyBind::set_prevcand_keys        (String str)
@@ -237,14 +237,14 @@ KeyBind::match_half_katakana_keys (const KeyEvent &key)
     return match_key_event(m_half_katakana_keys, key);
 }
 bool
-KeyBind::match_latin_keys         (const KeyEvent &key)
+KeyBind::match_ascii_keys         (const KeyEvent &key)
 {
-    return match_key_event(m_latin_keys, key);
+    return match_key_event(m_ascii_keys, key);
 }
 bool
-KeyBind::match_wide_latin_keys    (const KeyEvent &key)
+KeyBind::match_wide_ascii_keys    (const KeyEvent &key)
 {
-    return match_key_event(m_wide_latin_keys, key);
+    return match_key_event(m_wide_ascii_keys, key);
 }
 bool
 KeyBind::match_convert_keys       (const KeyEvent &key)
@@ -262,9 +262,9 @@ KeyBind::match_cancel_keys        (const KeyEvent &key)
     return match_key_event(m_cancel_keys, key);
 }
 bool
-KeyBind::match_latin_convert_keys        (const KeyEvent &key)
+KeyBind::match_ascii_convert_keys        (const KeyEvent &key)
 {
-    return match_key_event(m_latin_convert_keys, key);
+    return match_key_event(m_ascii_convert_keys, key);
 }
 bool
 KeyBind::match_prevcand_keys        (const KeyEvent &key)

@@ -1,3 +1,14 @@
+2004-12-16  Jun Mukai  <mukai@ayu.ics.keio.ac.jp>
+
+	* src/scim_skk_core.cpp (caret_pos): add
+	m_pendingstr.length() to caret_position.
+
+	* src/scim_skk_core.cpp: remove `_keys' suffixes from names of
+	`action_*' on SKKCore.
+
+	* src/*.cpp: all `latin' and `wide latin' is replaced the word
+	`ASCII' and `wide ASCII' respectively (cf. scim-imengine-dev:57)
+
 2004-12-06  gettextize  <bug-gnu-gettext@gnu.org>
 
 	* Makefile.am (SUBDIRS): Add m4.

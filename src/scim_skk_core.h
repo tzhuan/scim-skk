@@ -31,8 +31,8 @@ typedef enum {
     SKK_MODE_HIRAGANA,
     SKK_MODE_KATAKANA,
     SKK_MODE_HALF_KATAKANA,
-    SKK_MODE_LATIN,
-    SKK_MODE_WIDE_LATIN
+    SKK_MODE_ASCII,
+    SKK_MODE_WIDE_ASCII
 } SKKMode;
 
 typedef enum {
@@ -61,11 +61,11 @@ class SKKCore
     InputMode     m_input_mode;
     SKKAutomaton  m_key2kana;
 
-    WideString    m_pendingstr;
-    WideString    m_preeditstr;
-    WideString    m_okuristr;
-    WideString    m_okurihead;
-    WideString    m_commitstr;
+    WideString  m_pendingstr;
+    WideString  m_preeditstr;
+    WideString  m_okuristr;
+    WideString  m_okurihead;
+    WideString  m_commitstr;
 
     CandList      m_cl;
     CandList::iterator m_cit;
@@ -84,25 +84,26 @@ class SKKCore
 
     void          init_key2kana (void);
 
-    void          commit_string      (WideString str);
-    void          commit_or_preedit  (WideString str);
-    void          commit_converting  (void);
+    void          commit_string     (WideString str);
+    void          commit_or_preedit (WideString str);
+    void          commit_converting (void);
 
-    bool          action_kakutei_keys         (void);
-    bool          action_cancel_keys          (void);
-    bool          action_convert_keys         (void);
-    bool          action_katakana_keys        (bool half = false);
-    bool          action_start_conv_keys      (void);
-    bool          action_prevcand_keys        (void);
-    bool          action_latin_keys           (bool wide = false);
-    bool          action_latin_convert_keys   (void);
-    bool          action_backspace_keys       (void);
-    bool          action_delete_keys          (void);
-    bool          action_forward_keys         (void);
-    bool          action_backward_keys        (void);
+    bool          action_kakutei         (void);
+    bool          action_cancel          (void);
+    bool          action_convert         (void);
+    bool          action_katakana        (bool half = false);
+    bool          action_start_conv      (void);
+    bool          action_prevcand        (void);
+    bool          action_ascii           (bool wide = false);
+    bool          action_ascii_convert   (void);
+    bool          action_backspace       (void);
+    bool          action_delete          (void);
+    bool          action_forward         (void);
+    bool          action_backward        (void);
+
     bool          process_remaining_keybinds   (const KeyEvent &key);
-    bool          process_latin                (const KeyEvent &key);
-    bool          process_wide_latin           (const KeyEvent &key);
+    bool          process_ascii                (const KeyEvent &key);
+    bool          process_wide_ascii           (const KeyEvent &key);
     bool          process_romakana             (const KeyEvent &key);
 
     void          clear_pending     (void);

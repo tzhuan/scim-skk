@@ -60,8 +60,8 @@
 #define SCIM_PROP_INPUT_MODE_HIRAGANA       SCIM_PROP_MODE_PREFIX"/Hiragana"
 #define SCIM_PROP_INPUT_MODE_KATAKANA       SCIM_PROP_MODE_PREFIX"/Katakana"
 #define SCIM_PROP_INPUT_MODE_HALF_KATAKANA  SCIM_PROP_MODE_PREFIX"/HalfKatakana"
-#define SCIM_PROP_INPUT_MODE_LATIN          SCIM_PROP_MODE_PREFIX"/Latin"
-#define SCIM_PROP_INPUT_MODE_WIDE_LATIN     SCIM_PROP_MODE_PREFIX"/WideLatin"
+#define SCIM_PROP_INPUT_MODE_ASCII          SCIM_PROP_MODE_PREFIX"/ASCII"
+#define SCIM_PROP_INPUT_MODE_WIDE_ASCII     SCIM_PROP_MODE_PREFIX"/WideASCII"
 
 #ifndef SCIM_SKK_ICON_FILE
 #define SCIM_SKK_ICON_FILE           (SCIM_ICONDIR"/scim-skk.png")
@@ -198,12 +198,12 @@ SKKFactory::reload_config (const ConfigPointer &config)
         str = config->read(String(SCIM_SKK_CONFIG_HALF_KATAKANA_KEY),
                            String(SCIM_SKK_CONFIG_HALF_KATAKANA_KEY_DEFAULT));
         m_keybind.set_half_katakana_keys(str);
-        str = config->read(String(SCIM_SKK_CONFIG_LATIN_KEY),
-                           String(SCIM_SKK_CONFIG_LATIN_KEY_DEFAULT));
-        m_keybind.set_latin_keys(str);
-        str = config->read(String(SCIM_SKK_CONFIG_WIDE_LATIN_KEY),
-                           String(SCIM_SKK_CONFIG_WIDE_LATIN_KEY_DEFAULT));
-        m_keybind.set_wide_latin_keys(str);
+        str = config->read(String(SCIM_SKK_CONFIG_ASCII_KEY),
+                           String(SCIM_SKK_CONFIG_ASCII_KEY_DEFAULT));
+        m_keybind.set_ascii_keys(str);
+        str = config->read(String(SCIM_SKK_CONFIG_WIDE_ASCII_KEY),
+                           String(SCIM_SKK_CONFIG_WIDE_ASCII_KEY_DEFAULT));
+        m_keybind.set_wide_ascii_keys(str);
         str = config->read(String(SCIM_SKK_CONFIG_CONVERT_KEY),
                            String(SCIM_SKK_CONFIG_CONVERT_KEY_DEFAULT));
         m_keybind.set_convert_keys(str);
@@ -213,9 +213,9 @@ SKKFactory::reload_config (const ConfigPointer &config)
         str = config->read(String(SCIM_SKK_CONFIG_CANCEL_KEY),
                            String(SCIM_SKK_CONFIG_CANCEL_KEY_DEFAULT));
         m_keybind.set_cancel_keys(str);
-        str = config->read(String(SCIM_SKK_CONFIG_LATIN_CONVERT_KEY),
-                           String(SCIM_SKK_CONFIG_LATIN_CONVERT_KEY_DEFAULT));
-        m_keybind.set_latin_convert_keys(str);
+        str = config->read(String(SCIM_SKK_CONFIG_ASCII_CONVERT_KEY),
+                           String(SCIM_SKK_CONFIG_ASCII_CONVERT_KEY_DEFAULT));
+        m_keybind.set_ascii_convert_keys(str);
         str = config->read(String(SCIM_SKK_CONFIG_PREVCAND_KEY),
                            String(SCIM_SKK_CONFIG_PREVCAND_KEY_DEFAULT));
         m_keybind.set_prevcand_keys(str);
@@ -253,7 +253,6 @@ SKKInstance::SKKInstance (SKKFactory   *factory,
 SKKInstance::~SKKInstance ()
 {
 }
-
 
 bool
 SKKInstance::process_key_event (const KeyEvent &key)
@@ -310,10 +309,10 @@ SKKInstance::set_skk_mode (SKKMode newmode)
     case SKK_MODE_HALF_KATAKANA:
         label = "\xEF\xBD\xB1";
         break;
-    case SKK_MODE_LATIN:
+    case SKK_MODE_ASCII:
         label = "a";
         break;
-    case SKK_MODE_WIDE_LATIN:
+    case SKK_MODE_WIDE_ASCII:
         label = "\xEF\xBD\x81";
         break;
     default:
@@ -403,12 +402,12 @@ SKKInstance::install_properties (void)
                          _("Half width katakana"));
         m_properties.push_back (prop);
 
-        prop = Property (SCIM_PROP_INPUT_MODE_LATIN,
-                         _("Latin"), String (""), _("Direct input"));
+        prop = Property (SCIM_PROP_INPUT_MODE_ASCII,
+                         _("ASCII"), String (""), _("Direct input"));
         m_properties.push_back (prop);
 
-        prop = Property (SCIM_PROP_INPUT_MODE_WIDE_LATIN,
-                         _("Wide latin"), String (""), _("Wide latin"));
+        prop = Property (SCIM_PROP_INPUT_MODE_WIDE_ASCII,
+                         _("Wide ASCII"), String (""), _("Wide ASCII"));
         m_properties.push_back (prop);
     }
 
@@ -426,9 +425,9 @@ SKKInstance::trigger_property (const String& property)
         set_skk_mode(SKK_MODE_KATAKANA);
     } else if (property == SCIM_PROP_INPUT_MODE_HALF_KATAKANA) {
         set_skk_mode(SKK_MODE_HALF_KATAKANA);
-    } else if (property == SCIM_PROP_INPUT_MODE_LATIN) {
-        set_skk_mode(SKK_MODE_LATIN);
-    } else if (property == SCIM_PROP_INPUT_MODE_WIDE_LATIN) {
-        set_skk_mode(SKK_MODE_WIDE_LATIN);
+    } else if (property == SCIM_PROP_INPUT_MODE_ASCII) {
+        set_skk_mode(SKK_MODE_ASCII);
+    } else if (property == SCIM_PROP_INPUT_MODE_WIDE_ASCII) {
+        set_skk_mode(SKK_MODE_WIDE_ASCII);
     }
 }

@@ -33,7 +33,7 @@ msgid "Half width katakana"
 msgstr ""
 
 #: scim_skk_imengine.cpp:434
-msgid "Latin"
+msgid "ASCII"
 msgstr ""
 
 #: scim_skk_imengine.cpp:434
@@ -41,5 +41,5 @@ msgid "Direct input"
 msgstr ""
 
 #: scim_skk_imengine.cpp:438
-msgid "Wide latin"
+msgid "Wide ASCII"
 msgstr ""

@@ -412,13 +412,13 @@ ConvRule romakana_ja_period_rule[] = {
     {NULL,	NULL,	NULL},
 };
 
-ConvRule romakana_wide_latin_period_rule[] = {
+ConvRule romakana_wide_ascii_period_rule[] = {
     {",",	"，",	""},
     {".",	"．",	""},
     {NULL,	NULL,	NULL},
 };
 
-ConvRule romakana_latin_period_rule[] = {
+ConvRule romakana_ascii_period_rule[] = {
     {",",	",",	""},
     {".",	".",	""},
     {NULL,	NULL,	NULL},
@@ -430,13 +430,13 @@ ConvRule kana_ja_period_rule[] = {
     {NULL,	NULL,	NULL},
 };
 
-ConvRule kana_wide_latin_period_rule[] = {
+ConvRule kana_wide_ascii_period_rule[] = {
     {">",	"．",	""},
     {"<",	"，",	""},
     {NULL,	NULL,	NULL},
 };
 
-ConvRule kana_latin_period_rule[] = {
+ConvRule kana_ascii_period_rule[] = {
     {">",	".",	""},
     {"<",	",",	""},
     {NULL,	NULL,	NULL},

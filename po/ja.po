@@ -33,7 +33,7 @@ msgid "Half width katakana"
 msgstr "半角カタカナ"
 
 #: scim_skk_imengine.cpp:434
-msgid "Latin"
+msgid "ASCII"
 msgstr "英数"
 
 #: scim_skk_imengine.cpp:434
@@ -41,5 +41,5 @@ msgid "Direct input"
 msgstr "直接入力"
 
 #: scim_skk_imengine.cpp:438
-msgid "Wide latin"
+msgid "Wide ASCII"
 msgstr "全角英数"
