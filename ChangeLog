@@ -1,5 +1,11 @@
 2004-12-27  Jun Mukai  <mukai@jmuk.org>
 
+	* src/scim_skk_imengine_setup.cpp: use __widget_listsize instead
+	of listsize_entry.
+
+	* src/scim_skk_dictionary.h (SKKDictionaryBase): m_writecount is
+	now removed.
+
 	* src/scim_skk_imengine.cpp (~SKKFactory): bug fix.
 
 	* src/scim_skk_imengine_setup.cpp: SetupUI module is implemented.

@@ -36,17 +36,12 @@ SKKDictionaryBase::~SKKDictionaryBase  (void)
 
 SKKDictionary::SKKDictionary  (SKKDictionaries *parent, bool writable)
     : m_writable   (writable),
-      m_parent     (parent),
-      m_dictpath   (NULL),
-      m_writecount (0)
+      m_parent     (parent)
 {
 }
 
 SKKDictionary::~SKKDictionary (void)
 {
-    if (m_dictpath)
-        delete[] m_dictpath;
-    dump_dictdata();
 }
 
 void
@@ -108,7 +103,7 @@ SKKDictionary::dump_dictdata (void)
     ofstream dictfs;
 
     if (m_writable && m_writeflag) {
-        dictfs.open(m_dictpath);
+        dictfs.open(m_dictpath.c_str());
         for (dit = m_dictdata.begin(); dit != m_dictdata.end(); dit++) {
             String line;
             String tmp;
@@ -133,11 +128,11 @@ SKKDictionary::dump_dictdata (void)
 void
 SKKDictionary::load_dict (const String &dictpath)
 {
-    m_dictpath = new char[dictpath.length()+1];
-    dictpath.copy(m_dictpath, dictpath.size(), 0);
-    m_dictpath[dictpath.length()] = '\0';
-    m_iconv.set_encoding(String(SKKDICT_CHARCODE));
-    load_dictdata();
+    if (m_dictpath != dictpath) {
+        m_dictpath.assign(dictpath);
+        m_iconv.set_encoding(String(SKKDICT_CHARCODE));
+        load_dictdata();
+    }
 }
 
 void
@@ -185,10 +180,6 @@ SKKDictionary::write (const WideString &key, const WideString &data)
             cl.erase(it);
         cl.push_front(data);
         m_writeflag = true;
-        m_writecount++;
-        if (m_writecount > 10) {
-            dump_dict();
-        }
     }
 }
 

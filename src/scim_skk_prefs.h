@@ -26,7 +26,7 @@
 #define SCIM_SKK_CONFIG_ASCII_KEY            "/IMEngine/SKK/ASCII"
 #define SCIM_SKK_CONFIG_WIDE_ASCII_KEY       "/IMEngine/SKK/WideASCII"
 #define SCIM_SKK_CONFIG_CONVERT_KEY          "/IMEngine/SKK/Convert"
-#define SCIM_SKK_CONFIG_START_PREEDIT_KEY    "/IMEngine/SKK/StartConv"
+#define SCIM_SKK_CONFIG_START_PREEDIT_KEY    "/IMEngine/SKK/StartPreedit"
 #define SCIM_SKK_CONFIG_CANCEL_KEY           "/IMEngine/SKK/Cancel"
 #define SCIM_SKK_CONFIG_ASCII_CONVERT_KEY    "/IMEngine/SKK/ASCIIConvert"
 #define SCIM_SKK_CONFIG_PREVCAND_KEY         "/IMEngine/SKK/PrevCand"

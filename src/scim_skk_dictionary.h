@@ -55,13 +55,12 @@ public:
 
 class SKKDictionary : SKKDictionaryBase
 {
-    char      *m_dictpath;
+    String     m_dictpath;
     Dict       m_dictdata;
     IConvert   m_iconv;
 
     SKKDictionaries *m_parent;
 
-    int  m_writecount;
     bool m_writeflag;
     void load_dictdata (void);
     void dump_dictdata (void);

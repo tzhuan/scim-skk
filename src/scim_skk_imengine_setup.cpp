@@ -402,9 +402,6 @@ static GtkWidget *
 create_options_page ()
 {
     GtkWidget *vbox, *widget, *table, *label;
-    GtkWidget *sysdict_button;
-    GtkWidget *userdict_button;
-    GtkWidget *listsize_entry;
 
     vbox = gtk_vbox_new (FALSE, 0);
     gtk_widget_show (vbox);
@@ -451,18 +448,16 @@ create_options_page ()
 
 
     /* list size */
-    widget         = gtk_hbox_new(FALSE, 0);
-    label          = gtk_label_new (_("List Size:"));
-    listsize_entry = gtk_spin_button_new_with_range(0, 100, 1);
-    gtk_spin_button_set_value(GTK_SPIN_BUTTON (listsize_entry),
-                              __config_listsize);
-    gtk_spin_button_set_digits(GTK_SPIN_BUTTON (listsize_entry), 0);
-    gtk_spin_button_set_update_policy(GTK_SPIN_BUTTON (listsize_entry),
+    widget            = gtk_hbox_new(FALSE, 0);
+    label             = gtk_label_new (_("List Size:"));
+    __widget_listsize = gtk_spin_button_new_with_range(0, 100, 1);
+    gtk_spin_button_set_digits(GTK_SPIN_BUTTON (__widget_listsize), 0);
+    gtk_spin_button_set_update_policy(GTK_SPIN_BUTTON (__widget_listsize),
                                       GTK_UPDATE_IF_VALID);
     gtk_widget_show(label);
-    gtk_widget_show(listsize_entry);
+    gtk_widget_show(__widget_listsize);
     gtk_box_pack_start (GTK_BOX (widget), label, FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (widget), listsize_entry, FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (widget), __widget_listsize, FALSE, FALSE, 4);
     gtk_widget_show(widget);
     gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, FALSE, 4);
 
@@ -484,7 +479,7 @@ create_options_page ()
                       G_CALLBACK (on_default_editable_changed),
                       &__config_userdict);
 
-    g_signal_connect ((gpointer) listsize_entry, "value-changed",
+    g_signal_connect ((gpointer) __widget_listsize, "value-changed",
                       G_CALLBACK (on_default_spin_button_changed),
                       &__config_listsize);
 
@@ -712,7 +707,6 @@ save_config (const ConfigPointer &config)
                                __key_conf_pages[j].data[i].data);
             }
         }
-
         __have_changed = false;
     }
 }
