@@ -1,3 +1,106 @@
+2005-01-09  Jun Mukai  <mukai@jmuk.org>
+
+	* src/scim_skk_core.cpp: Bug fix on commiting of learn with
+	okurigana.
+
+2005-01-08  Jun Mukai  <mukai@jmuk.org>
+
+	* src/scim_skk_keybind.cpp (keybind_string_to_key_list): KeyBind
+	is now use keybind_string_to_key_list, which is a wrapper function
+	to scim_string_to_key_list. This change is for matching of key
+	events.
+
+	* src/scim_skk_core.cpp: changes the type of `m_okurihead' from
+	WideString to ucs4_t.
+	(process_key_event): Fix bug on cancel of learning.
+	(process_key_event): Fix bug on cancel for candidates without
+	lookup table.
+
+2005-01-06  Jun Mukai  <mukai@jmuk.org>
+
+	* src/scim_skk_keybind.cpp (match_key_event): If mask of the key
+	event is only ShiftMask, then it matches broader. For example,
+	input key event "Shift+Q" is matched to "Q" and "Shift+q". Other
+	modifiers are defined, this is not checked.
+
+	* src/scim_skk_imengine.cpp: SKKDictionaries is now instanced at
+	scim_imengine_module_init and shared between all of factories.
+	The instance dumps user dictionary at scim_module_exit.
+
+2005-01-05  Jun Mukai  <mukai@jmuk.org>
+
+	* src/scim_skk_imengine.cpp (reload_config): remove
+	`m_reload_signal_connection.disconnect()' [scim-imengine-dev:104]
+
+	* src/scim_skk_core.cpp: Bug fix when DictListSize == 0
+
+2004-12-28  Jun Mukai  <mukai@jmuk.org>
+
+	* SetupUI: SetupUI is now available.
+
+2004-12-27  Jun Mukai  <mukai@jmuk.org>
+
+	* src/scim_skk_imengine_setup.cpp: use __widget_listsize instead
+	of listsize_entry.
+
+	* src/scim_skk_dictionary.h (SKKDictionaryBase): m_writecount is
+	now removed.
+
+	* src/scim_skk_imengine.cpp (~SKKFactory): bug fix.
+
+	* src/scim_skk_imengine_setup.cpp: SetupUI module is implemented.
+
+2004-12-26  Jun Mukai  <mukai@jmuk.org>
+
+	* src/scim_skk_core.cpp (process_ascii): bug fix to recognize
+	arrow key or backspace key when ascii preediting.
+	(action_backspace): The behavior of backspace is changed when
+	caret position = 0 (using action_cancel() ).
+
+	* src/scim_skk_prefs.h: the name "StartConv" is changed to
+	"StartPreedit".
+
+2004-12-24  Jun Mukai  <mukai@jmuk.org>
+
+	* src/scim_skk_core.cpp (action_nextpage): bug fix when returning
+	false.
+	(process_key_event): ignore selecting key when lookup table is
+	hidden.
+
+	* src/scim_skk_dictionary.cpp (class SKKDictionary): annotation is
+	not parsed at loading dictionary. It is stripped when `lookup' or
+	commiting on src/scim_skk_core.cpp.
+
+	* src/scim_skk_prefs.h: new preferences.
+	SelectionStyle: Qwerty, or, Dvorak, or Number.
+	DictListSize: number of candidates not in lookup table.
+	DictViewAnnot: flag whether view annotation or not.
+
+	* src/scim_skk_core.cpp: now uses lookup table.
+
+2004-12-19  Jun Mukai  <mukai@jmuk.org>
+
+	* src/scim_skk_imengine.h (class SKKInstance): m_key2kana is now
+	member of SKKInstance. All of SKKCore share this m_key2kana.
+
+	* src/scim_skk_core.cpp (process_latin): return false if
+	INPUT_MODE_DIRECT to use of dead keys. catch this false retval
+	when learning (cf. scim-imengine-dev:65)
+
+	* src/scim_skk_core.cpp: uses KeyEvent::get_ascii_code() instead
+	of KeyEvent::code directly.
+
+2004-12-16  Jun Mukai  <mukai@jmuk.org>
+
+	* src/scim_skk_core.cpp (caret_pos): add
+	m_pendingstr.length() to caret_position.
+
+	* src/scim_skk_core.cpp: remove `_keys' suffixes from names of
+	`action_*' on SKKCore.
+
+	* src/*.cpp: all `latin' and `wide latin' is replaced the word
+	`ASCII' and `wide ASCII' respectively (cf. scim-imengine-dev:57)
+
 2004-12-06  gettextize  <bug-gnu-gettext@gnu.org>
 
 	* Makefile.am (SUBDIRS): Add m4.

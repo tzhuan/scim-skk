@@ -1,45 +1,267 @@
-# Japanese translations for scim-skk package.
-# Copyright (C) 2004 Jun Mukai
-# This file is distributed under the same license as the scim-skk package.
+# translation of scim-skk to Japanese
+# Copyright (C) 2004, Jun Mukai <mukai@jmuk.org>
+# This file is distributed under the same license as the PACKAGE package.
 # Jun Mukai <mukai@jmuk.org>, 2004.
-#
 msgid ""
 msgstr ""
-"Project-Id-Version: scim-skk 0.0.1\n"
+"Project-Id-Version: scim-skk\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-12-07 02:03+0900\n"
-"PO-Revision-Date: 2004-12-07 02:06+0900\n"
-"Last-Translator:  <mukai@jmuk.org>\n"
+"POT-Creation-Date: 2004-12-27 00:25+0900\n"
+"PO-Revision-Date: 2004-12-27 01:06+0900\n"
+"Last-Translator: Jun Mukai <mukai@jmuk.org>\n"
 "Language-Team: Japanese <ja@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
 
-#: scim_skk_imengine.cpp:417
+#: ../src/scim_skk_imengine.cpp:440
 msgid "Input mode"
 msgstr "入力モード"
 
-#: scim_skk_imengine.cpp:421
+#: ../src/scim_skk_imengine.cpp:444
 msgid "Hiragana"
 msgstr "ひらがな"
 
-#: scim_skk_imengine.cpp:425
+#: ../src/scim_skk_imengine.cpp:448
 msgid "Katakana"
 msgstr "カタカナ"
 
-#: scim_skk_imengine.cpp:429 scim_skk_imengine.cpp:430
+#: ../src/scim_skk_imengine.cpp:452 ../src/scim_skk_imengine.cpp:453
 msgid "Half width katakana"
 msgstr "半角カタカナ"
 
-#: scim_skk_imengine.cpp:434
-msgid "Latin"
+#: ../src/scim_skk_imengine.cpp:457
+msgid "ASCII"
 msgstr "英数"
 
-#: scim_skk_imengine.cpp:434
+#: ../src/scim_skk_imengine.cpp:457
 msgid "Direct input"
 msgstr "直接入力"
 
-#: scim_skk_imengine.cpp:438
-msgid "Wide latin"
+#: ../src/scim_skk_imengine.cpp:461
+msgid "Wide ASCII"
 msgstr "全角英数"
+
+#: ../src/scim_skk_imengine_setup.cpp:94
+msgid "SKK"
+msgstr "SKK"
+
+#: ../src/scim_skk_imengine_setup.cpp:99
+msgid "An SKK IMEngine Module."
+msgstr "SKK IMEngine モジュール"
+
+#: ../src/scim_skk_imengine_setup.cpp:168
+msgid "Kakutei Keys:"
+msgstr "確定キー:"
+
+#: ../src/scim_skk_imengine_setup.cpp:169
+msgid "Select Kakutei Keys"
+msgstr "確定キーの設定"
+
+#: ../src/scim_skk_imengine_setup.cpp:170
+msgid "The key events to commit the preedit string. "
+msgstr "文字列を確定するキーイベント"
+
+#: ../src/scim_skk_imengine_setup.cpp:177
+msgid "Cancel Keys:"
+msgstr "キャンセルキー:"
+
+#: ../src/scim_skk_imengine_setup.cpp:178
+msgid "Select Cancel Keys"
+msgstr "キャンセルキーの設定"
+
+#: ../src/scim_skk_imengine_setup.cpp:179
+msgid "The key events to cancel the some skk states. "
+msgstr "SKKの状態をキャンセルするキーイベント"
+
+#: ../src/scim_skk_imengine_setup.cpp:186
+msgid "Katakana Keys:"
+msgstr "カタカナキー:"
+
+#: ../src/scim_skk_imengine_setup.cpp:187
+msgid "Select Katakana Keys"
+msgstr "カタカナキーの設定"
+
+#: ../src/scim_skk_imengine_setup.cpp:188
+msgid "The key events to toggle the skkmode hiragana to katakana. "
+msgstr "ひらがなモードとカタカナモードをトグルするキーイベント"
+
+#: ../src/scim_skk_imengine_setup.cpp:195
+msgid "Half-Katakana Keys:"
+msgstr "半角カタカナキー:"
+
+#: ../src/scim_skk_imengine_setup.cpp:196
+msgid "Select Half-Katakana Keys"
+msgstr "半角カタカナキーの設定"
+
+#: ../src/scim_skk_imengine_setup.cpp:197
+msgid "The key events to toggle the skkmode hiragana to half-katakana. "
+msgstr "ひらがなモードと半角カタカナモードをトグルするキーイベント"
+
+#: ../src/scim_skk_imengine_setup.cpp:204
+msgid "ASCII Keys:"
+msgstr "英数キー:"
+
+#: ../src/scim_skk_imengine_setup.cpp:205
+msgid "Select ASCII Keys"
+msgstr "英数キーの設定"
+
+#: ../src/scim_skk_imengine_setup.cpp:206
+msgid "The key events to enter ASII mode. "
+msgstr "英数モードに切り替えるキーイベント"
+
+#: ../src/scim_skk_imengine_setup.cpp:213
+msgid "Wide-ASCII Keys:"
+msgstr "全角英数キー:"
+
+#: ../src/scim_skk_imengine_setup.cpp:214
+msgid "Select Wide-ASCII Keys"
+msgstr "全角英数キーの設定"
+
+#: ../src/scim_skk_imengine_setup.cpp:215
+msgid "The key events to enter Wide-ASCII mode. "
+msgstr "全角英数キーに切り替えるキーイベント"
+
+#: ../src/scim_skk_imengine_setup.cpp:222
+msgid "Convert Keys:"
+msgstr "変換キー:"
+
+#: ../src/scim_skk_imengine_setup.cpp:223
+msgid "Select Convert Keys"
+msgstr "変換キーの設定"
+
+#: ../src/scim_skk_imengine_setup.cpp:224
+msgid "The key events to start converting. "
+msgstr "変換を開始するキーイベント"
+
+#: ../src/scim_skk_imengine_setup.cpp:231
+msgid "Start-Preedit Keys:"
+msgstr "変換開始キー:"
+
+#: ../src/scim_skk_imengine_setup.cpp:232
+msgid "Select Start-Preedit Keys"
+msgstr "変換開始キーの設定"
+
+#: ../src/scim_skk_imengine_setup.cpp:233
+msgid "The key events to start preediting. "
+msgstr "変換入力モードに切り替えるキーイベント"
+
+#: ../src/scim_skk_imengine_setup.cpp:240
+msgid "ASCII-Convert Keys:"
+msgstr "英数変換キー:"
+
+#: ../src/scim_skk_imengine_setup.cpp:241
+msgid "Select ASCII-Convert Keys"
+msgstr "英数変換キーの設定"
+
+#: ../src/scim_skk_imengine_setup.cpp:242
+msgid "The key events to start ascii-converting mode. "
+msgstr "英数変換の入力モードに切り替えるキーイベント"
+
+#: ../src/scim_skk_imengine_setup.cpp:249
+msgid "Previous Candidate Keys:"
+msgstr "前の候補キー:"
+
+#: ../src/scim_skk_imengine_setup.cpp:250
+msgid "Select Previous Candidate Keys"
+msgstr "前の候補キーの設定"
+
+#: ../src/scim_skk_imengine_setup.cpp:251
+msgid "The key events to turn back. "
+msgstr "ひとつ前の候補に戻すキーイベント"
+
+#: ../src/scim_skk_imengine_setup.cpp:262
+msgid "Backspace Keys:"
+msgstr "バックスペースキー:"
+
+#: ../src/scim_skk_imengine_setup.cpp:263
+msgid "Select Backspace Keys"
+msgstr "バックスペースキーの設定"
+
+#: ../src/scim_skk_imengine_setup.cpp:264
+msgid "The key events to backspace. "
+msgstr "キャレットの前の文字を削除するキーイベント"
+
+#: ../src/scim_skk_imengine_setup.cpp:271
+msgid "Delete Keys:"
+msgstr "削除キー:"
+
+#: ../src/scim_skk_imengine_setup.cpp:272
+msgid "Select Delete Keys"
+msgstr "削除キーの設定"
+
+#: ../src/scim_skk_imengine_setup.cpp:273
+msgid "The key events to delete. "
+msgstr "キャレットの後の文字を削除するキーイベント"
+
+#: ../src/scim_skk_imengine_setup.cpp:280
+msgid "Forward Keys:"
+msgstr "前方へ移動キー:"
+
+#: ../src/scim_skk_imengine_setup.cpp:281
+msgid "Select Forward Keys"
+msgstr "前方へ移動キーの設定"
+
+#: ../src/scim_skk_imengine_setup.cpp:282
+msgid "The key events to move the caret forward. "
+msgstr "キャレットを前方に移動するキーイベント"
+
+#: ../src/scim_skk_imengine_setup.cpp:289
+msgid "Backward Keys:"
+msgstr "後方へ移動キー:"
+
+#: ../src/scim_skk_imengine_setup.cpp:290
+msgid "Select Backward Keys"
+msgstr "後方へ移動キーの設定"
+
+#: ../src/scim_skk_imengine_setup.cpp:291
+msgid "The key events to move the caret backward. "
+msgstr "キャレットを後方に移動するキーイベント"
+
+#: ../src/scim_skk_imengine_setup.cpp:298
+msgid "System Dictionary Path"
+msgstr "システム辞書のパス"
+
+#: ../src/scim_skk_imengine_setup.cpp:304
+msgid "User Dictionary Name"
+msgstr "ユーザ辞書の名前"
+
+#: ../src/scim_skk_imengine_setup.cpp:312
+msgid "qwerty arrangement"
+msgstr "qwerty配列"
+
+#: ../src/scim_skk_imengine_setup.cpp:313
+msgid "Dvorak arrangement"
+msgstr "Dvorak配列"
+
+#: ../src/scim_skk_imengine_setup.cpp:314
+msgid "number selection"
+msgstr "数値選択"
+
+#: ../src/scim_skk_imengine_setup.cpp:322
+msgid "Common keys"
+msgstr "一般キー"
+
+#: ../src/scim_skk_imengine_setup.cpp:327
+msgid "Mode keys"
+msgstr "モード切替キー"
+
+#: ../src/scim_skk_imengine_setup.cpp:323
+msgid "Caret keys"
+msgstr "カーソル移動キー"
+
+#: ../src/scim_skk_imengine_setup.cpp:429
+msgid "Selection Style:"
+msgstr "候補選択スタイル:"
+
+#: ../src/scim_skk_imengine_setup.cpp:438
+msgid "List Size:"
+msgstr "候補リスト長:"
+
+#: ../src/scim_skk_imengine_setup.cpp:453
+msgid "View Annotation."
+msgstr "アノテーションを見る"
+
+#: ../src/scim_skk_imengine_setup.cpp:548
+msgid "Options"
+msgstr "オプション"

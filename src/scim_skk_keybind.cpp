@@ -20,9 +20,13 @@
 #define Uses_SCIM_EVENT
 #include "scim_skk_keybind.h"
 
+char *qwerty_vec[7]  = {"a", "s", "d", "f", "j", "k", "l"};
+char *dvorak_vec[8]  = {"a", "o", "e", "u", "h", "t", "n", "s"};
+char *number_vec[9]  = {"1", "2", "3", "4", "5", "6", "7", "8", "9"};
 
+static void keybind_string_to_key_list(KeyEventList &keys, const String &str);
 static inline bool match_key_event       (const KeyEventList &keylist,
-        const KeyEvent &key);
+                                          const KeyEvent &key);
 
 KeyBind::KeyBind (void)
     : m_style (SSTYLE_QWERTY)
@@ -31,18 +35,10 @@ KeyBind::KeyBind (void)
 
 KeyBind::~KeyBind (void)
 {
-    m_kakutei_keys.clear();
-    m_katakana_keys.clear();
-    m_half_katakana_keys.clear();
-    m_latin_keys.clear();
-    m_wide_latin_keys.clear();
-    m_convert_keys.clear();
-    m_start_conv_keys.clear();
-    m_cancel_keys.clear();
 }
 
 void
-KeyBind::set_selection_style (String str)
+KeyBind::set_selection_style (const String &str)
 {
     if (str == "Qwerty") {
         m_style = SSTYLE_QWERTY;
@@ -59,30 +55,30 @@ KeyBind::match_selection_dvorak (const KeyEvent &key)
     switch (key.code) {
     case SCIM_KEY_a:
     case SCIM_KEY_A:
-        return 1;
+        return 0;
     case SCIM_KEY_o:
     case SCIM_KEY_O:
-        return 2;
+        return 1;
     case SCIM_KEY_e:
     case SCIM_KEY_E:
-        return 3;
+        return 2;
     case SCIM_KEY_u:
     case SCIM_KEY_U:
-        return 4;
+        return 3;
     case SCIM_KEY_h:
     case SCIM_KEY_H:
-        return 5;
+        return 4;
     case SCIM_KEY_t:
     case SCIM_KEY_T:
-        return 6;
+        return 5;
     case SCIM_KEY_n:
     case SCIM_KEY_N:
-        return 7;
+        return 6;
     case SCIM_KEY_s:
     case SCIM_KEY_S:
-        return 8;
+        return 7;
     default:
-        return 0;
+        return -1;
     }
 }
 
@@ -92,41 +88,38 @@ KeyBind::match_selection_qwerty (const KeyEvent &key)
     switch (key.code) {
     case SCIM_KEY_a:
     case SCIM_KEY_A:
-        return 1;
+        return 0;
     case SCIM_KEY_s:
     case SCIM_KEY_S:
-        return 2;
+        return 1;
     case SCIM_KEY_d:
     case SCIM_KEY_D:
-        return 3;
+        return 2;
     case SCIM_KEY_f:
     case SCIM_KEY_F:
-        return 4;
+        return 3;
     case SCIM_KEY_j:
     case SCIM_KEY_J:
-        return 5;
+        return 4;
     case SCIM_KEY_k:
     case SCIM_KEY_K:
-        return 6;
+        return 5;
     case SCIM_KEY_l:
     case SCIM_KEY_L:
-        return 7;
+        return 6;
     default:
-        return 0;
+        return -1;
     }
 }
 
 int
 KeyBind::match_selection_number (const KeyEvent &key)
 {
-    if (isdigit(key.code)) {
-        if (key.code == SCIM_KEY_0) {
-            return 10;
-        } else {
-            return (key.code - '0');
-        }
+    char c;
+    if (isdigit(c = key.get_ascii_code()) && c != '0') {
+        return (c - '1');
     } else {
-        return 0;
+        return -1;
     }
 }
 
@@ -134,8 +127,8 @@ int
 KeyBind::match_selection_keys (const KeyEvent &key)
 {
     if (key.mask & SCIM_KEY_ControlMask || key.mask & SCIM_KEY_Mod1Mask ||
-            key.mask & SCIM_KEY_Mod2Mask    || key.mask & SCIM_KEY_Mod3Mask ||
-            key.mask & SCIM_KEY_Mod4Mask    || key.mask & SCIM_KEY_Mod5Mask )
+        key.mask & SCIM_KEY_Mod2Mask    || key.mask & SCIM_KEY_Mod3Mask ||
+        key.mask & SCIM_KEY_Mod4Mask    || key.mask & SCIM_KEY_Mod5Mask )
         return 0;
     if (!isprint(key.code))
         return 0;
@@ -150,75 +143,110 @@ KeyBind::match_selection_keys (const KeyEvent &key)
     }
 }
 
-void
-KeyBind::set_kakutei_keys       (String str)
+int
+KeyBind::selection_key_length (void)
 {
-    scim_string_to_key_list(m_kakutei_keys, str);
+    switch (m_style) {
+    case SSTYLE_QWERTY:
+        return 7;
+    case SSTYLE_DVORAK:
+        return 8;
+    case SSTYLE_NUMBER:
+        return 9;
+    }
+}
+
+void
+KeyBind::selection_labels (std::vector<WideString> &result)
+{
+    switch (m_style) {
+    case SSTYLE_QWERTY:
+        result.resize(7);
+        for (int i = 0; i < 7; i++)
+            result[i] = utf8_mbstowcs(qwerty_vec[i]);
+        break;
+    case SSTYLE_DVORAK:
+        result.resize(8);
+        for (int i = 0; i < 8; i++)
+            result[i] = utf8_mbstowcs(dvorak_vec[i]);
+        break;
+    case SSTYLE_NUMBER:
+        result.resize(9);
+        for (int i = 0; i < 9; i++)
+            result[i] = utf8_mbstowcs(number_vec[i]);
+        break;
+    }
+}
+
+void
+KeyBind::set_kakutei_keys       (const String &str)
+{
+    keybind_string_to_key_list(m_kakutei_keys, str);
 }
 void
-KeyBind::set_katakana_keys      (String str)
+KeyBind::set_katakana_keys      (const String &str)
 {
-    scim_string_to_key_list(m_katakana_keys, str);
+    keybind_string_to_key_list(m_katakana_keys, str);
 }
 void
-KeyBind::set_half_katakana_keys (String str)
+KeyBind::set_half_katakana_keys (const String &str)
 {
-    scim_string_to_key_list(m_half_katakana_keys, str);
+    keybind_string_to_key_list(m_half_katakana_keys, str);
 }
 void
-KeyBind::set_latin_keys         (String str)
+KeyBind::set_ascii_keys         (const String &str)
 {
-    scim_string_to_key_list(m_latin_keys, str);
+    keybind_string_to_key_list(m_ascii_keys, str);
 }
 void
-KeyBind::set_wide_latin_keys    (String str)
+KeyBind::set_wide_ascii_keys    (const String &str)
 {
-    scim_string_to_key_list(m_wide_latin_keys, str);
+    keybind_string_to_key_list(m_wide_ascii_keys, str);
 }
 void
-KeyBind::set_convert_keys       (String str)
+KeyBind::set_convert_keys       (const String &str)
 {
-    scim_string_to_key_list(m_convert_keys, str);
+    keybind_string_to_key_list(m_convert_keys, str);
 }
 void
-KeyBind::set_start_conv_keys    (String str)
+KeyBind::set_start_preedit_keys    (const String &str)
 {
-    scim_string_to_key_list(m_start_conv_keys, str);
+    keybind_string_to_key_list(m_start_preedit_keys, str);
 }
 void
-KeyBind::set_cancel_keys        (String str)
+KeyBind::set_cancel_keys        (const String &str)
 {
-    scim_string_to_key_list(m_cancel_keys, str);
+    keybind_string_to_key_list(m_cancel_keys, str);
 }
 void
-KeyBind::set_latin_convert_keys        (String str)
+KeyBind::set_ascii_convert_keys        (const String &str)
 {
-    scim_string_to_key_list(m_latin_convert_keys, str);
+    keybind_string_to_key_list(m_ascii_convert_keys, str);
 }
 void
-KeyBind::set_prevcand_keys        (String str)
+KeyBind::set_prevcand_keys        (const String &str)
 {
-    scim_string_to_key_list(m_prevcand_keys, str);
+    keybind_string_to_key_list(m_prevcand_keys, str);
 }
 void
-KeyBind::set_backspace_keys        (String str)
+KeyBind::set_backspace_keys        (const String &str)
 {
-    scim_string_to_key_list(m_backspace_keys, str);
+    keybind_string_to_key_list(m_backspace_keys, str);
 }
 void
-KeyBind::set_delete_keys           (String str)
+KeyBind::set_delete_keys           (const String &str)
 {
-    scim_string_to_key_list(m_delete_keys, str);
+    keybind_string_to_key_list(m_delete_keys, str);
 }
 void
-KeyBind::set_forward_keys          (String str)
+KeyBind::set_forward_keys          (const String &str)
 {
-    scim_string_to_key_list(m_forward_keys, str);
+    keybind_string_to_key_list(m_forward_keys, str);
 }
 void
-KeyBind::set_backward_keys         (String str)
+KeyBind::set_backward_keys         (const String &str)
 {
-    scim_string_to_key_list(m_backward_keys, str);
+    keybind_string_to_key_list(m_backward_keys, str);
 }
 
 bool
@@ -237,14 +265,14 @@ KeyBind::match_half_katakana_keys (const KeyEvent &key)
     return match_key_event(m_half_katakana_keys, key);
 }
 bool
-KeyBind::match_latin_keys         (const KeyEvent &key)
+KeyBind::match_ascii_keys         (const KeyEvent &key)
 {
-    return match_key_event(m_latin_keys, key);
+    return match_key_event(m_ascii_keys, key);
 }
 bool
-KeyBind::match_wide_latin_keys    (const KeyEvent &key)
+KeyBind::match_wide_ascii_keys    (const KeyEvent &key)
 {
-    return match_key_event(m_wide_latin_keys, key);
+    return match_key_event(m_wide_ascii_keys, key);
 }
 bool
 KeyBind::match_convert_keys       (const KeyEvent &key)
@@ -252,9 +280,9 @@ KeyBind::match_convert_keys       (const KeyEvent &key)
     return match_key_event(m_convert_keys, key);
 }
 bool
-KeyBind::match_start_conv_keys    (const KeyEvent &key)
+KeyBind::match_start_preedit_keys    (const KeyEvent &key)
 {
-    return match_key_event(m_start_conv_keys, key);
+    return match_key_event(m_start_preedit_keys, key);
 }
 bool
 KeyBind::match_cancel_keys        (const KeyEvent &key)
@@ -262,9 +290,9 @@ KeyBind::match_cancel_keys        (const KeyEvent &key)
     return match_key_event(m_cancel_keys, key);
 }
 bool
-KeyBind::match_latin_convert_keys        (const KeyEvent &key)
+KeyBind::match_ascii_convert_keys        (const KeyEvent &key)
 {
-    return match_key_event(m_latin_convert_keys, key);
+    return match_key_event(m_ascii_convert_keys, key);
 }
 bool
 KeyBind::match_prevcand_keys        (const KeyEvent &key)
@@ -292,14 +320,37 @@ KeyBind::match_backward_keys         (const KeyEvent &key)
     return match_key_event(m_backward_keys, key);
 }
 
+static void
+keybind_string_to_key_list(KeyEventList &keys, const String &str)
+{
+    KeyEventList kl;
+    KeyEventList::iterator it;
+    scim_string_to_key_list(kl, str);
+    for (it = kl.begin(); it != kl.end(); it++) {
+        char code = it->get_ascii_code();
+        if (islower(code) && it->is_shift_down()) {
+            it->code = toupper(it->get_ascii_code());
+        } else if (isupper(code) && !it->is_shift_down()) {
+            it->mask |= SCIM_KEY_ShiftMask;
+        }
+        keys.push_back(*it);
+    }
+}
 
 static inline bool
 match_key_event (const KeyEventList &keylist, const KeyEvent &key)
 {
-    KeyEventList::const_iterator it = std::find(keylist.begin(),
-                                      keylist.end(),
-                                      key);
+    KeyEvent k(key.code, key.mask);
+    char code = k.get_ascii_code();
 
+    if (islower(code) && k.is_shift_down()) {
+        k.code = toupper(k.get_ascii_code());
+    } else if (isupper(code) && !k.is_shift_down()) {
+        k.code = tolower(k.get_ascii_code());
+    }
+
+    KeyEventList::const_iterator it = std::find(keylist.begin(),
+                                                keylist.end(), k);
     return it != keylist.end();
 }
 
