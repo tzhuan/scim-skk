@@ -20,13 +20,13 @@
 #define Uses_SCIM_EVENT
 #include "scim_skk_keybind.h"
 
-static char *qwerty_vec[7]  = {"a", "s", "d", "f", "j", "k", "l"};
-static char *dvorak_vec[8]  = {"a", "o", "e", "u", "h", "t", "n", "s"};
-static char *number_vec[9]  = {"1", "2", "3", "4", "5", "6", "7", "8", "9"};
+#define qwerty_vec_len 7
+#define dvorak_vec_len 8
+#define number_vec_len 10
 
-static int qwerty_vec_len = sizeof(qwerty_vec);
-static int dvorak_vec_len = sizeof(dvorak_vec);
-static int number_vec_len = sizeof(number_vec);
+static char qwerty_vec[] = "asdfjkl";
+static char dvorak_vec[] = "aoeuhtns";
+static char number_vec[] = "1234567890";
 
 static void keybind_string_to_key_list(KeyEventList &keys, const String &str);
 static inline bool match_key_event       (const KeyEventList &keylist,
@@ -44,76 +44,34 @@ KeyBind::~KeyBind (void)
 void
 KeyBind::set_selection_style (const String &str)
 {
-    if (str == "Qwerty") {
+    if (str == "Qwerty")
         m_style = SSTYLE_QWERTY;
-    } else if (str == "Dvorak") {
+    else if (str == "Dvorak")
         m_style = SSTYLE_DVORAK;
-    } else if (str == "Number") {
+    else if (str == "Number")
         m_style = SSTYLE_NUMBER;
-    }
 }
 
 int
 KeyBind::match_selection_dvorak (const KeyEvent &key)
 {
-    switch (key.code) {
-    case SCIM_KEY_a:
-    case SCIM_KEY_A:
-        return 0;
-    case SCIM_KEY_o:
-    case SCIM_KEY_O:
-        return 1;
-    case SCIM_KEY_e:
-    case SCIM_KEY_E:
-        return 2;
-    case SCIM_KEY_u:
-    case SCIM_KEY_U:
-        return 3;
-    case SCIM_KEY_h:
-    case SCIM_KEY_H:
-        return 4;
-    case SCIM_KEY_t:
-    case SCIM_KEY_T:
-        return 5;
-    case SCIM_KEY_n:
-    case SCIM_KEY_N:
-        return 6;
-    case SCIM_KEY_s:
-    case SCIM_KEY_S:
-        return 7;
-    default:
-        return -1;
+    char c = tolower(key.get_ascii_code());
+    for (int i = 0; i < dvorak_vec_len; i++) {
+        if (dvorak_vec[i] == c)
+            return i;
     }
+    return -1;
 }
 
 int
 KeyBind::match_selection_qwerty (const KeyEvent &key)
 {
-    switch (key.code) {
-    case SCIM_KEY_a:
-    case SCIM_KEY_A:
-        return 0;
-    case SCIM_KEY_s:
-    case SCIM_KEY_S:
-        return 1;
-    case SCIM_KEY_d:
-    case SCIM_KEY_D:
-        return 2;
-    case SCIM_KEY_f:
-    case SCIM_KEY_F:
-        return 3;
-    case SCIM_KEY_j:
-    case SCIM_KEY_J:
-        return 4;
-    case SCIM_KEY_k:
-    case SCIM_KEY_K:
-        return 5;
-    case SCIM_KEY_l:
-    case SCIM_KEY_L:
-        return 6;
-    default:
-        return -1;
+    char c = tolower(key.get_ascii_code());
+    for (int i = 0; i < qwerty_vec_len; i++) {
+        if (qwerty_vec[i] == c)
+            return i;
     }
+    return -1;
 }
 
 int
@@ -122,6 +80,8 @@ KeyBind::match_selection_number (const KeyEvent &key)
     char c;
     if (isdigit(c = key.get_ascii_code()) && c != '0') {
         return (c - '1');
+    } else if (c == '0') {
+        return 10;
     } else {
         return -1;
     }
@@ -173,21 +133,19 @@ KeyBind::selection_labels (std::vector<WideString> &result)
     case SSTYLE_QWERTY:
         result.resize(qwerty_vec_len);
         for (int i = 0; i < qwerty_vec_len; i++)
-            result[i] = utf8_mbstowcs(qwerty_vec[i]);
+            result[i] = utf8_mbstowcs(qwerty_vec + i, 1);
         break;
     case SSTYLE_DVORAK:
         result.resize(dvorak_vec_len);
         for (int i = 0; i < dvorak_vec_len; i++)
-            result[i] = utf8_mbstowcs(dvorak_vec[i]);
+            result[i] = utf8_mbstowcs(dvorak_vec + i, 1);
         break;
     case SSTYLE_NUMBER:
         result.resize(number_vec_len);
         for (int i = 0; i < number_vec_len; i++)
-            result[i] = utf8_mbstowcs(number_vec[i]);
+            result[i] = utf8_mbstowcs(number_vec + i, 1);
         break;
     }
-
-    return;
 }
 
 void

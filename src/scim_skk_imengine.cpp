@@ -70,7 +70,7 @@
 
 
 static ConfigPointer _scim_config (0);
-static SKKDictionaries *_scim_skkdict = 0;
+static SKKFactory *_scim_skk_factory = 0;
 
 extern "C" {
     void scim_module_init (void)
@@ -83,8 +83,8 @@ extern "C" {
     {
         if (_scim_config)
             _scim_config.reset ();
-        if (_scim_skkdict)
-            _scim_skkdict->dump_userdict();
+        if (_scim_skk_factory)
+            _scim_skk_factory->dump_dict();
     }
 
     uint32 scim_imengine_module_init (const ConfigPointer &config)
@@ -92,25 +92,24 @@ extern "C" {
         SCIM_DEBUG_IMENGINE(1) << "Initialize SKK Engine.\n";
 
         _scim_config  = config;
-        _scim_skkdict = new SKKDictionaries ();
 
         return 1;
     }
 
     IMEngineFactoryPointer scim_imengine_module_create_factory (uint32 engine)
     {
-        SKKFactory *factory = 0;
-
-        try {
-            factory = new SKKFactory (String ("ja_JP"),
-                                      String ("ec43125f-f9d3-4a77-8096-de3a35290ba9"),
-                                      _scim_config);
-        } catch (...) {
-            delete factory;
-            factory = 0;
+        if (_scim_skk_factory == 0) {
+            try {
+                _scim_skk_factory = new SKKFactory (String ("ja_JP"),
+                                                    String ("ec43125f-f9d3-4a77-8096-de3a35290ba9"),
+                                                    _scim_config);
+            } catch (...) {
+                delete _scim_skk_factory;
+                _scim_skk_factory = 0;
+            }
         }
 
-        return factory;
+        return _scim_skk_factory;
     }
 }
 
@@ -119,7 +118,7 @@ SKKFactory::SKKFactory (const String &lang,
                         const String &uuid,
                         const ConfigPointer &config)
     :  m_uuid(uuid),
-       m_skkdict(_scim_skkdict),
+       m_skkdict(),
        m_sysdictpath(SCIM_SKK_CONFIG_SYSDICT_DEFAULT),
        m_userdictname(SCIM_SKK_CONFIG_USERDICT_DEFAULT),
        m_dlistsize(SCIM_SKK_CONFIG_DICT_LISTSIZE_DEFAULT),
@@ -178,6 +177,12 @@ SKKFactory::get_help () const
     return WideString();
 }
 
+void
+SKKFactory::dump_dict (void)
+{
+    m_skkdict.dump_userdict();
+}
+
 IMEngineInstancePointer
 SKKFactory::create_instance (const String &encoding, int id)
 {
@@ -192,16 +197,16 @@ SKKFactory::reload_config (const ConfigPointer &config)
 
         m_sysdictpath = config->read(String(SCIM_SKK_CONFIG_SYSDICT),
                                      String(SCIM_SKK_CONFIG_SYSDICT_DEFAULT));
-        m_skkdict->set_sysdict(m_sysdictpath);
+        m_skkdict.set_sysdict(m_sysdictpath);
         m_userdictname = config->read(String(SCIM_SKK_CONFIG_USERDICT),
                                       String(SCIM_SKK_CONFIG_USERDICT_DEFAULT));
-        m_skkdict->set_userdict(m_userdictname);
+        m_skkdict.set_userdict(m_userdictname);
         m_dlistsize = config->read(String(SCIM_SKK_CONFIG_DICT_LISTSIZE),
                                    SCIM_SKK_CONFIG_DICT_LISTSIZE_DEFAULT);
-        m_skkdict->set_listsize(m_dlistsize);
+        m_skkdict.set_listsize(m_dlistsize);
         m_view_annot = config->read(String(SCIM_SKK_CONFIG_DICT_VIEW_ANNOT),
                                     SCIM_SKK_CONFIG_DICT_VIEW_ANNOT_DEFAULT);
-        m_skkdict->set_view_annot(m_view_annot);
+        m_skkdict.set_view_annot(m_view_annot);
 
         str = config->read(String(SCIM_SKK_CONFIG_KAKUTEI_KEY),
                            String(SCIM_SKK_CONFIG_KAKUTEI_KEY_DEFAULT));
@@ -266,9 +271,10 @@ SKKInstance::SKKInstance (SKKFactory   *factory,
                           const String &encoding,
                           int           id)
     : IMEngineInstanceBase (factory, encoding, id),
+      m_lookup_table(m_factory->m_keybind.selection_key_length()),
       m_factory(factory),
       m_skk_mode(SKK_MODE_HIRAGANA),
-      m_skkcore(&(factory->m_keybind), m_factory->m_skkdict,
+      m_skkcore(&(factory->m_keybind), &(m_factory->m_skkdict),
                 &(m_key2kana), &(m_lookup_table))
 {
     SCIM_DEBUG_IMENGINE(1) << "Create SKK Instance : ";
@@ -291,7 +297,7 @@ void
 SKKInstance::init_ltable (void)
 {
     std::vector<WideString> labels;
-    m_lookup_table.set_page_size(m_factory->m_keybind.selection_key_length());
+    /* m_lookup_table.set_page_size(m_factory->m_keybind.selection_key_length()); */
     m_factory->m_keybind.selection_labels(labels);
     m_lookup_table.set_candidate_labels(labels);
 }

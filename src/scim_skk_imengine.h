@@ -42,11 +42,11 @@ class SKKFactory : public IMEngineFactoryBase
     friend class SKKInstance;
 
     /* dictionary */
-    SKKDictionaries *m_skkdict;
-    String           m_sysdictpath;
-    String           m_userdictname;
-    int              m_dlistsize;
-    bool             m_view_annot;
+    SKKDictionaries m_skkdict;
+    String          m_sysdictpath;
+    String          m_userdictname;
+    int             m_dlistsize;
+    bool            m_view_annot;
 
     /* config */
     ConfigPointer m_config;
@@ -68,6 +68,7 @@ public:
     virtual WideString  get_credits () const;
     virtual WideString  get_help () const;
 
+    void dump_dict (void);
     virtual IMEngineInstancePointer create_instance (const String &encoding, int id = -1);
 
 private:
