@@ -1,3 +1,11 @@
+2005-05-19  Jun Mukai  <mukai@jmuk.org>
+
+	* src/scim_skk_imengine.cpp (process_key_event): ignores key
+	events if the key.code == SCIM_KEY_Caps_Lock or SCIM_KEY_Shift_Lock.
+
+	* src/scim_skk_core.cpp: not use of
+	SCIM_KEY_Mod?Mask.
+
 2005-03-23  Jun Mukai  <mukai@jmuk.org>
 
 	* src/scim_skk_imengine.cpp: bugfix on timing of dump_dict().

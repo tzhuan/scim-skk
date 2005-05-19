@@ -317,7 +317,10 @@ SKKInstance::process_key_event (const KeyEvent &key)
     // ignore modifier keys
     if (key.code == SCIM_KEY_Shift_L || key.code == SCIM_KEY_Shift_R ||
         key.code == SCIM_KEY_Control_L || key.code == SCIM_KEY_Control_R ||
-        key.code == SCIM_KEY_Alt_L || key.code == SCIM_KEY_Alt_R)
+        key.code == SCIM_KEY_Alt_L || key.code == SCIM_KEY_Alt_R ||
+        key.code == SCIM_KEY_Meta_L || key.code == SCIM_KEY_Meta_R ||
+        key.code == SCIM_KEY_Caps_Lock || key.code == SCIM_KEY_Shift_Lock
+        )
         return false;
 
     KeyEvent k(key.code, key.mask);

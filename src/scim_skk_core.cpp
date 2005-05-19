@@ -32,6 +32,8 @@ static void convert_hiragana_to_katakana (const WideString &hira,
         WideString &kata,
         bool half = false);
 
+int skk_key_mask = SCIM_KEY_ControlMask | SCIM_KEY_AltMask;
+
 
 SKKCore::SKKCore      (KeyBind *keybind, SKKDictionaries *dict,
                        SKKAutomaton *key2kana, CommonLookupTable *ltable)
@@ -981,9 +983,7 @@ SKKCore::process_ascii (const KeyEvent &key)
 
     char code = key.get_ascii_code();
 
-    if (!(key.mask & SCIM_KEY_ControlMask || key.mask & SCIM_KEY_Mod1Mask ||
-          key.mask & SCIM_KEY_Mod2Mask    || key.mask & SCIM_KEY_Mod3Mask ||
-          key.mask & SCIM_KEY_Mod4Mask    || key.mask & SCIM_KEY_Mod5Mask )) {
+    if (!(key.mask & skk_key_mask)) {
         if (m_input_mode == INPUT_MODE_DIRECT) {
             return false;
         } else {
@@ -1011,10 +1011,7 @@ SKKCore::process_wide_ascii (const KeyEvent &key)
 
     char code = key.get_ascii_code();
 
-    if (!(key.mask & SCIM_KEY_ControlMask || key.mask & SCIM_KEY_Mod1Mask ||
-          key.mask & SCIM_KEY_Mod2Mask    || key.mask & SCIM_KEY_Mod3Mask ||
-          key.mask & SCIM_KEY_Mod4Mask    || key.mask & SCIM_KEY_Mod5Mask ) &&
-        isprint(code)) {
+    if (!(key.mask & skk_key_mask) && isprint(code)) {
         WideString result;
 
         convert_char_to_wide(code, result);
@@ -1040,10 +1037,7 @@ SKKCore::process_romakana (const KeyEvent &key)
 
     char code = key.get_ascii_code();
 
-    if (!(key.mask & SCIM_KEY_ControlMask || key.mask & SCIM_KEY_Mod1Mask ||
-          key.mask & SCIM_KEY_Mod2Mask    || key.mask & SCIM_KEY_Mod3Mask ||
-          key.mask & SCIM_KEY_Mod4Mask    || key.mask & SCIM_KEY_Mod5Mask ) &&
-        isprint(code)) {
+    if (!(key.mask & skk_key_mask) && isprint(code)) {
         if (isalpha(code)) {
             bool f = false;
             char str[2];
