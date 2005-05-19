@@ -1,7 +1,10 @@
 2005-05-19  Jun Mukai  <mukai@jmuk.org>
 
 	* src/scim_skk_imengine.cpp (process_key_event): ignores key
-	events if the key.code == SCIM_KEY_Caps_Lock or SCIM_KEY_Shift_Lock.
+	events if the key.code == SCIM_KEY_Caps_Lock or
+	SCIM_KEY_Shift_Lock.
+	(process_key_event): patches of [scim-imengine-dev 327]. thanks to
+	TAM.
 
 	* src/scim_skk_core.cpp: not use of
 	SCIM_KEY_Mod?Mask.

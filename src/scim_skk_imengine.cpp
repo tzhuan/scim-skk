@@ -329,6 +329,7 @@ SKKInstance::process_key_event (const KeyEvent &key)
     k.mask &= ~SCIM_KEY_CapsLockMask;
 
     bool retval = m_skkcore.process_key_event(k);
+    if (!retval) return false;
 
     if (m_skkcore.has_commit_string()) {
         commit_string(m_skkcore.get_commit_string());
@@ -337,14 +338,13 @@ SKKInstance::process_key_event (const KeyEvent &key)
 
     WideString preedit;
     m_skkcore.get_preedit_string(preedit);
+    update_preedit_string(preedit);
     if (!preedit.empty()) {
-        update_preedit_string(preedit);
+        update_preedit_caret(m_skkcore.caret_pos());
         show_preedit_string();
     } else {
         hide_preedit_string();
     }
-
-    update_preedit_caret(m_skkcore.caret_pos());
 
     if (m_skkcore.show_lookup_table()) {
         m_lookup_table.set_page_size(m_default_page_size);
@@ -418,6 +418,7 @@ SKKInstance::select_candidate (unsigned int index)
         commit_string(m_skkcore.get_commit_string());
         m_skkcore.clear_commit();
     }
+    update_preedit_string(WideString());
     hide_lookup_table();
     hide_preedit_string();
 }
@@ -472,14 +473,13 @@ SKKInstance::focus_in ()
     install_properties();
 
     m_skkcore.get_preedit_string(preedit);
+    update_preedit_string(preedit);
     if (!preedit.empty()) {
-        update_preedit_string(preedit);
+        update_preedit_caret(m_skkcore.caret_pos());
         show_preedit_string();
     } else {
         hide_preedit_string();
     }
-
-    update_preedit_caret(m_skkcore.caret_pos());
 
     if (m_skkcore.show_lookup_table()) {
         update_lookup_table(m_lookup_table);
