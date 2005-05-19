@@ -1,5 +1,8 @@
 2005-05-19  Jun Mukai  <mukai@jmuk.org>
 
+	* src/scim_skk_keybind.cpp (match_selection_keys): remove
+	SCIM_KEY_Mod1Mask and use SCIM_KEY_AltMask instead. 
+
 	* src/scim_skk_imengine.cpp (process_key_event): ignores key
 	events if the key.code == SCIM_KEY_Caps_Lock or
 	SCIM_KEY_Shift_Lock.

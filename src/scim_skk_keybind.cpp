@@ -90,9 +90,9 @@ KeyBind::match_selection_number (const KeyEvent &key)
 int
 KeyBind::match_selection_keys (const KeyEvent &key)
 {
-    if (key.mask & SCIM_KEY_ControlMask || key.mask & SCIM_KEY_Mod1Mask ||
-        key.mask & SCIM_KEY_Mod2Mask    || key.mask & SCIM_KEY_Mod3Mask ||
-        key.mask & SCIM_KEY_Mod4Mask    || key.mask & SCIM_KEY_Mod5Mask )
+    int skk_key_mask = SCIM_KEY_ControlMask | SCIM_KEY_AltMask;
+ 
+    if (key.mask & skk_key_mask)
         return 0;
     if (!isprint(key.code))
         return 0;
