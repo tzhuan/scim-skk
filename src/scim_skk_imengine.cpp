@@ -329,7 +329,6 @@ SKKInstance::process_key_event (const KeyEvent &key)
     k.mask &= ~SCIM_KEY_CapsLockMask;
 
     bool retval = m_skkcore.process_key_event(k);
-    if (!retval) return false;
 
     if (m_skkcore.has_commit_string()) {
         commit_string(m_skkcore.get_commit_string());
