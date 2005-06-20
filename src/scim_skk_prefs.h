@@ -42,8 +42,11 @@
 #define SCIM_SKK_CONFIG_SYSDICT          "/IMEngine/SKK/SysDict"
 #define SCIM_SKK_CONFIG_USERDICT         "/IMEngine/SKK/UserDict"
 
-#define SCIM_SKK_CONFIG_DICT_LISTSIZE     "/IMEngine/SKK/DictListSize"
-#define SCIM_SKK_CONFIG_DICT_VIEW_ANNOT   "/IMEngine/SKK/DictViewAnnot"
+#define SCIM_SKK_CONFIG_CANDVEC_SIZE      "/IMEngine/SKK/DictListSize"
+
+#define SCIM_SKK_CONFIG_ANNOT_VIEW     "/IMEngine/SKK/AnnotView"
+#define SCIM_SKK_CONFIG_ANNOT_POS      "/IMEngine/SKK/AnnotPos"
+//#define SCIM_SKK_CONFIG_ANNOT_TARGET   "/IMEngine/SKK/AnnotTarget"
 
 
 /* default values */
@@ -68,6 +71,8 @@
 
 #define SCIM_SKK_CONFIG_SYSDICT_DEFAULT          "/usr/share/skk/SKK-JISYO.L"
 #define SCIM_SKK_CONFIG_USERDICT_DEFAULT         ".skk-scim-jisyo"
-#define SCIM_SKK_CONFIG_DICT_LISTSIZE_DEFAULT    4
-#define SCIM_SKK_CONFIG_DICT_VIEW_ANNOT_DEFAULT  true
+#define SCIM_SKK_CONFIG_CANDVEC_SIZE_DEFAULT      4
+#define SCIM_SKK_CONFIG_ANNOT_VIEW_DEFAULT    true
+#define SCIM_SKK_CONFIG_ANNOT_POS_DEFAULT     "auxwindow"
+//#define SCIM_SKK_CONFIG_ANNOT_TARGET_DEFAULT  "all"
 #endif

@@ -149,16 +149,21 @@ struct ComboConfigData
 };
 
 // Internal data declaration.
-static String __config_userdict   = SCIM_SKK_CONFIG_USERDICT_DEFAULT;
-static int    __config_listsize   = SCIM_SKK_CONFIG_DICT_LISTSIZE_DEFAULT;
-static bool   __config_view_annot = SCIM_SKK_CONFIG_DICT_VIEW_ANNOT_DEFAULT;
+static String __config_userdict     = SCIM_SKK_CONFIG_USERDICT_DEFAULT;
+static int    __config_listsize     = SCIM_SKK_CONFIG_CANDVEC_SIZE_DEFAULT;
+static bool   __config_annot_view   = SCIM_SKK_CONFIG_ANNOT_VIEW_DEFAULT;
+
+static String __config_annot_pos    = SCIM_SKK_CONFIG_ANNOT_POS_DEFAULT;
+//static String __config_annot_target = SCIM_SKK_CONFIG_ANNOT_TARGET_DEFAULT;
 static String __config_selection_style = SCIM_SKK_CONFIG_SELECTION_STYLE_DEFAULT;
 
 static bool __have_changed    = true;
 
 static GtkWidget    * __widget_userdict        = 0;
 static GtkWidget    * __widget_listsize        = 0;
-static GtkWidget    * __widget_view_annot      = 0;
+static GtkWidget    * __widget_annot_view      = 0;
+static GtkWidget    * __widget_annot_pos       = 0;
+//static GtkWidget    * __widget_annot_target    = 0;
 static GtkWidget    * __widget_selection_style = 0;
 static GtkTooltips  * __widget_tooltips        = 0;
 
@@ -369,7 +374,21 @@ static ComboConfigData selection_style[] =
     {NULL, NULL},
 };
 
+static ComboConfigData annot_position[] =
+{
+    {N_("aux window"), "auxwindow"},
+    {N_("inline"), "inline"},
+    {NULL, NULL},
+};
 
+/*
+static ComboConfigData annot_target[] =
+{
+    {N_("all"), "all"},
+    {N_("caret position only"), "caret"},
+    {NULL, NULL},
+};
+*/
 
 static struct KeyboardConfigPage __key_conf_pages[] =
 {
@@ -489,10 +508,24 @@ create_options_page ()
     gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, FALSE, 4);
 
     /* view annot */
-    __widget_view_annot = gtk_check_button_new_with_mnemonic (_("View Annotation."));
-    gtk_widget_show (__widget_view_annot);
-    gtk_box_pack_start (GTK_BOX (vbox), __widget_view_annot, FALSE, FALSE, 4);
-    gtk_container_set_border_width (GTK_CONTAINER (__widget_view_annot), 4);
+    __widget_annot_view = gtk_check_button_new_with_mnemonic (_("View Annotation."));
+    gtk_widget_show (__widget_annot_view);
+    gtk_box_pack_start (GTK_BOX (vbox), __widget_annot_view, FALSE, FALSE, 4);
+    gtk_container_set_border_width (GTK_CONTAINER (__widget_annot_view), 4);
+
+    widget = create_combo_widget (_("Position of Annotation:"),
+                                  &__widget_annot_pos,
+                                  (gpointer) &__config_annot_pos,
+                                  (gpointer) &annot_position);
+    gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, FALSE, 4);
+
+    /*
+    widget = create_combo_widget (_("Printed Annotation:"),
+                                  &__widget_annot_target,
+                                  (gpointer) &__config_annot_target,
+                                  (gpointer) &annot_target);
+    gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, FALSE, 4);
+    */
 
     // Connect all signals.
     g_signal_connect ((gpointer) __config_sysdict.button, "clicked",
@@ -510,9 +543,9 @@ create_options_page ()
                       G_CALLBACK (on_default_spin_button_changed),
                       &__config_listsize);
 
-    g_signal_connect ((gpointer) __widget_view_annot, "toggled",
+    g_signal_connect ((gpointer) __widget_annot_view, "toggled",
                       G_CALLBACK (on_default_toggle_button_toggled),
-                      &__config_view_annot);
+                      &__config_annot_view);
     return vbox;
 }
 
@@ -646,10 +679,21 @@ setup_widget_value ()
                            selection_style, __config_selection_style);
     }
 
-    if (__widget_view_annot) {
+    if (__widget_annot_pos) {
+        setup_combo_value (GTK_COMBO (__widget_annot_pos),
+                           annot_position, __config_annot_pos);
+    }
+
+    /*
+    if (__widget_annot_target) {
+        setup_combo_value (GTK_COMBO (__widget_annot_target),
+                           annot_target, __config_annot_target);
+                           }*/
+
+    if (__widget_annot_view) {
         gtk_toggle_button_set_active (
-            GTK_TOGGLE_BUTTON (__widget_view_annot),
-            __config_view_annot);
+            GTK_TOGGLE_BUTTON (__widget_annot_view),
+            __config_annot_view);
     }
 
     if (__widget_listsize) {
@@ -690,11 +734,17 @@ load_config (const ConfigPointer &config)
             config->read (String (SCIM_SKK_CONFIG_USERDICT),
                           __config_userdict);
         __config_listsize =
-            config->read (String (SCIM_SKK_CONFIG_DICT_LISTSIZE),
+            config->read (String (SCIM_SKK_CONFIG_CANDVEC_SIZE),
                           __config_listsize);
-        __config_view_annot =
-            config->read (String (SCIM_SKK_CONFIG_DICT_VIEW_ANNOT),
-                          __config_view_annot);
+        __config_annot_view =
+            config->read (String (SCIM_SKK_CONFIG_ANNOT_VIEW),
+                          __config_annot_view);
+        __config_annot_pos =
+            config->read (String (SCIM_SKK_CONFIG_ANNOT_POS),
+                          __config_annot_pos);
+        /*        __config_annot_target =
+            config->read (String (SCIM_SKK_CONFIG_ANNOT_TARGET),
+            __config_annot_target);*/
         __config_selection_style =
             config->read (String (SCIM_SKK_CONFIG_SELECTION_STYLE),
                           __config_selection_style);
@@ -721,10 +771,14 @@ save_config (const ConfigPointer &config)
                        __config_sysdict.data);
         config->write (String (SCIM_SKK_CONFIG_USERDICT),
                        __config_userdict);
-        config->write (String (SCIM_SKK_CONFIG_DICT_LISTSIZE),
+        config->write (String (SCIM_SKK_CONFIG_CANDVEC_SIZE),
                         __config_listsize);
-        config->write (String (SCIM_SKK_CONFIG_DICT_VIEW_ANNOT),
-                        __config_view_annot);
+        config->write (String (SCIM_SKK_CONFIG_ANNOT_VIEW),
+                        __config_annot_view);
+        config->write (String (SCIM_SKK_CONFIG_ANNOT_POS),
+                        __config_annot_pos);
+        /*        config->write (String (SCIM_SKK_CONFIG_ANNOT_TARGET),
+                  __config_annot_target);*/
         config->write (String (SCIM_SKK_CONFIG_SELECTION_STYLE),
                         __config_selection_style);
 

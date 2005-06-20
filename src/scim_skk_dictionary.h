@@ -21,96 +21,49 @@
 #define __SCIM_SKK_DICTIONARY_H__
 
 #include <map>
-#include <utility>
-#include <deque>
 #include <list>
 
-#define Uses_SCIM_ICONV
-#define Uses_SCIM_LOOKUP_TABLE
 #include <scim.h>
+
+#include "scim_skk_lookup_table.h"
 
 using namespace scim;
 
-#if 0
-typedef std::pair<WideString, WideString> Candidate;
-typedef std::deque<Candidate>             CandList;
-typedef std::map<WideString, CandList>    Dict;
-#else
-typedef WideString             Candidate;
-typedef std::deque<WideString> CandList;
-typedef std::map<WideString, std::list<WideString> > Dict;
-#endif
 
-class SKKDictionaries;
+typedef std::map<WideString, std::list<CandPair> > DictCache;
 
-class SKKDictionaryBase
+class SKKDictBase
 {
 public:
-    SKKDictionaryBase  (void);
-    virtual ~SKKDictionaryBase (void);
+    SKKDictBase  (void) {}
+    virtual ~SKKDictBase (void) = 0;
 
-    virtual void lookup     (const WideString &key, CandList &result,
-                             CommonLookupTable &table) = 0;
+    virtual void lookup (const WideString &key, const bool okuri,
+                         std::list<CandPair> &result) = 0;
+    virtual bool compare (const String &dictname) = 0;
+    virtual bool compare (const String &host, const int port) = 0;
 };
 
-class SKKDictionary : SKKDictionaryBase
+class SKKUserDict;
+
+class SKKDictionary
 {
-    String     m_dictpath;
-    Dict       m_dictdata;
-    IConvert   m_iconv;
+    std::list<SKKDictBase*> m_sysdicts;
+    SKKUserDict *m_userdict;
 
-    SKKDictionaries *m_parent;
-
-    bool m_writeflag;
-    void load_dictdata (void);
+    DictCache m_cache;
 public:
-    bool m_writable;
+    SKKDictionary  (void);
+    ~SKKDictionary (void);
 
-    SKKDictionary  (SKKDictionaries *parent, bool writable = false);
-    virtual ~SKKDictionary (void);
-
-    void load_dict  (const String &dictpath);
-    void dump_dict  (void);
-    void lookup     (const WideString &key, CandList &result,
-                     CommonLookupTable &table);
-    void write      (const WideString &key, const WideString &data);
-};
-
-class SKKNumDict : SKKDictionaryBase
-{
-public:
-    SKKNumDict  (void);
-    virtual ~SKKNumDict (void);
-
-    void lookup (const WideString &key, CandList &result,
-                 CommonLookupTable &table);
-};
-
-
-class SKKDictionaries
-{
-    SKKDictionary  m_sysdict;
-    SKKDictionary  m_userdict;
-
-    bool m_view_annot;
-    int  m_listsize;
-public:
-    SKKDictionaries  (void);
-    ~SKKDictionaries (void);
-
-    void set_sysdict  (const String &dictname);
+    void add_sysdict  (const String &dictname);
     void set_userdict (const String &dictname);
-
-    void set_listsize   (const int  lsize);
-    void set_view_annot (const bool view);
-    int  get_listsize   (void);
-    bool get_view_annot (void);
+    void add_skkserv  (const String &host, const int port = -1);
 
     void dump_userdict (void);
 
-    void lookup (const WideString &hira, CandList &result,
-                 CommonLookupTable &table);
-    void write (const WideString &key, const WideString &data);
-    void strip_annot (WideString &str);
+    void lookup (const WideString &key, const bool okuri,
+                 SKKCandList &result);
+    void write (const WideString &key, const CandPair &data);
 };
 #endif

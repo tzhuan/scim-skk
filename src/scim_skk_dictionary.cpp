@@ -20,185 +20,454 @@
 #include "scim_skk_dictionary.h"
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <fcntl.h>
 #include <unistd.h>
+#include <sys/mman.h>
+
+#include <list>
+#include <map>
+#include <utility>
+#include <algorithm>
+
+#include <scim_iconv.h>
 
 #define SKKDICT_CHARCODE      "EUC-JP"
 
 using namespace std;
 
-SKKDictionaryBase::SKKDictionaryBase  (void)
+static IConvert converter;
+
+static void append_candpair(const WideString &cand,
+                            const WideString &annot,
+                            list<CandPair> &result);
+
+class SKKSysDict : public SKKDictBase
 {
-}
-SKKDictionaryBase::~SKKDictionaryBase  (void)
-{
-}
+    String  m_dictpath;
+    char   *m_dictdata;
+    int     m_fd;
+    int     m_length;
+
+    map<int, String> m_key_cache;
+
+    vector<int> m_okuri_indice;
+    vector<int> m_normal_indice;
+
+    void get_key_from_index (int index, String &key);
+    void get_cands_from_index (int index, list<CandPair> &result);
+
+    void clear (void);
+public:
+    SKKSysDict  (const String &dictpath = 0);
+    ~SKKSysDict (void);
+
+    void load_dict (const String &dictpath);
+    void dump_dict (const String &dictpath);
+    void lookup    (const WideString &key, const bool okuri,
+                    list<CandPair> &result);
+    bool compare (const String &dictname);
+    bool compare (const String &host, const int port);
+};
 
 
-SKKDictionary::SKKDictionary  (SKKDictionaries *parent, bool writable)
-    : m_dictpath   (""),
-      m_parent     (parent),
-      m_writeflag  (false),
-      m_writable (writable)
+class SKKUserDict : public SKKDictBase
 {
+    String     m_dictpath;
+    map<WideString, list<CandPair> >  m_dictdata;
+
+    bool m_writeflag;
+public:
+    SKKUserDict  (void);
+    ~SKKUserDict (void);
+
+    void load_dict (const String &dictpath);
+    void dump_dict (void);
+    void lookup    (const WideString &key, const bool okuri,
+                    list<CandPair> &result);
+    void write     (const WideString &key, const CandPair &data);
+    bool compare (const String &dictname);
+    bool compare (const String &host, const int port);
+};
+
+class SKKNumDict : SKKDictBase
+{
+public:
+    SKKNumDict  (void);
+    virtual ~SKKNumDict (void);
+
+    void lookup (const WideString &key, const bool okuri,
+                 list<CandPair> &result);
+    bool compare (const String &dictname);
+    bool compare (const String &host, const int port);
+};
+
+
+
+SKKSysDict::SKKSysDict (const String &dictpath)
+    : m_dictdata(0),
+      m_dictpath("")
+{
+    if (!dictpath.empty())
+        load_dict(dictpath);
 }
 
-SKKDictionary::~SKKDictionary (void)
+SKKSysDict::~SKKSysDict (void)
 {
+    if (m_dictdata)
+        delete[] m_dictdata;
+    munmap(m_dictdata, m_length);
+    close(m_fd);
 }
 
 void
-SKKDictionary::load_dictdata (void)
+SKKSysDict::load_dict (const String &dictpath)
 {
-    char *buf;
-    int len = scim_load_file(m_dictpath, &buf);
+    m_dictpath.assign(dictpath);
+    struct stat statbuf;
+    if (stat(m_dictpath.c_str(), &statbuf) < 0) return;
 
-    if (buf) {
-        for (int i = 0; i < len; i++) {
-            char c = buf[i];
+    if ((m_fd = open(m_dictpath.c_str(), O_RDONLY)) < 0) return;
+    m_length = statbuf.st_size;
+    m_dictdata = (char*)mmap(0, m_length, PROT_READ, MAP_SHARED, m_fd, 0);
+    if (m_dictdata == MAP_FAILED) {
+        close(m_fd);
+        return;
+    }
 
-            if (c == ';') {
-                while (i < len && buf[i] != '\n') i++;
-                continue;
-            } else if (c == '\n') {
-                continue;
-            } else {
-                int j;
-                WideString key_w;
+    vector<int>*indice = &m_okuri_indice;
+    bool okuri_flag = false;
+    int pos = 0;
+    /* skip the header informations */
+    while (pos < m_length && m_dictdata[pos] == ';') {
+        for (; m_dictdata[pos] != '\n'; pos++);
+        pos++;
+    }
 
-                for (j = 0; i+j < len && buf[i+j] != ' '; j++);
-                char *key = new char[j+1];
-                strncpy(key, buf+i, j);
-                key[j] = '\0';
-                m_iconv.convert(key_w, String(key));
-
-                i += j+2;
-                while (buf[i] != '\n') {
-                    if (buf[i] == '[') {
-                        while (buf[i] != ']') i++;
-                        i+=2;
-                        continue;
-                    }
-
-                    Candidate cand;
-                    int candlen = 1;
-                    while (buf[i+candlen] != '/') candlen++;
-                    char *candstr = new char[candlen+1];
-                    strncpy(candstr, buf+i, candlen);
-                    candstr[candlen] = '\0';
-                    m_iconv.convert(cand, String(candstr));
-                    m_dictdata[key_w].push_back(cand);
-                    i += candlen+1;
-                    delete[] candstr;
-                }
-                delete[] key;
+    while (pos < m_length) {
+        if (m_dictdata[pos] == ';') {
+            /* the boundary of okuri-ari/nasi entries */
+            if (!okuri_flag) {
+                okuri_flag = true;
+                indice = &m_normal_indice;
             }
+        } else {
+            indice->push_back(pos);
         }
-
-        /* delete[] buf; */
+        for (; pos < m_length && m_dictdata[pos] != '\n'; pos++);
+        pos++;
     }
 }
 
 void
-SKKDictionary::dump_dict (void)
+SKKSysDict::dump_dict (const String &dictpath)
 {
-    Dict::iterator dit;
+    ofstream dictfs;
+    String s;
+
+    dictfs.open(dictpath.c_str());
+    for (map<int, String>::const_iterator it = m_key_cache.begin();
+         it != m_key_cache.end(); it++) {
+        s.clear();
+        //converter.convert(s, it->second);
+        dictfs << it->first << ": " << it->second << endl;
+    }
+    dictfs.close();
+}
+
+void
+SKKSysDict::get_key_from_index (int index, String &key)
+{
+    key.clear();
+    if (index == 0 || m_dictdata[index-1] == '\n') {
+        map<int, String>::const_iterator it = m_key_cache.find(index);
+        if (it == m_key_cache.end()) {
+            int s, e;
+            s = index; e = 0;
+            for (;m_dictdata[index] != ' '; index++, e++);
+            key.assign(m_dictdata+s, e);
+            m_key_cache.insert(make_pair(index, key));
+        } else {
+            key.assign(it->second);
+        }
+    }
+}
+
+void
+SKKSysDict::get_cands_from_index(int index, list<CandPair> &result)
+{
+    if (index != 0 && m_dictdata[index-1] != '\n') return;
+
+    /* skip key string */
+    for(; m_dictdata[index] != ' '; index++);
+    index+=2; /* skip first slash */
+
+    WideString cand;
+    WideString annot;
+    int s;
+    while (index < m_length && m_dictdata[index] != '\n') {
+        if (m_dictdata[index] == '[') {
+            /* skip [...] */
+            for (; m_dictdata[index] != ']'; index++);
+            index++;
+            continue;
+        }
+
+        cand.clear(); annot.clear();
+        /* clip a candidate */
+        s = index;
+        for (; m_dictdata[index] != ';' && m_dictdata[index] != '/'; index++);
+        converter.convert(cand, m_dictdata+s, index - s);
+        if (m_dictdata[index] == ';') {
+            /* clip an annotation */
+            index++;
+            s = index;
+            for (; m_dictdata[index] != '/'; index++);
+            converter.convert(annot, m_dictdata+s, index-s);
+        }
+        index++;
+
+        append_candpair(cand, annot, result);
+    }
+}
+
+void
+SKKSysDict::lookup (const WideString &key, const bool okuri,
+                    list<CandPair> &result)
+{
+    String cmp_target;
+    String key_s;
+    vector<int> &indice = (okuri)? m_okuri_indice : m_normal_indice;
+    int ub, lb, pos;
+
+    converter.convert(key_s, key);
+
+    ub = indice.size();
+    lb = 0;
+
+    while (true) {
+        pos = (ub+lb)/2;
+        get_key_from_index(indice[pos], cmp_target);
+        if ((okuri && key_s < cmp_target) ||
+            ((!okuri) && cmp_target < key_s)) {
+            if (ub - lb <= 1)
+                break;
+            else 
+                lb = pos;
+        } else if ((okuri && cmp_target < key_s) ||
+                   ((!okuri) && key_s < cmp_target)) {
+            if (ub == lb)
+                break;
+            else
+                ub = pos;
+        } else {
+            get_cands_from_index(indice[pos], result);
+            break;
+        }
+    }
+}
+
+bool
+SKKSysDict::compare (const String &dictname)
+{
+    return (!m_dictpath.empty()) && dictname == m_dictpath;
+}
+
+bool
+SKKSysDict::compare (const String &host, const int port)
+{
+    return false;
+}
+
+SKKUserDict::SKKUserDict  (void)
+    : m_writeflag  (false)
+{
+}
+
+SKKUserDict::~SKKUserDict (void)
+{
+}
+
+void
+SKKUserDict::load_dict (const String &dictpath)
+{
+    //if (m_dictpath == dictpath) return;
+
+    struct stat statbuf;
+    int fd;
+    int length;
+
+    m_dictpath.assign(dictpath);
+
+    if (stat(m_dictpath.c_str(), &statbuf) < 0) return;
+
+    if ((fd = open(m_dictpath.c_str(), O_RDONLY)) == -1) return;
+
+    length = statbuf.st_size;
+    char *buf = (char*)mmap(0, length, PROT_READ, MAP_PRIVATE, fd, 0);
+
+    if (buf != MAP_FAILED) {
+        int keylen;
+        WideString key;
+        Candidate cand;
+        Annotation annot;
+        list<CandPair> cl;
+        int candlen;
+        for (int i = 0; i < length; i++) {
+            switch(buf[i]) {
+            case ';':
+                for (;i < length && buf[i] != '\n'; i++);
+            case '\n':
+                break;
+            default:
+                key.clear();
+                cl.clear();
+                for (keylen = 0; i < length && buf[i+keylen] != ' '; keylen++);
+                converter.convert(key, buf+i, keylen);
+
+                i += keylen+2;
+                while (buf[i] != '\n') {
+                    if (buf[i] == '[') {
+                        for (; buf[i] != ']'; i++);
+                        i+=2;
+                        continue;
+                    }
+
+                    cand.clear();
+                    annot.clear();
+                    candlen = 1;
+                    while (buf[i+candlen] != '/' && buf[i+candlen] != ';')
+                        candlen++;
+                    converter.convert(cand, buf+i, candlen);
+                    i += candlen+1;
+                    if (buf[i-1] == ';') {
+                        candlen = 0;
+                        while(buf[i+candlen] != '/') candlen++;
+                        converter.convert(annot, buf+i, candlen);
+                        i += candlen + 1;
+                    }
+                    cl.push_back(make_pair(cand, annot));
+                }
+                m_dictdata.insert(make_pair(key, cl));
+                break;
+            }
+        }
+        munmap(buf, length);
+    }
+    close(fd);
+}
+
+void
+SKKUserDict::dump_dict (void)
+{
+    DictCache::const_iterator dit;
     ofstream dictfs;
 
-    if (m_writable && m_writeflag) {
+    if (m_writeflag) {
         dictfs.open(m_dictpath.c_str());
         for (dit = m_dictdata.begin(); dit != m_dictdata.end(); dit++) {
             String line;
             String tmp;
-            m_iconv.convert(tmp, dit->first);
+            converter.convert(tmp, dit->first);
             line += tmp;
             line += ' ';
 
-            for(list<Candidate>::iterator cit = dit->second.begin();
+            for(list<CandPair>::const_iterator cit = dit->second.begin();
                 cit != dit->second.end(); cit++) {
                 tmp.clear();
-                m_iconv.convert(tmp, *cit);
+                converter.convert(tmp, cit->first);
                 line += '/';
                 line += tmp;
+                if (!cit->second.empty()) {
+                    tmp.clear();
+                    converter.convert(tmp, cit->second);
+                    line += ';';
+                    line += tmp;
+                }
             }
-            line += "/\n";
-            dictfs << line;
+            dictfs << line << '/' << endl;
         }
         dictfs.close();
     }
 }
 
 void
-SKKDictionary::load_dict (const String &dictpath)
+SKKUserDict::lookup (const WideString &key, const bool okuri,
+                     list<CandPair> &result)
 {
-    if (m_dictpath != dictpath) {
-        m_dictpath.assign(dictpath);
-        m_iconv.set_encoding(String(SKKDICT_CHARCODE));
-        load_dictdata();
+    list<CandPair> &cl = m_dictdata[key];
+
+    for (list<CandPair>::iterator it = cl.begin(); it != cl.end(); it++) {
+        append_candpair(it->first, it->second, result);
     }
 }
 
 void
-SKKDictionary::lookup (const WideString &key, CandList &result,
-                       CommonLookupTable &table)
+SKKUserDict::write (const WideString &key, const CandPair &data)
 {
-    list<Candidate> &cl = m_dictdata[key];
-
-    for (list<Candidate>::iterator it = cl.begin(); it != cl.end(); it++) {
-        if (!m_parent->get_view_annot())
-            m_parent->strip_annot(*it);
-
-        CandList::iterator cit = find(result.begin(), result.end(), *it);
-        if (cit == result.end()) {
-            if (result.size() < m_parent->get_listsize()) {
-                result.push_back(*it);
-            } else {
-                int i, len = table.number_of_candidates();
-                for (i = 0; i < len; i++) {
-                    if (*it == table.get_candidate(i))
-                        break;
-                }
-                if (i == len) {
-                    table.append_candidate(*it);
-                }
-            }
+    list<CandPair> &cl = m_dictdata[key];
+    for (list<CandPair>::iterator it = cl.begin(); it != cl.end(); it++) {
+        if (it->first == data.first) {
+            cl.erase(it);
+            break;
         }
     }
+    cl.push_front(data);
+    m_writeflag = true;
+}
+
+bool
+SKKUserDict::compare (const String &dictname)
+{
+    return (!m_dictpath.empty()) && dictname == m_dictpath;
+}
+
+bool
+SKKUserDict::compare (const String &host, const int portn)
+{
+    return false;
+}
+
+
+static SKKSysDict *sysdict_sample = 0;
+
+SKKDictionary::SKKDictionary (void)
+    : m_userdict(new SKKUserDict())
+{
+    converter.set_encoding(String(SKKDICT_CHARCODE));
+}
+
+SKKDictionary::~SKKDictionary (void)
+{
+    for (list<SKKDictBase*>::iterator i = m_sysdicts.begin();
+         i != m_sysdicts.end(); i++)
+        delete *i;
+    if (m_userdict) delete m_userdict;
 }
 
 void
-SKKDictionary::write (const WideString &key, const WideString &data)
+SKKDictionary::add_sysdict (const String &dictname)
 {
-    if (m_writable) { /* if not writable, do nothing */
-        list<Candidate> &cl = m_dictdata[key];
-
-        list<Candidate>::iterator it = find(cl.begin(), cl.end(), data);
-        if (it != cl.end())
-            cl.erase(it);
-        cl.push_front(data);
-        m_writeflag = true;
+#if 0
+    list<SKKDictBase*>::const_iterator it = m_sysdicts.begin();
+    for(; it != m_sysdicts.end(); it++)
+        if ((*it)->compare(dictname)) break;
+    if (it == m_sysdicts.end()) {
+        m_sysdicts.push_back((SKKDictBase*)new SKKSysDict(dictname));
     }
+    m_cache.clear();
+#else
+    if (sysdict_sample == 0)
+        sysdict_sample = new SKKSysDict(String("/usr/share/skk/SKK-JISYO.L"));
+#endif
 }
 
-SKKDictionaries::SKKDictionaries (void)
-    : m_sysdict(this),
-      m_userdict(this),
-      m_view_annot (true),
-      m_listsize (4)
-{
-}
-
-SKKDictionaries::~SKKDictionaries (void)
+void
+SKKDictionary::add_skkserv (const String &host, const int port)
 {
 }
 
 void
-SKKDictionaries::set_sysdict (const String &dictname)
-{
-    m_sysdict.load_dict(dictname);
-}
-
-void
-SKKDictionaries::set_userdict (const String &dictname)
+SKKDictionary::set_userdict (const String &dictname)
 {
     struct stat statbuf;
     String userdictpath = scim_get_home_dir() +
@@ -206,77 +475,78 @@ SKKDictionaries::set_userdict (const String &dictname)
     if (stat(userdictpath.c_str(), &statbuf) < 0) {
         String skkuserdict = scim_get_home_dir() +
                              String(SCIM_PATH_DELIM_STRING) + String(".skk-jisyo");
-        m_userdict.load_dict(skkuserdict);
+        m_userdict->load_dict(skkuserdict);
     }
-    m_userdict.load_dict(userdictpath);
-    m_userdict.m_writable = true;
-}
-
-void
-SKKDictionaries::set_listsize (const int lsize)
-{
-    m_listsize = lsize;
-}
-int
-SKKDictionaries::get_listsize (void)
-{
-    return m_listsize;
-}
-
-void
-SKKDictionaries::set_view_annot (const bool view)
-{
-    m_view_annot = view;
-}
-bool
-SKKDictionaries::get_view_annot (void)
-{
-    return m_view_annot;
-}
-
-void
-SKKDictionaries::dump_userdict (void)
-{
-    m_userdict.dump_dict();
-}
-
-void
-SKKDictionaries::lookup (const WideString &key, CandList &result,
-                         CommonLookupTable &table)
-{
-    m_userdict.lookup(key, result, table);
-    m_sysdict.lookup(key, result, table);
-}
-
-void
-SKKDictionaries::write (const WideString &key, const WideString &data)
-{
-    m_userdict.write(key, data);
+    m_userdict->load_dict(userdictpath);
 }
 
 
 void
-SKKDictionaries::strip_annot (WideString &str)
+SKKDictionary::dump_userdict (void)
 {
-    ucs4_t c;
-    unsigned char s[2] = {';', '\0'};
-    utf8_mbtowc(&c, s, 1);
-    int pos = str.find(c);
-    if (pos != WideString::npos) {
-        str.erase(pos);
+    sysdict_sample->dump_dict(String("/home/mukai/dump_sysdict"));
+    m_userdict->dump_dict();
+}
+
+void
+SKKDictionary::lookup (const WideString &key, const bool okuri,
+                         SKKCandList &result)
+{
+    DictCache::const_iterator cit = m_cache.find(key);
+    result.clear();
+    if (cit == m_cache.end()) {
+        list<CandPair> cl;
+        m_userdict->lookup(key, okuri, cl);
+#if 0
+        for (list<SKKDictBase*>::const_iterator it = m_sysdicts.begin();
+             it != m_sysdicts.end(); it++) {
+            (*it)->lookup(key, okuri, result);
+        }
+        result.copy(m_cache[key]);
+#else
+        sysdict_sample->lookup(key, okuri, cl);
+#endif
+        for(list<CandPair>::const_iterator it = cl.begin();
+            it != cl.end(); it++) {
+            result.append_candidate(it->first, it->second);
+        }
+        m_cache.insert(make_pair(key, cl));
+    } else {
+        for(list<CandPair>::const_iterator it = cit->second.begin();
+            it != cit->second.end(); it++) {
+            result.append_candidate(it->first, it->second);
+        }
     }
 }
 
+void
+SKKDictionary::write (const WideString &key, const CandPair &data)
+{
+    if (data.first.empty()) return;
+    m_userdict->write(key, data);
+    list<CandPair> &cl = m_cache[key];
+    for (list<CandPair>::iterator cit = cl.begin();
+         cit != cl.end(); cit++) {
+        if (cit->first == data.first) {
+            cl.erase(cit);
+            break;
+        }
+    }
+    cl.push_front(data);
+}
 
 void
-SKKNumDict::lookup (const WideString &key, CandList &result,
-                    CommonLookupTable &table)
+SKKNumDict::lookup (const WideString &key, const bool okuri,
+                    list<CandPair> &result)
 {
     /* int x = atoi(key.c_str()); */
 
-    result.push_back(key);
-
+    /* result.push_back(key); */
 }
+
+bool SKKNumDict::compare (const String &dictname) { return false; }
+bool SKKNumDict::compare (const String &host, const int port) { return false; }
+
 
 void
 convert_int_to_num1 (int src, WideString &dst)
@@ -348,4 +618,19 @@ convert_int_to_num (int src, WideString &dst)
         src = src % 10;
     }
     convert_int_to_num1(src, dst);
+}
+
+void
+append_candpair (const WideString &cand, const WideString &annot,
+                 list<CandPair> &result)
+{
+    list<CandPair>::const_iterator it;
+    for (it = result.begin(); it != result.end(); it++) {
+        if (it->first == cand)
+            break;
+    }
+    if (it == result.end()) {
+        /* new candidate */
+        result.push_back(make_pair(cand, annot));
+    }
 }

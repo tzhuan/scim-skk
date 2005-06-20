@@ -1,4 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: nil; c-basic-offset: 4  -*- */
+/* -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 4  -*- */
 /*
  *  Copyright (C) 2004 Jun Mukai
  *
@@ -36,6 +36,7 @@
 #include "scim_skk_prefs.h"
 #include "conv_table.h"
 
+#include <string.h>
 
 #ifdef HAVE_GETTEXT
 #include <libintl.h>
@@ -69,8 +70,9 @@
 #endif
 
 
-static ConfigPointer _scim_config (0);
-static SKKDictionaries *_scim_skkdict = 0;
+
+static ConfigPointer  _scim_config (0);
+SKKDictionary *scim_skkdict = 0;
 
 extern "C" {
     void scim_module_init (void)
@@ -83,9 +85,9 @@ extern "C" {
     {
         if (_scim_config)
             _scim_config.reset ();
-        if (_scim_skkdict) {
-            _scim_skkdict->dump_userdict();
-            delete _scim_skkdict;
+        if (scim_skkdict) {
+            scim_skkdict->dump_userdict();
+            delete scim_skkdict;
         }
     }
 
@@ -93,8 +95,8 @@ extern "C" {
     {
         SCIM_DEBUG_IMENGINE(1) << "Initialize SKK Engine.\n";
 
-        _scim_config  = config;
-        _scim_skkdict = new SKKDictionaries();
+        _scim_config = config;
+        scim_skkdict = new SKKDictionary();
 
         return 1;
     }
@@ -103,32 +105,40 @@ extern "C" {
     {
         SKKFactory *factory = 0;
         try {
-            factory = new SKKFactory (String ("ja_JP"),
-                                      String ("ec43125f-f9d3-4a77-8096-de3a35290ba9"),
-                                      _scim_config);
+            factory =
+               new SKKFactory (String ("ja_JP"),
+                               String ("ec43125f-f9d3-4a77-8096-de3a35290ba9"),
+                               _scim_config);
         } catch (...) {
             delete factory;
             factory = 0;
         }
+
 
         return factory;
     }
 }
 
 
+bool annot_view = SCIM_SKK_CONFIG_ANNOT_VIEW_DEFAULT;
+/* view annotation if true */
+bool annot_pos =
+  (strncmp(SCIM_SKK_CONFIG_ANNOT_POS_DEFAULT, "inline", 6) == 0);
+/* inline if true, auxwindow if otherwise */
+//bool annot_target;  /* all if true, caret position if false */
+int candvec_size = SCIM_SKK_CONFIG_CANDVEC_SIZE_DEFAULT;
+
+
 SKKFactory::SKKFactory (const String &lang,
                         const String &uuid,
                         const ConfigPointer &config)
     :  m_uuid(uuid),
-       m_skkdict(_scim_skkdict),
        m_sysdictpath(SCIM_SKK_CONFIG_SYSDICT_DEFAULT),
        m_userdictname(SCIM_SKK_CONFIG_USERDICT_DEFAULT),
-       m_dlistsize(SCIM_SKK_CONFIG_DICT_LISTSIZE_DEFAULT),
-       m_view_annot(SCIM_SKK_CONFIG_DICT_VIEW_ANNOT_DEFAULT),
        m_config(config)
 {
     SCIM_DEBUG_IMENGINE(0) << "Create SKK Factory :\n";
-    SCIM_DEBUG_IMENGINE(0) << "Lnag : " << lang << "\n";
+    SCIM_DEBUG_IMENGINE(0) << "Lang : " << lang << "\n";
     SCIM_DEBUG_IMENGINE(0) << "UUID :" << uuid << "\n";
 
     if (lang.length() >= 2)
@@ -140,7 +150,7 @@ SKKFactory::SKKFactory (const String &lang,
 
 SKKFactory::~SKKFactory ()
 {
-    m_skkdict->dump_userdict();
+    scim_skkdict->dump_userdict();
     m_reload_signal_connection.disconnect ();
 }
 
@@ -183,7 +193,7 @@ SKKFactory::get_help () const
 void
 SKKFactory::dump_dict (void)
 {
-    m_skkdict->dump_userdict();
+    scim_skkdict->dump_userdict();
 }
 
 IMEngineInstancePointer
@@ -200,16 +210,20 @@ SKKFactory::reload_config (const ConfigPointer &config)
 
         m_sysdictpath = config->read(String(SCIM_SKK_CONFIG_SYSDICT),
                                      String(SCIM_SKK_CONFIG_SYSDICT_DEFAULT));
-        m_skkdict->set_sysdict(m_sysdictpath);
+        scim_skkdict->add_sysdict(m_sysdictpath);
         m_userdictname = config->read(String(SCIM_SKK_CONFIG_USERDICT),
                                       String(SCIM_SKK_CONFIG_USERDICT_DEFAULT));
-        m_skkdict->set_userdict(m_userdictname);
-        m_dlistsize = config->read(String(SCIM_SKK_CONFIG_DICT_LISTSIZE),
-                                   SCIM_SKK_CONFIG_DICT_LISTSIZE_DEFAULT);
-        m_skkdict->set_listsize(m_dlistsize);
-        m_view_annot = config->read(String(SCIM_SKK_CONFIG_DICT_VIEW_ANNOT),
-                                    SCIM_SKK_CONFIG_DICT_VIEW_ANNOT_DEFAULT);
-        m_skkdict->set_view_annot(m_view_annot);
+        scim_skkdict->set_userdict(m_userdictname);
+        candvec_size = config->read(String(SCIM_SKK_CONFIG_CANDVEC_SIZE),
+                                    SCIM_SKK_CONFIG_CANDVEC_SIZE_DEFAULT);
+        annot_view = config->read(String(SCIM_SKK_CONFIG_ANNOT_VIEW),
+                                  SCIM_SKK_CONFIG_ANNOT_VIEW_DEFAULT);
+        str = config->read(String(SCIM_SKK_CONFIG_ANNOT_POS),
+                           String(SCIM_SKK_CONFIG_ANNOT_POS_DEFAULT));
+        annot_pos = (str == String("inline"));
+        /*        str = config->read(String(SCIM_SKK_CONFIG_ANNOT_TARGET),
+                           StringSCIM_SKK_CONFIG_ANNOT_TARGET_DEFAULT);
+                           annot_target = (str == String("all"));*/
 
         str = config->read(String(SCIM_SKK_CONFIG_KAKUTEI_KEY),
                            String(SCIM_SKK_CONFIG_KAKUTEI_KEY_DEFAULT));
@@ -274,16 +288,11 @@ SKKInstance::SKKInstance (SKKFactory   *factory,
                           const String &encoding,
                           int           id)
     : IMEngineInstanceBase (factory, encoding, id),
-      m_default_page_size (m_factory->m_keybind.selection_key_length()),
-      m_lookup_table(m_default_page_size),
-      m_factory(factory),
-      m_skk_mode(SKK_MODE_HIRAGANA),
-      m_skkcore(&(factory->m_keybind), m_factory->m_skkdict,
-                &(m_key2kana), &(m_lookup_table))
+      m_skk_mode (SKK_MODE_HIRAGANA),
+      m_skkcore (&(factory->m_keybind), &(m_key2kana))
 {
     SCIM_DEBUG_IMENGINE(1) << "Create SKK Instance : ";
     init_key2kana();
-    init_ltable();
 }
 
 SKKInstance::~SKKInstance ()
@@ -298,12 +307,46 @@ SKKInstance::init_key2kana (void)
 }
 
 void
-SKKInstance::init_ltable (void)
+SKKInstance::update_candidates (void)
 {
-    std::vector<WideString> labels;
-    m_default_page_size = m_factory->m_keybind.selection_key_length();
-    m_factory->m_keybind.selection_labels(labels);
-    m_lookup_table.set_candidate_labels(labels);
+    if (m_skkcore.has_commit_string()) {
+        commit_string(m_skkcore.get_commit_string());
+        m_skkcore.clear_commit();
+    }
+
+    WideString preedit;
+    AttributeList alist;
+    m_skkcore.get_preedit_string(preedit);
+    m_skkcore.get_preedit_attributes(alist);
+    update_preedit_string(preedit, alist);
+    if (!preedit.empty()) {
+        update_preedit_caret(m_skkcore.caret_pos());
+        show_preedit_string();
+    } else {
+        hide_preedit_string();
+    }
+
+    if (annot_view && !annot_pos &&
+        m_skkcore.get_input_mode() == INPUT_MODE_CONVERTING) {
+        WideString auxstr;
+        m_skkcore.get_lookup_table().get_annot_string(auxstr);
+        update_aux_string(auxstr);
+        if (!auxstr.empty())
+            show_aux_string();
+        else
+            hide_aux_string();
+    } else {
+        update_aux_string(WideString());
+        hide_aux_string();
+    }
+
+    if (m_skkcore.get_input_mode() == INPUT_MODE_CONVERTING &&
+        m_skkcore.lookup_table_visible()) {
+        update_lookup_table(m_skkcore.get_lookup_table());
+        show_lookup_table();
+    } else {
+        hide_lookup_table();
+    }
 }
 
 bool
@@ -330,28 +373,7 @@ SKKInstance::process_key_event (const KeyEvent &key)
 
     bool retval = m_skkcore.process_key_event(k);
 
-    if (m_skkcore.has_commit_string()) {
-        commit_string(m_skkcore.get_commit_string());
-        m_skkcore.clear_commit();
-    }
-
-    WideString preedit;
-    m_skkcore.get_preedit_string(preedit);
-    update_preedit_string(preedit);
-    if (!preedit.empty()) {
-        update_preedit_caret(m_skkcore.caret_pos());
-        show_preedit_string();
-    } else {
-        hide_preedit_string();
-    }
-
-    if (m_skkcore.show_lookup_table()) {
-        m_lookup_table.set_page_size(m_default_page_size);
-        update_lookup_table(m_lookup_table);
-        show_lookup_table();
-    } else {
-        hide_lookup_table();
-    }
+    update_candidates();
 
     set_skk_mode(m_skkcore.get_skk_mode());
     return retval;
@@ -418,43 +440,31 @@ SKKInstance::select_candidate (unsigned int index)
         m_skkcore.clear_commit();
     }
     update_preedit_string(WideString());
+    update_aux_string(WideString());
     hide_lookup_table();
     hide_preedit_string();
+    hide_aux_string();
 }
 
 void
 SKKInstance::update_lookup_table_page_size (unsigned int page_size)
 {
-    if (page_size > 0)
-        m_lookup_table.set_page_size (page_size);
+    if (page_size > 0 && m_skkcore.lookup_table_visible())
+        m_skkcore.get_lookup_table().set_page_size (page_size);
 }
 
 void
 SKKInstance::lookup_table_page_up ()
 {
     m_skkcore.action_prevpage();
-    if (m_skkcore.show_lookup_table()) {
-        m_lookup_table.set_page_size(m_default_page_size);
-        update_lookup_table(m_lookup_table);
-        show_lookup_table();
-    } else {
-        hide_lookup_table();
-    }
-
+    update_candidates();
 }
 
 void
 SKKInstance::lookup_table_page_down ()
 {
     m_skkcore.action_nextpage();
-    if (m_skkcore.show_lookup_table()) {
-        m_lookup_table.set_page_size(m_default_page_size);
-        update_lookup_table(m_lookup_table);
-        show_lookup_table();
-    } else {
-        hide_lookup_table();
-    }
-
+    update_candidates();
 }
 
 void
@@ -471,22 +481,7 @@ SKKInstance::focus_in ()
     SCIM_DEBUG_IMENGINE(2) << "focus_in.\n";
     install_properties();
 
-    m_skkcore.get_preedit_string(preedit);
-    update_preedit_string(preedit);
-    if (!preedit.empty()) {
-        update_preedit_caret(m_skkcore.caret_pos());
-        show_preedit_string();
-    } else {
-        hide_preedit_string();
-    }
-
-    if (m_skkcore.show_lookup_table()) {
-        update_lookup_table(m_lookup_table);
-        show_lookup_table();
-    } else {
-        hide_lookup_table();
-    }
-
+    update_candidates();
     set_skk_mode(m_skkcore.get_skk_mode());
 }
 

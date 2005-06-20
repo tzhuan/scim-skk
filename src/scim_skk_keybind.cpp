@@ -320,7 +320,7 @@ KeyBind::match_upcase_keys         (const KeyEvent &key)
     return match_key_event(m_upcase_keys, key);
 }
 
-static void
+void
 keybind_string_to_key_list(KeyEventList &keys, const String &str)
 {
     KeyEventList kl;

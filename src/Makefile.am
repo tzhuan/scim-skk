@@ -8,6 +8,7 @@ INCLUDE	= \
 
 noinst_HEADERS = \
 	conv_table.h \
+	scim_skk_lookup_table.h \
 	scim_skk_automaton.h \
 	scim_skk_imengine.h \
 	scim_skk_dictionary.h \
@@ -19,6 +20,7 @@ moduledir = @SCIM_MODULEDIR@/IMEngine
 module_LTLIBRARIES = skk.la
 
 skk_la_SOURCES = \
+	scim_skk_lookup_table.cpp \
 	scim_skk_imengine.cpp \
 	scim_skk_automaton.cpp \
 	scim_skk_dictionary.cpp \

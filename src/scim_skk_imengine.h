@@ -31,22 +31,23 @@
 #include "scim_skk_keybind.h"
 #include "scim_skk_core.h"
 #include "scim_skk_dictionary.h"
+#include "scim_skk_lookup_table.h"
 
 using namespace scim;
 
-
 class SKKFactory : public IMEngineFactoryBase
 {
-    String m_uuid;
-
     friend class SKKInstance;
 
+    String m_uuid;
+
     /* dictionary */
-    SKKDictionaries *m_skkdict;
-    String           m_sysdictpath;
-    String           m_userdictname;
-    int              m_dlistsize;
-    bool             m_view_annot;
+    String         m_sysdictpath;
+    String         m_userdictname;
+    bool           m_annot_view;
+    bool           m_annot_pos;
+    int            m_candvec_size;
+    
 
     /* config */
     ConfigPointer m_config;
@@ -77,28 +78,28 @@ private:
 
 class SKKInstance : public IMEngineInstanceBase
 {
-    SKKFactory    *m_factory;
+    //SKKFactory    *m_factory;
     SKKAutomaton   m_key2kana;
     PropertyList   m_properties;
 
     /* for displaying SKKMode */
     SKKMode        m_skk_mode;
 
-    /* for candidates window */
-    int               m_default_page_size;
-    CommonLookupTable m_lookup_table;
+    //    /* for candidates window */
+    //    SKKLookupTable    *m_ltable;
 
     /* core of SKK */
     SKKCore        m_skkcore;
 
     void init_key2kana (void);
-    void init_ltable   (void);
 
     bool process_kakutei_keys         (const KeyEvent &key);
     bool process_remaining_keybinds   (const KeyEvent &key);
 
     void install_properties (void);
     void set_skk_mode       (SKKMode newmode);
+
+    void update_candidates (void);
 public:
     SKKInstance (SKKFactory   *factory,
                  const String &encoding,
@@ -109,11 +110,11 @@ public:
     virtual void move_preedit_caret (unsigned int pos);
     virtual void select_candidate (unsigned int index);
     virtual void update_lookup_table_page_size (unsigned int page_size);
-    virtual void lookup_table_page_up ();
-    virtual void lookup_table_page_down ();
-    virtual void reset ();
-    virtual void focus_in ();
-    virtual void focus_out ();
+    virtual void lookup_table_page_up (void);
+    virtual void lookup_table_page_down (void);
+    virtual void reset (void);
+    virtual void focus_in (void);
+    virtual void focus_out (void);
     virtual void trigger_property (const String& property);
 };
 

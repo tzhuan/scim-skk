@@ -23,8 +23,7 @@
 #include <scim.h>
 #include "scim_skk_keybind.h"
 #include "scim_skk_automaton.h"
-#include "scim_skk_dictionary.h"
-
+#include "scim_skk_lookup_table.h"
 
 using namespace scim;
 
@@ -55,8 +54,7 @@ typedef enum {
 
 class SKKCore
 {
-    KeyBind         *m_keybind;
-    SKKDictionaries *m_dict;
+    KeyBind       *m_keybind;
 
     SKKMode        m_skk_mode;
     InputMode      m_input_mode;
@@ -78,13 +76,10 @@ class SKKCore
     int           m_commit_pos;    /* caret position relative to commit */
 
     /* for lookup table */
-    bool                m_show_ltable;
-    CommonLookupTable  *m_ltable;
-    CandList            m_candlist;
-    CandList::iterator  m_cindex;
+    SKKCandList   m_ltable;
 
-    void commit_string     (WideString str);
-    void commit_or_preedit (WideString str);
+    void commit_string     (const WideString &str);
+    void commit_or_preedit (const WideString &str);
     void commit_converting (int index = -1);
 
     bool action_kakutei         (void);
@@ -110,15 +105,14 @@ class SKKCore
 
     void clear_pending   (bool flag=true);
     void clear_preedit   (void);
-    void clear_candidate (void);
 
     void init_key2kana (void);
 public:
-    SKKCore  (KeyBind *keybind, SKKDictionaries *dict,
-              SKKAutomaton *key2kana, CommonLookupTable *ltable);
+    SKKCore  (KeyBind *keybind, SKKAutomaton *key2kana);
     ~SKKCore (void);
 
     void        get_preedit_string (WideString &result);
+    void        get_preedit_attributes (AttributeList &alist);
     WideString &get_commit_string  (void);
 
     int  caret_pos (void);
@@ -134,7 +128,8 @@ public:
     void clear        (void);
     void clear_commit (void);
 
-    bool show_lookup_table (void);
+    SKKCandList &get_lookup_table (void);
+    bool lookup_table_visible (void);
 
     bool process_key_event (const KeyEvent key);
 
