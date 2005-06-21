@@ -57,7 +57,6 @@ class SKKSysDict : public SKKDictBase
 {
     String  m_dictpath;
     char   *m_dictdata;
-    int     m_fd;
     int     m_length;
 
     map<int, String> m_key_cache;
@@ -124,10 +123,7 @@ SKKSysDict::SKKSysDict (const String &dictpath)
 
 SKKSysDict::~SKKSysDict (void)
 {
-    if (m_dictdata)
-        delete[] m_dictdata;
-    munmap(m_dictdata, m_length);
-    close(m_fd);
+    //munmap(m_dictdata, m_length);
 }
 
 void
@@ -135,13 +131,14 @@ SKKSysDict::load_dict (const String &dictpath)
 {
     m_dictpath.assign(dictpath);
     struct stat statbuf;
+    int fd;
     if (stat(m_dictpath.c_str(), &statbuf) < 0) return;
 
-    if ((m_fd = open(m_dictpath.c_str(), O_RDONLY)) < 0) return;
+    if ((fd = open(m_dictpath.c_str(), O_RDONLY)) < 0) return;
     m_length = statbuf.st_size;
-    m_dictdata = (char*)mmap(0, m_length, PROT_READ, MAP_SHARED, m_fd, 0);
+    m_dictdata = (char*)mmap(0, m_length, PROT_READ, MAP_SHARED, fd, 0);
+    close(fd);
     if (m_dictdata == MAP_FAILED) {
-        close(m_fd);
         return;
     }
 
