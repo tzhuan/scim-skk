@@ -220,7 +220,7 @@ SKKCandList::empty (void)
 void
 SKKCandList::get_annot_string (WideString &result)
 {
-    if (visible_table()) {
+    if (!visible_table()) {
         result += get_annot_from_vector();
     } else {
         int i = get_current_page_start();

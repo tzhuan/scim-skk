@@ -1,5 +1,9 @@
 2005-06-21  Jun Mukai  <mukai@jmuk.org>
 
+	* src/scim_skk_dictionary.cpp (lookup): small bug fix.
+
+	* src/scim_skk_lookup_table.cpp (get_annot_string): small bug fix.
+
 	* src/scim_skk_dictionary.cpp (get_key_from_index): eliminate
 	debug codes.
 

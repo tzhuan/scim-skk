@@ -476,7 +476,6 @@ SKKDictionary::lookup (const WideString &key, const bool okuri,
              it != m_sysdicts.end(); it++) {
             (*it)->lookup(key, okuri, cl);
         }
-        result.copy(m_cache[key]);
         for(list<CandPair>::const_iterator it = cl.begin();
             it != cl.end(); it++) {
             result.append_candidate(it->first, it->second);
