@@ -41,6 +41,18 @@ static void append_candpair(const WideString &cand,
                             const WideString &annot,
                             list<CandPair> &result);
 
+class SKKDictBase
+{
+public:
+    SKKDictBase  (void) {}
+    virtual ~SKKDictBase (void) {}
+
+    virtual void lookup (const WideString &key, const bool okuri,
+                         std::list<CandPair> &result) = 0;
+    virtual bool compare (const String &dictname) = 0;
+    virtual bool compare (const String &host, const int port) = 0;
+};
+
 class SKKSysDict : public SKKDictBase
 {
     String  m_dictpath;

@@ -32,18 +32,7 @@ using namespace scim;
 
 typedef std::map<WideString, std::list<CandPair> > DictCache;
 
-class SKKDictBase
-{
-public:
-    SKKDictBase  (void) {}
-    virtual ~SKKDictBase (void) = 0;
-
-    virtual void lookup (const WideString &key, const bool okuri,
-                         std::list<CandPair> &result) = 0;
-    virtual bool compare (const String &dictname) = 0;
-    virtual bool compare (const String &host, const int port) = 0;
-};
-
+class SKKDictBase;
 class SKKUserDict;
 
 class SKKDictionary
