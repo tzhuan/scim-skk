@@ -88,15 +88,32 @@ WideString
 SKKCandList::get_candidate (int index) const
 {
     WideString cand = CommonLookupTable::get_candidate(index);
-    if (annot_view && annot_pos
-        && (annot_target || get_cursor_pos() == index)) {
+    if (annot_view && annot_pos &&
+        (annot_target || get_cursor_pos() == index)) {
         WideString annot = get_annot(index);
         if (!annot.empty()) {
-            cand += utf8_mbstowcs(";");
+            //cand += utf8_mbstowcs(";");
             cand += get_annot(index);
         }
     }
     return cand;
+}
+
+AttributeList
+SKKCandList::get_attributes (int index) const
+{
+    AttributeList al = CommonLookupTable::get_attributes(index);
+    if (annot_view && annot_pos &&
+        (annot_target || get_cursor_pos() == index)) {
+        WideString annot = get_annot(index);
+        WideString cand = get_cand(index);
+        if (!annot.empty()) {
+            al.push_back(Attribute(cand.length(), annot.length(),
+                                   SCIM_ATTR_BACKGROUND,
+                                   0xa0ff80));
+        }
+    }
+    return al;
 }
 
 bool

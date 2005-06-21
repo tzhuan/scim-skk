@@ -66,6 +66,7 @@ public:
 
     virtual void clear (void);
     virtual WideString get_candidate (int index) const;
+    virtual AttributeList get_attributes (int index) const;
     bool append_candidate (const WideString &cand,
                            const WideString &annot = WideString(),
                            const AttributeList &attrs = AttributeList());
