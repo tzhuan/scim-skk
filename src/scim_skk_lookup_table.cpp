@@ -21,6 +21,7 @@
 
 extern bool annot_view;
 extern bool annot_pos;
+extern bool annot_target;
 extern int candvec_size;
 
 struct SKKCandList::AnnotBuf
@@ -87,10 +88,13 @@ WideString
 SKKCandList::get_candidate (int index) const
 {
     WideString cand = CommonLookupTable::get_candidate(index);
-    if (annot_view && annot_pos) {
-        //        && (m_target || get_cursor_pos() == index))
-        cand += utf8_mbstowcs(";");
-        cand += get_annot(index);
+    if (annot_view && annot_pos
+        && (annot_target || get_cursor_pos() == index)) {
+        WideString annot = get_annot(index);
+        if (!annot.empty()) {
+            cand += utf8_mbstowcs(";");
+            cand += get_annot(index);
+        }
     }
     return cand;
 }
@@ -157,7 +161,7 @@ WideString
 SKKCandList::get_candidate_from_vector (int index)
 {
     CandPair p = get_candpair_from_vector(index);
-    if (annot_view && annot_pos)
+    if (annot_view && annot_pos && !p.second.empty())
         return  p.first + utf8_mbstowcs(";") + p.second;
     else
         return p.first;
@@ -225,6 +229,8 @@ SKKCandList::get_annot_string (WideString &result)
     } else {
         int i = get_current_page_start();
         int s = get_current_page_size();
+        bool is_first = true;
+        int cpos = get_cursor_pos_in_current_page();
         for (int j = 0; j < s; i++, j++) {
             std::vector<ucs4_t>::const_iterator start, end;
             start = m_annots->m_buffer.begin() + m_annots->m_index[i];
@@ -232,11 +238,15 @@ SKKCandList::get_annot_string (WideString &result)
                 end = m_annots->m_buffer.begin() + m_annots->m_index[i+1];
             else
                 end = m_annots->m_buffer.end();
-            if (start != end) {
-                if (j != 0)
+            if (start != end && (annot_target || j == cpos)) {
+                if (is_first)
+                    is_first = false;
+                else
                     result += utf8_mbstowcs(";");
-                result += get_candidate_label(j);
-                result += utf8_mbstowcs(".");
+                if (annot_target) {
+                    result += get_candidate_label(j);
+                    result += utf8_mbstowcs(".");
+                }
                 result.append(start, end);
             }
         }

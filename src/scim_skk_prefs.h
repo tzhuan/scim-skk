@@ -46,7 +46,7 @@
 
 #define SCIM_SKK_CONFIG_ANNOT_VIEW     "/IMEngine/SKK/AnnotView"
 #define SCIM_SKK_CONFIG_ANNOT_POS      "/IMEngine/SKK/AnnotPos"
-//#define SCIM_SKK_CONFIG_ANNOT_TARGET   "/IMEngine/SKK/AnnotTarget"
+#define SCIM_SKK_CONFIG_ANNOT_TARGET   "/IMEngine/SKK/AnnotTarget"
 
 
 /* default values */
@@ -74,5 +74,5 @@
 #define SCIM_SKK_CONFIG_CANDVEC_SIZE_DEFAULT      4
 #define SCIM_SKK_CONFIG_ANNOT_VIEW_DEFAULT    true
 #define SCIM_SKK_CONFIG_ANNOT_POS_DEFAULT     "auxwindow"
-//#define SCIM_SKK_CONFIG_ANNOT_TARGET_DEFAULT  "all"
+#define SCIM_SKK_CONFIG_ANNOT_TARGET_DEFAULT  "all"
 #endif

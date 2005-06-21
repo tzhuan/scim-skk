@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: mukai@jmuk.org\n"
-"POT-Creation-Date: 2005-01-31 00:29+0900\n"
+"POT-Creation-Date: 2005-06-21 15:24+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,31 +16,31 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/scim_skk_imengine.cpp:486
+#: src/scim_skk_imengine.cpp:503
 msgid "Input mode"
 msgstr ""
 
-#: src/scim_skk_imengine.cpp:490
+#: src/scim_skk_imengine.cpp:507
 msgid "Hiragana"
 msgstr ""
 
-#: src/scim_skk_imengine.cpp:494
+#: src/scim_skk_imengine.cpp:511
 msgid "Katakana"
 msgstr ""
 
-#: src/scim_skk_imengine.cpp:498 src/scim_skk_imengine.cpp:499
+#: src/scim_skk_imengine.cpp:515 src/scim_skk_imengine.cpp:516
 msgid "Half width katakana"
 msgstr ""
 
-#: src/scim_skk_imengine.cpp:503
+#: src/scim_skk_imengine.cpp:520
 msgid "ASCII"
 msgstr ""
 
-#: src/scim_skk_imengine.cpp:503
+#: src/scim_skk_imengine.cpp:520
 msgid "Direct input"
 msgstr ""
 
-#: src/scim_skk_imengine.cpp:507
+#: src/scim_skk_imengine.cpp:524
 msgid "Wide ASCII"
 msgstr ""
 
@@ -52,254 +52,278 @@ msgstr ""
 msgid "An SKK IMEngine Module."
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:170
+#: src/scim_skk_imengine_setup.cpp:175
 msgid "Kakutei Keys:"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:171
+#: src/scim_skk_imengine_setup.cpp:176
 msgid "Select Kakutei Keys"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:172
+#: src/scim_skk_imengine_setup.cpp:177
 msgid "The key events to commit the preedit string. "
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:179
+#: src/scim_skk_imengine_setup.cpp:184
 msgid "Cancel Keys:"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:180
+#: src/scim_skk_imengine_setup.cpp:185
 msgid "Select Cancel Keys"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:181
+#: src/scim_skk_imengine_setup.cpp:186
 msgid "The key events to cancel the some skk states. "
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:188
+#: src/scim_skk_imengine_setup.cpp:193
 msgid "Convert Keys:"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:189
+#: src/scim_skk_imengine_setup.cpp:194
 msgid "Select Convert Keys"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:190
+#: src/scim_skk_imengine_setup.cpp:195
 msgid "The key events to start converting. "
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:197
+#: src/scim_skk_imengine_setup.cpp:202
 msgid "Start-Preedit Keys:"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:198
+#: src/scim_skk_imengine_setup.cpp:203
 msgid "Select Start-Preedit Keys"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:199
+#: src/scim_skk_imengine_setup.cpp:204
 msgid "The key events to start preediting. "
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:206
+#: src/scim_skk_imengine_setup.cpp:211
 msgid "ASCII-Convert Keys:"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:207
+#: src/scim_skk_imengine_setup.cpp:212
 msgid "Select ASCII-Convert Keys"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:208
+#: src/scim_skk_imengine_setup.cpp:213
 msgid "The key events to start ascii-converting mode. "
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:215
+#: src/scim_skk_imengine_setup.cpp:220
 msgid "Previous Candidate Keys:"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:216
+#: src/scim_skk_imengine_setup.cpp:221
 msgid "Select Previous Candidate Keys"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:217
+#: src/scim_skk_imengine_setup.cpp:222
 msgid "The key events to turn back. "
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:224
+#: src/scim_skk_imengine_setup.cpp:229
 msgid "Upcase Keys:"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:225
+#: src/scim_skk_imengine_setup.cpp:230
 msgid "Select Upcase Keys"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:226
+#: src/scim_skk_imengine_setup.cpp:231
 msgid "The key events to toggle case of characters in preedit string. "
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:246
+#: src/scim_skk_imengine_setup.cpp:251
 msgid "Katakana Keys:"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:247
+#: src/scim_skk_imengine_setup.cpp:252
 msgid "Select Katakana Keys"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:248
+#: src/scim_skk_imengine_setup.cpp:253
 msgid "The key events to toggle the skkmode hiragana to katakana. "
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:255
+#: src/scim_skk_imengine_setup.cpp:260
 msgid "Half-Katakana Keys:"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:256
+#: src/scim_skk_imengine_setup.cpp:261
 msgid "Select Half-Katakana Keys"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:257
+#: src/scim_skk_imengine_setup.cpp:262
 msgid "The key events to toggle the skkmode hiragana to half-katakana. "
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:264
+#: src/scim_skk_imengine_setup.cpp:269
 msgid "ASCII Keys:"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:265
+#: src/scim_skk_imengine_setup.cpp:270
 msgid "Select ASCII Keys"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:266
+#: src/scim_skk_imengine_setup.cpp:271
 msgid "The key events to enter ASII mode. "
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:273
+#: src/scim_skk_imengine_setup.cpp:278
 msgid "Wide-ASCII Keys:"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:274
+#: src/scim_skk_imengine_setup.cpp:279
 msgid "Select Wide-ASCII Keys"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:275
+#: src/scim_skk_imengine_setup.cpp:280
 msgid "The key events to enter Wide-ASCII mode. "
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:295
+#: src/scim_skk_imengine_setup.cpp:300
 msgid "Backspace Keys:"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:296
+#: src/scim_skk_imengine_setup.cpp:301
 msgid "Select Backspace Keys"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:297
+#: src/scim_skk_imengine_setup.cpp:302
 msgid "The key events to backspace. "
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:304
+#: src/scim_skk_imengine_setup.cpp:309
 msgid "Delete Keys:"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:305
+#: src/scim_skk_imengine_setup.cpp:310
 msgid "Select Delete Keys"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:306
+#: src/scim_skk_imengine_setup.cpp:311
 msgid "The key events to delete. "
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:313
+#: src/scim_skk_imengine_setup.cpp:318
 msgid "Forward Keys:"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:314
+#: src/scim_skk_imengine_setup.cpp:319
 msgid "Select Forward Keys"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:315
+#: src/scim_skk_imengine_setup.cpp:320
 msgid "The key events to move the caret forward. "
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:322
+#: src/scim_skk_imengine_setup.cpp:327
 msgid "Backward Keys:"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:323
+#: src/scim_skk_imengine_setup.cpp:328
 msgid "Select Backward Keys"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:324
+#: src/scim_skk_imengine_setup.cpp:329
 msgid "The key events to move the caret backward. "
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:331
+#: src/scim_skk_imengine_setup.cpp:336
 msgid "Home Keys:"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:332
+#: src/scim_skk_imengine_setup.cpp:337
 msgid "Select Home Keys"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:333
+#: src/scim_skk_imengine_setup.cpp:338
 msgid "The key events to move the caret to the start of preedit. "
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:340
+#: src/scim_skk_imengine_setup.cpp:345
 msgid "End Keys:"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:341
+#: src/scim_skk_imengine_setup.cpp:346
 msgid "Select End Keys"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:342
+#: src/scim_skk_imengine_setup.cpp:347
 msgid "The key events to move the caret to the end of preedit. "
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:358
+#: src/scim_skk_imengine_setup.cpp:363
 msgid "System Dictionary Path"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:366
+#: src/scim_skk_imengine_setup.cpp:371
 msgid "qwerty arrangement"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:367
+#: src/scim_skk_imengine_setup.cpp:372
 msgid "Dvorak arrangement"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:368
+#: src/scim_skk_imengine_setup.cpp:373
 msgid "number selection"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:376
+#: src/scim_skk_imengine_setup.cpp:379
+msgid "aux window"
+msgstr ""
+
+#: src/scim_skk_imengine_setup.cpp:380
+msgid "inline"
+msgstr ""
+
+#: src/scim_skk_imengine_setup.cpp:386
+msgid "all"
+msgstr ""
+
+#: src/scim_skk_imengine_setup.cpp:387
+msgid "cursor position only"
+msgstr ""
+
+#: src/scim_skk_imengine_setup.cpp:393
 msgid "Common keys"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:377
+#: src/scim_skk_imengine_setup.cpp:394
 msgid "Mode keys"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:378
+#: src/scim_skk_imengine_setup.cpp:395
 msgid "Caret keys"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:459
+#: src/scim_skk_imengine_setup.cpp:476
 msgid "User Dictionary Name"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:470
+#: src/scim_skk_imengine_setup.cpp:487
 msgid "Selection Style:"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:479
+#: src/scim_skk_imengine_setup.cpp:496
 msgid "List Size:"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:492
+#: src/scim_skk_imengine_setup.cpp:509
 msgid "View Annotation."
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:599
+#: src/scim_skk_imengine_setup.cpp:514
+msgid "Position of Annotation:"
+msgstr ""
+
+#: src/scim_skk_imengine_setup.cpp:520
+msgid "Printed Annotation:"
+msgstr ""
+
+#: src/scim_skk_imengine_setup.cpp:628
 msgid "Options"
 msgstr ""

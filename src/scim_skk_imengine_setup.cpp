@@ -154,7 +154,7 @@ static int    __config_listsize     = SCIM_SKK_CONFIG_CANDVEC_SIZE_DEFAULT;
 static bool   __config_annot_view   = SCIM_SKK_CONFIG_ANNOT_VIEW_DEFAULT;
 
 static String __config_annot_pos    = SCIM_SKK_CONFIG_ANNOT_POS_DEFAULT;
-//static String __config_annot_target = SCIM_SKK_CONFIG_ANNOT_TARGET_DEFAULT;
+static String __config_annot_target = SCIM_SKK_CONFIG_ANNOT_TARGET_DEFAULT;
 static String __config_selection_style = SCIM_SKK_CONFIG_SELECTION_STYLE_DEFAULT;
 
 static bool __have_changed    = true;
@@ -163,7 +163,7 @@ static GtkWidget    * __widget_userdict        = 0;
 static GtkWidget    * __widget_listsize        = 0;
 static GtkWidget    * __widget_annot_view      = 0;
 static GtkWidget    * __widget_annot_pos       = 0;
-//static GtkWidget    * __widget_annot_target    = 0;
+static GtkWidget    * __widget_annot_target    = 0;
 static GtkWidget    * __widget_selection_style = 0;
 static GtkTooltips  * __widget_tooltips        = 0;
 
@@ -381,14 +381,12 @@ static ComboConfigData annot_position[] =
     {NULL, NULL},
 };
 
-/*
 static ComboConfigData annot_target[] =
 {
     {N_("all"), "all"},
-    {N_("caret position only"), "caret"},
+    {N_("cursor position only"), "cursor"},
     {NULL, NULL},
 };
-*/
 
 static struct KeyboardConfigPage __key_conf_pages[] =
 {
@@ -519,13 +517,11 @@ create_options_page ()
                                   (gpointer) &annot_position);
     gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, FALSE, 4);
 
-    /*
     widget = create_combo_widget (_("Printed Annotation:"),
                                   &__widget_annot_target,
                                   (gpointer) &__config_annot_target,
                                   (gpointer) &annot_target);
     gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, FALSE, 4);
-    */
 
     // Connect all signals.
     g_signal_connect ((gpointer) __config_sysdict.button, "clicked",
@@ -684,11 +680,10 @@ setup_widget_value ()
                            annot_position, __config_annot_pos);
     }
 
-    /*
     if (__widget_annot_target) {
         setup_combo_value (GTK_COMBO (__widget_annot_target),
                            annot_target, __config_annot_target);
-                           }*/
+    }
 
     if (__widget_annot_view) {
         gtk_toggle_button_set_active (
@@ -742,9 +737,9 @@ load_config (const ConfigPointer &config)
         __config_annot_pos =
             config->read (String (SCIM_SKK_CONFIG_ANNOT_POS),
                           __config_annot_pos);
-        /*        __config_annot_target =
+        __config_annot_target =
             config->read (String (SCIM_SKK_CONFIG_ANNOT_TARGET),
-            __config_annot_target);*/
+                          __config_annot_target);
         __config_selection_style =
             config->read (String (SCIM_SKK_CONFIG_SELECTION_STYLE),
                           __config_selection_style);
@@ -777,8 +772,8 @@ save_config (const ConfigPointer &config)
                         __config_annot_view);
         config->write (String (SCIM_SKK_CONFIG_ANNOT_POS),
                         __config_annot_pos);
-        /*        config->write (String (SCIM_SKK_CONFIG_ANNOT_TARGET),
-                  __config_annot_target);*/
+        config->write (String (SCIM_SKK_CONFIG_ANNOT_TARGET),
+                       __config_annot_target);
         config->write (String (SCIM_SKK_CONFIG_SELECTION_STYLE),
                         __config_selection_style);
 

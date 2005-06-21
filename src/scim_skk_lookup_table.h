@@ -64,7 +64,6 @@ public:
     /* normal lookup table methods */
     virtual bool has_candidate (const WideString &cand) const;
 
-    //    virtual void set_candidate_labels (const std::vector<WideString> &labels);
     virtual void clear (void);
     virtual WideString get_candidate (int index) const;
     bool append_candidate (const WideString &cand,

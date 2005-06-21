@@ -125,7 +125,9 @@ bool annot_view = SCIM_SKK_CONFIG_ANNOT_VIEW_DEFAULT;
 bool annot_pos =
   (strncmp(SCIM_SKK_CONFIG_ANNOT_POS_DEFAULT, "inline", 6) == 0);
 /* inline if true, auxwindow if otherwise */
-//bool annot_target;  /* all if true, caret position if false */
+bool annot_target
+  (strncmp(SCIM_SKK_CONFIG_ANNOT_TARGET_DEFAULT, "all", 3) == 0);
+/* all if true, caret position otherwise */
 int candvec_size = SCIM_SKK_CONFIG_CANDVEC_SIZE_DEFAULT;
 
 
@@ -221,9 +223,9 @@ SKKFactory::reload_config (const ConfigPointer &config)
         str = config->read(String(SCIM_SKK_CONFIG_ANNOT_POS),
                            String(SCIM_SKK_CONFIG_ANNOT_POS_DEFAULT));
         annot_pos = (str == String("inline"));
-        /*        str = config->read(String(SCIM_SKK_CONFIG_ANNOT_TARGET),
-                           StringSCIM_SKK_CONFIG_ANNOT_TARGET_DEFAULT);
-                           annot_target = (str == String("all"));*/
+        str = config->read(String(SCIM_SKK_CONFIG_ANNOT_TARGET),
+                           String(SCIM_SKK_CONFIG_ANNOT_TARGET_DEFAULT));
+        annot_target = (str == String("all"));
 
         str = config->read(String(SCIM_SKK_CONFIG_KAKUTEI_KEY),
                            String(SCIM_SKK_CONFIG_KAKUTEI_KEY_DEFAULT));
