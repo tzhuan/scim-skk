@@ -242,7 +242,7 @@ SKKCandList::get_annot_string (WideString &result)
                 if (is_first)
                     is_first = false;
                 else
-                    result += utf8_mbstowcs(";");
+                    result += utf8_mbstowcs("; ");
                 if (annot_target) {
                     result += get_candidate_label(j);
                     result += utf8_mbstowcs(".");
