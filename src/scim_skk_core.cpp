@@ -232,8 +232,7 @@ SKKCore::commit_converting (int index)
         clear_preedit();
         if (m_skk_mode == SKK_MODE_ASCII)
             set_skk_mode(SKK_MODE_HIRAGANA);
-    } else if (m_ltable.visible_table() &&
-               index < m_ltable.number_of_candidates()) {
+    } else {
         if (index < 0) {
             index = m_ltable.get_cursor_pos();
         } else {
