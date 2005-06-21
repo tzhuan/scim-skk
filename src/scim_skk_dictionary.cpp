@@ -62,7 +62,6 @@ public:
     ~SKKSysDict (void);
 
     void load_dict (const String &dictpath);
-    void dump_dict (const String &dictpath);
     void lookup    (const WideString &key, const bool okuri,
                     list<CandPair> &result);
     bool compare (const String &dictname);
@@ -156,22 +155,6 @@ SKKSysDict::load_dict (const String &dictpath)
         for (; pos < m_length && m_dictdata[pos] != '\n'; pos++);
         pos++;
     }
-}
-
-void
-SKKSysDict::dump_dict (const String &dictpath)
-{
-    ofstream dictfs;
-    String s;
-
-    dictfs.open(dictpath.c_str());
-    for (map<int, String>::const_iterator it = m_key_cache.begin();
-         it != m_key_cache.end(); it++) {
-        s.clear();
-        //converter.convert(s, it->second);
-        dictfs << it->first << ": " << it->second << endl;
-    }
-    dictfs.close();
 }
 
 void
@@ -428,8 +411,6 @@ SKKUserDict::compare (const String &host, const int portn)
 }
 
 
-static SKKSysDict *sysdict_sample = 0;
-
 SKKDictionary::SKKDictionary (void)
     : m_userdict(new SKKUserDict())
 {
@@ -447,7 +428,6 @@ SKKDictionary::~SKKDictionary (void)
 void
 SKKDictionary::add_sysdict (const String &dictname)
 {
-#if 0
     list<SKKDictBase*>::const_iterator it = m_sysdicts.begin();
     for(; it != m_sysdicts.end(); it++)
         if ((*it)->compare(dictname)) break;
@@ -455,10 +435,6 @@ SKKDictionary::add_sysdict (const String &dictname)
         m_sysdicts.push_back((SKKDictBase*)new SKKSysDict(dictname));
     }
     m_cache.clear();
-#else
-    if (sysdict_sample == 0)
-        sysdict_sample = new SKKSysDict(String("/usr/share/skk/SKK-JISYO.L"));
-#endif
 }
 
 void
@@ -484,7 +460,6 @@ SKKDictionary::set_userdict (const String &dictname)
 void
 SKKDictionary::dump_userdict (void)
 {
-    sysdict_sample->dump_dict(String("/home/mukai/dump_sysdict"));
     m_userdict->dump_dict();
 }
 
@@ -497,15 +472,11 @@ SKKDictionary::lookup (const WideString &key, const bool okuri,
     if (cit == m_cache.end()) {
         list<CandPair> cl;
         m_userdict->lookup(key, okuri, cl);
-#if 0
         for (list<SKKDictBase*>::const_iterator it = m_sysdicts.begin();
              it != m_sysdicts.end(); it++) {
-            (*it)->lookup(key, okuri, result);
+            (*it)->lookup(key, okuri, cl);
         }
         result.copy(m_cache[key]);
-#else
-        sysdict_sample->lookup(key, okuri, cl);
-#endif
         for(list<CandPair>::const_iterator it = cl.begin();
             it != cl.end(); it++) {
             result.append_candidate(it->first, it->second);

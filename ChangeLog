@@ -1,3 +1,8 @@
+2005-06-21  Jun Mukai  <mukai@jmuk.org>
+
+	* src/scim_skk_dictionary.cpp (get_key_from_index): eliminate
+	debug codes.
+
 2005-05-20  Jun Mukai  <mukai@jmuk.org>
 
 	* src/scim_skk_imengine.cpp (process_key_event): remove early
