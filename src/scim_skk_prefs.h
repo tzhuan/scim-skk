@@ -48,6 +48,9 @@
 #define SCIM_SKK_CONFIG_ANNOT_POS      "/IMEngine/SKK/AnnotPos"
 #define SCIM_SKK_CONFIG_ANNOT_TARGET   "/IMEngine/SKK/AnnotTarget"
 
+#define SCIM_SKK_CONFIG_ANNOT_HIGHLIGHT "/IMEngine/SKK/AnnotHighlight"
+#define SCIM_SKK_CONFIG_ANNOT_BGCOLOR   "/IMEngine/SKK/AnnotBGColor"
+
 
 /* default values */
 #define SCIM_SKK_CONFIG_KAKUTEI_KEY_DEFAULT          "Control+j"
@@ -75,4 +78,7 @@
 #define SCIM_SKK_CONFIG_ANNOT_VIEW_DEFAULT    true
 #define SCIM_SKK_CONFIG_ANNOT_POS_DEFAULT     "auxwindow"
 #define SCIM_SKK_CONFIG_ANNOT_TARGET_DEFAULT  "all"
+
+#define SCIM_SKK_CONFIG_ANNOT_HIGHLIGHT_DEFAULT true
+#define SCIM_SKK_CONFIG_ANNOT_BGCOLOR_DEFAULT   0xa0ff80
 #endif

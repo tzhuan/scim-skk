@@ -24,6 +24,9 @@ extern bool annot_pos;
 extern bool annot_target;
 extern int candvec_size;
 
+extern bool annot_highlight;
+extern int annot_bgcolor;
+
 struct SKKCandList::AnnotBuf
 {
 public:
@@ -92,7 +95,8 @@ SKKCandList::get_candidate (int index) const
         (annot_target || get_cursor_pos() == index)) {
         WideString annot = get_annot(index);
         if (!annot.empty()) {
-            //cand += utf8_mbstowcs(";");
+            if (!annot_highlight)
+                cand += utf8_mbstowcs(";");
             cand += get_annot(index);
         }
     }
@@ -107,10 +111,10 @@ SKKCandList::get_attributes (int index) const
         (annot_target || get_cursor_pos() == index)) {
         WideString annot = get_annot(index);
         WideString cand = get_cand(index);
-        if (!annot.empty()) {
+        if (annot_highlight && !annot.empty()) {
             al.push_back(Attribute(cand.length(), annot.length(),
                                    SCIM_ATTR_BACKGROUND,
-                                   0xa0ff80));
+                                   annot_bgcolor));
         }
     }
     return al;

@@ -27,7 +27,11 @@
 #include "scim_skk_dictionary.h"
 
 extern SKKDictionary *scim_skkdict;
+extern bool annot_view;
 extern bool annot_pos;
+
+extern bool annot_highlight;
+extern int annot_bgcolor;
 
 static void convert_char_to_wide         (const int c,
                                           WideString &result,
@@ -86,17 +90,19 @@ SKKCore::get_preedit_attributes (AttributeList &alist)
             int len2 = m_ltable.get_annot(cpos).length();
             alist.push_back(Attribute(1, len1, SCIM_ATTR_DECORATE,
                                       SCIM_ATTR_DECORATE_HIGHLIGHT));
-            alist.push_back(Attribute(len1+m_okuristr.length()+2, len2,
-                                      SCIM_ATTR_BACKGROUND,
-                                      0xa0ff80));
+            if (annot_highlight && len2 > 0)
+                alist.push_back(Attribute(len1+m_okuristr.length()+2, len2,
+                                          SCIM_ATTR_BACKGROUND,
+                                          annot_bgcolor));
         } else {
             int len1 = m_ltable.get_cand_from_vector().length();
             int len2 = m_ltable.get_annot_from_vector().length();
             alist.push_back(Attribute(1, len1, SCIM_ATTR_DECORATE,
                                       SCIM_ATTR_DECORATE_HIGHLIGHT));
-            alist.push_back(Attribute(len1+m_okuristr.length()+2, len2,
-                                      SCIM_ATTR_BACKGROUND,
-                                      0xa0ff80)); 
+            if (annot_highlight && len2 > 0)
+                alist.push_back(Attribute(len1+m_okuristr.length()+2, len2,
+                                          SCIM_ATTR_BACKGROUND,
+                                          annot_bgcolor)); 
         }
         break;
     default:
@@ -150,7 +156,7 @@ SKKCore::get_preedit_string (WideString &result)
         if (!m_okuristr.empty()) {
             result += m_okuristr;
         }
-        if (annot_pos && !m_ltable.visible_table()) {
+        if (annot_view && annot_pos && !m_ltable.visible_table()) {
             WideString annot = m_ltable.get_annot_from_vector();
             if (annot.length() > 0) {
                 result += utf8_mbstowcs(";");
@@ -275,11 +281,15 @@ SKKCore::caret_pos (void)
     case INPUT_MODE_OKURI:
         return base_pos + m_preeditstr.length() + 2;
     case INPUT_MODE_CONVERTING:
-        if (m_ltable.visible_table())
-            return base_pos + m_preeditstr.length() + m_okuristr.length() + 2;
-        else
-            return base_pos + m_ltable.get_candidate_from_vector().length() +
-                m_okuristr.length() + 2;
+        if (m_ltable.visible_table()) {
+            int cpos = m_ltable.get_cursor_pos();
+            base_pos += m_ltable.get_candidate(cpos).length() + 1;
+        } else {
+            base_pos += m_ltable.get_candidate_from_vector().length() + 1;
+        }
+        if (!m_okuristr.empty())
+            base_pos += m_okuristr.length() + 1;
+        return base_pos;
     case INPUT_MODE_LEARNING:
         if (!m_okuristr.empty())
             base_pos += m_okuristr.length() + 1;

@@ -130,6 +130,8 @@ bool annot_target
 /* all if true, caret position otherwise */
 int candvec_size = SCIM_SKK_CONFIG_CANDVEC_SIZE_DEFAULT;
 
+bool annot_highlight = SCIM_SKK_CONFIG_ANNOT_HIGHLIGHT_DEFAULT;
+int annot_bgcolor = SCIM_SKK_CONFIG_ANNOT_BGCOLOR_DEFAULT;
 
 SKKFactory::SKKFactory (const String &lang,
                         const String &uuid,
@@ -226,6 +228,13 @@ SKKFactory::reload_config (const ConfigPointer &config)
         str = config->read(String(SCIM_SKK_CONFIG_ANNOT_TARGET),
                            String(SCIM_SKK_CONFIG_ANNOT_TARGET_DEFAULT));
         annot_target = (str == String("all"));
+
+        annot_highlight =
+            config->read(String(SCIM_SKK_CONFIG_ANNOT_HIGHLIGHT),
+                         SCIM_SKK_CONFIG_ANNOT_HIGHLIGHT_DEFAULT);
+        annot_bgcolor =
+            config->read(String(SCIM_SKK_CONFIG_ANNOT_HIGHLIGHT),
+                         SCIM_SKK_CONFIG_ANNOT_BGCOLOR_DEFAULT);
 
         str = config->read(String(SCIM_SKK_CONFIG_KAKUTEI_KEY),
                            String(SCIM_SKK_CONFIG_KAKUTEI_KEY_DEFAULT));

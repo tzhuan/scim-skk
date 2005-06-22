@@ -153,6 +153,9 @@ static String __config_userdict     = SCIM_SKK_CONFIG_USERDICT_DEFAULT;
 static int    __config_listsize     = SCIM_SKK_CONFIG_CANDVEC_SIZE_DEFAULT;
 static bool   __config_annot_view   = SCIM_SKK_CONFIG_ANNOT_VIEW_DEFAULT;
 
+static bool __config_annot_highlight = SCIM_SKK_CONFIG_ANNOT_HIGHLIGHT_DEFAULT;
+static int  __config_annot_bgcolor   = SCIM_SKK_CONFIG_ANNOT_BGCOLOR_DEFAULT;
+
 static String __config_annot_pos    = SCIM_SKK_CONFIG_ANNOT_POS_DEFAULT;
 static String __config_annot_target = SCIM_SKK_CONFIG_ANNOT_TARGET_DEFAULT;
 static String __config_selection_style = SCIM_SKK_CONFIG_SELECTION_STYLE_DEFAULT;
