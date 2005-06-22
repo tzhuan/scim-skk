@@ -1,3 +1,8 @@
+2005-06-23  Jun Mukai  <mukai@jmuk.org>
+
+	* src/scim_skk_core.cpp (action_nextpage, action_prevpage): set
+	default page size when page_{down,up}.
+
 2005-06-21  Jun Mukai  <mukai@jmuk.org>
 
 	* src/scim_skk_core.cpp (commit_converting): bug fix.

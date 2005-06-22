@@ -912,6 +912,7 @@ SKKCore::action_nextpage (void)
         return true;
     } else if (m_ltable.number_of_candidates() > 0) {
         bool retval = m_ltable.page_down();
+        m_ltable.set_page_size(m_keybind->selection_key_length());
         return retval;
     }
     return false;
@@ -925,6 +926,7 @@ SKKCore::action_prevpage (void)
         return m_ltable.prev_candidate();
     } else {
         bool retval = m_ltable.page_up();
+        m_ltable.set_page_size(m_keybind->selection_key_length());
         if (!retval)
             return m_ltable.prev_candidate();
         else
