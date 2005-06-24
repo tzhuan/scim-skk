@@ -148,13 +148,23 @@ struct ComboConfigData
     const char *data;
 };
 
+struct ColorConfigData
+{
+    const char *key;
+    String      value;
+    const char *label;
+    const char *title;
+    const char *tooltip;
+    GtkWidget  *widget;
+};
+
 // Internal data declaration.
 static String __config_userdict     = SCIM_SKK_CONFIG_USERDICT_DEFAULT;
 static int    __config_listsize     = SCIM_SKK_CONFIG_CANDVEC_SIZE_DEFAULT;
 static bool   __config_annot_view   = SCIM_SKK_CONFIG_ANNOT_VIEW_DEFAULT;
 
 static bool __config_annot_highlight = SCIM_SKK_CONFIG_ANNOT_HIGHLIGHT_DEFAULT;
-static int  __config_annot_bgcolor   = SCIM_SKK_CONFIG_ANNOT_BGCOLOR_DEFAULT;
+//static int  __config_annot_bgcolor   = SCIM_SKK_CONFIG_ANNOT_BGCOLOR_DEFAULT;
 
 static String __config_annot_pos    = SCIM_SKK_CONFIG_ANNOT_POS_DEFAULT;
 static String __config_annot_target = SCIM_SKK_CONFIG_ANNOT_TARGET_DEFAULT;
@@ -167,6 +177,7 @@ static GtkWidget    * __widget_listsize        = 0;
 static GtkWidget    * __widget_annot_view      = 0;
 static GtkWidget    * __widget_annot_pos       = 0;
 static GtkWidget    * __widget_annot_target    = 0;
+static GtkWidget    * __widget_annot_highlight = 0;
 static GtkWidget    * __widget_selection_style = 0;
 static GtkTooltips  * __widget_tooltips        = 0;
 
@@ -391,6 +402,15 @@ static ComboConfigData annot_target[] =
     {NULL, NULL},
 };
 
+static ColorConfigData annot_bgcolor =
+{ SCIM_SKK_CONFIG_ANNOT_BGCOLOR,
+  SCIM_SKK_CONFIG_ANNOT_BGCOLOR_DEFAULT,
+  N_("Co_lor:"),
+  N_("the color of annotation text"),
+  N_("the color of annotation text in the candidate text."),
+  NULL,
+};
+
 static struct KeyboardConfigPage __key_conf_pages[] =
 {
     {N_("Common keys"),     __config_keyboards_common},
@@ -404,6 +424,8 @@ static void on_default_editable_changed       (GtkEditable     *editable,
 static void on_default_spin_button_changed    (GtkSpinButton   *spin_button,
                                                gpointer         user_data);
 static void on_default_toggle_button_toggled  (GtkToggleButton *togglebutton,
+                                               gpointer         user_data);
+static void on_default_color_button_set       (GtkColorButton  *button,
                                                gpointer         user_data);
 static void on_default_file_selection_clicked (GtkButton       *button,
                                                gpointer         user_data);
@@ -444,17 +466,122 @@ create_combo_widget (const char *label_text, GtkWidget **widget,
     return hbox;
 }
 
+static GtkWidget *
+create_color_button (ColorConfigData *entry)
+{
+    GtkWidget *hbox, *label;
+    if (!entry) return NULL;
+
+    hbox = gtk_hbox_new (FALSE, 0);
+    gtk_widget_show (hbox);
+
+    if (entry->label) {
+        label = gtk_label_new_with_mnemonic(_(entry->label));
+        gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 2);
+        gtk_widget_show(label);
+    }
+
+    entry->widget = gtk_color_button_new();
+    gtk_color_button_set_title(GTK_COLOR_BUTTON(entry->widget), entry->title);
+
+    gtk_container_set_border_width(GTK_CONTAINER(entry->widget), 4);
+    g_signal_connect(G_OBJECT(entry->widget), "color-set",
+                     G_CALLBACK(on_default_color_button_set),
+                     entry);
+    gtk_box_pack_start(GTK_BOX(hbox), entry->widget, FALSE, FALSE, 2);
+    gtk_widget_show(entry->widget);
+
+    if (label)
+        gtk_label_set_mnemonic_widget(GTK_LABEL(label), entry->widget);
+
+    if (!__widget_tooltips)
+        __widget_tooltips = gtk_tooltips_new();
+    if (entry->tooltip)
+        gtk_tooltips_set_tip(__widget_tooltips, entry->widget,
+                             _(entry->tooltip), NULL);
+
+    return hbox;
+}
+
 
 static GtkWidget *
 create_options_page ()
 {
-    GtkWidget *vbox, *widget, *table, *label;
+    GtkWidget *vbox, *hbox, *widget, *label;
 
     vbox = gtk_vbox_new (FALSE, 0);
     gtk_widget_show (vbox);
 
-    table = gtk_table_new (1, 3, FALSE);
-    gtk_widget_show (table);
+    /* selection style */
+    widget = create_combo_widget (_("Selection Style:"),
+                                  &__widget_selection_style,
+                                  (gpointer) &__config_selection_style,
+                                  (gpointer) &selection_style);
+    gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, FALSE, 4);
+
+
+    /* list size */
+    widget            = gtk_hbox_new(FALSE, 0);
+    label             = gtk_label_new (_("List Size:"));
+    __widget_listsize = gtk_spin_button_new_with_range(0, 100, 1);
+    gtk_spin_button_set_digits(GTK_SPIN_BUTTON (__widget_listsize), 0);
+    gtk_spin_button_set_update_policy(GTK_SPIN_BUTTON (__widget_listsize),
+                                      GTK_UPDATE_IF_VALID);
+    gtk_widget_show(label);
+    gtk_widget_show(__widget_listsize);
+    gtk_box_pack_start (GTK_BOX (widget), label, FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (widget), __widget_listsize, FALSE, FALSE, 4);
+    gtk_widget_show(widget);
+    gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, FALSE, 4);
+
+    /* annotation color */
+    hbox = gtk_hbox_new(FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 4);
+    gtk_widget_show(hbox);
+    __widget_annot_highlight = gtk_check_button_new_with_mnemonic(_("Highlight Annotation."));
+    gtk_widget_show(__widget_annot_highlight);
+    gtk_box_pack_start(GTK_BOX(hbox), __widget_annot_highlight, TRUE, TRUE, 0);
+    widget = create_color_button(&annot_bgcolor);
+    gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, FALSE, 4);
+
+    /* view annot */
+    __widget_annot_view = gtk_check_button_new_with_mnemonic (_("View Annotation."));
+    gtk_widget_show (__widget_annot_view);
+    gtk_box_pack_start (GTK_BOX (vbox), __widget_annot_view, FALSE, FALSE, 4);
+    gtk_container_set_border_width (GTK_CONTAINER (__widget_annot_view), 4);
+
+    widget = create_combo_widget (_("Position of Annotation:"),
+                                  &__widget_annot_pos,
+                                  (gpointer) &__config_annot_pos,
+                                  (gpointer) &annot_position);
+    gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, FALSE, 4);
+
+    widget = create_combo_widget (_("Printed Annotation:"),
+                                  &__widget_annot_target,
+                                  (gpointer) &__config_annot_target,
+                                  (gpointer) &annot_target);
+    gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, FALSE, 4);
+
+    // Connect all signals.
+    g_signal_connect ((gpointer) __widget_listsize, "value-changed",
+                      G_CALLBACK (on_default_spin_button_changed),
+                      &__config_listsize);
+    g_signal_connect ((gpointer) __widget_annot_highlight, "toggled",
+                      G_CALLBACK (on_default_toggle_button_toggled),
+                      &__config_annot_highlight);
+    g_signal_connect ((gpointer) __widget_annot_view, "toggled",
+                      G_CALLBACK (on_default_toggle_button_toggled),
+                      &__config_annot_view);
+    return vbox;
+}
+
+static GtkWidget *
+create_dictionary_page ()
+{
+    GtkWidget *vbox, *widget, *label;
+
+    vbox = gtk_vbox_new (FALSE, 0);
+    gtk_widget_show (vbox);
 
     /* system dictionary */
     widget = gtk_hbox_new(FALSE, 0);
@@ -486,47 +613,6 @@ create_options_page ()
     gtk_widget_show(widget);
     gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, FALSE, 4);
 
-    /* selection style */
-    widget = create_combo_widget (_("Selection Style:"),
-                                  &__widget_selection_style,
-                                  (gpointer) &__config_selection_style,
-                                  (gpointer) &selection_style);
-    gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, FALSE, 4);
-
-
-    /* list size */
-    widget            = gtk_hbox_new(FALSE, 0);
-    label             = gtk_label_new (_("List Size:"));
-    __widget_listsize = gtk_spin_button_new_with_range(0, 100, 1);
-    gtk_spin_button_set_digits(GTK_SPIN_BUTTON (__widget_listsize), 0);
-    gtk_spin_button_set_update_policy(GTK_SPIN_BUTTON (__widget_listsize),
-                                      GTK_UPDATE_IF_VALID);
-    gtk_widget_show(label);
-    gtk_widget_show(__widget_listsize);
-    gtk_box_pack_start (GTK_BOX (widget), label, FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (widget), __widget_listsize, FALSE, FALSE, 4);
-    gtk_widget_show(widget);
-    gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, FALSE, 4);
-
-    /* view annot */
-    __widget_annot_view = gtk_check_button_new_with_mnemonic (_("View Annotation."));
-    gtk_widget_show (__widget_annot_view);
-    gtk_box_pack_start (GTK_BOX (vbox), __widget_annot_view, FALSE, FALSE, 4);
-    gtk_container_set_border_width (GTK_CONTAINER (__widget_annot_view), 4);
-
-    widget = create_combo_widget (_("Position of Annotation:"),
-                                  &__widget_annot_pos,
-                                  (gpointer) &__config_annot_pos,
-                                  (gpointer) &annot_position);
-    gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, FALSE, 4);
-
-    widget = create_combo_widget (_("Printed Annotation:"),
-                                  &__widget_annot_target,
-                                  (gpointer) &__config_annot_target,
-                                  (gpointer) &annot_target);
-    gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, FALSE, 4);
-
-    // Connect all signals.
     g_signal_connect ((gpointer) __config_sysdict.button, "clicked",
                       G_CALLBACK (on_default_file_selection_clicked),
                       &__config_sysdict);
@@ -538,13 +624,6 @@ create_options_page ()
                       G_CALLBACK (on_default_editable_changed),
                       &__config_userdict);
 
-    g_signal_connect ((gpointer) __widget_listsize, "value-changed",
-                      G_CALLBACK (on_default_spin_button_changed),
-                      &__config_listsize);
-
-    g_signal_connect ((gpointer) __widget_annot_view, "toggled",
-                      G_CALLBACK (on_default_toggle_button_toggled),
-                      &__config_annot_view);
     return vbox;
 }
 
@@ -632,6 +711,12 @@ create_setup_window ()
         gtk_widget_show (label);
         gtk_notebook_append_page (GTK_NOTEBOOK (notebook), page, label);
 
+        // Create the dictionary page.
+        page = create_dictionary_page ();
+        label = gtk_label_new (_("Dictionary"));
+        gtk_widget_show (label);
+        gtk_notebook_append_page (GTK_NOTEBOOK (notebook), page, label);
+
         // Create the key bind pages.
         for (unsigned int i = 0; i < __key_conf_pages_num; i++) {
             page = create_keyboard_page (i);
@@ -710,6 +795,19 @@ setup_widget_value ()
                             __config_userdict.c_str());
     }
 
+    if (__widget_annot_highlight) {
+        gtk_toggle_button_set_active (
+            GTK_TOGGLE_BUTTON (__widget_annot_highlight),
+            __config_annot_highlight);
+    }
+
+    if (annot_bgcolor.widget) {
+        GdkColor color;
+        gdk_color_parse(annot_bgcolor.value.c_str(), &color);
+        gtk_color_button_set_color(GTK_COLOR_BUTTON(annot_bgcolor.widget),
+                                   &color);
+    }
+
     for (unsigned int j = 0; j < __key_conf_pages_num; ++j) {
         for (unsigned int i = 0; __key_conf_pages[j].data[i].key; ++ i) {
             if (__key_conf_pages[j].data[i].entry) {
@@ -747,6 +845,13 @@ load_config (const ConfigPointer &config)
             config->read (String (SCIM_SKK_CONFIG_SELECTION_STYLE),
                           __config_selection_style);
 
+        __config_annot_highlight =
+            config->read (String (SCIM_SKK_CONFIG_ANNOT_HIGHLIGHT),
+                          __config_annot_highlight);
+
+        annot_bgcolor.value = config->read(String(annot_bgcolor.key),
+                                           annot_bgcolor.value);
+
         for (unsigned int j = 0; j < __key_conf_pages_num; ++ j) {
             for (unsigned int i = 0; __key_conf_pages[j].data[i].key; ++ i) {
                 __key_conf_pages[j].data[i].data =
@@ -779,6 +884,11 @@ save_config (const ConfigPointer &config)
                        __config_annot_target);
         config->write (String (SCIM_SKK_CONFIG_SELECTION_STYLE),
                         __config_selection_style);
+        config->write (String (SCIM_SKK_CONFIG_ANNOT_HIGHLIGHT),
+                       __config_annot_highlight);
+
+        config->write(String(annot_bgcolor.key),
+                      annot_bgcolor.value);
 
         for (unsigned int j = 0; j < __key_conf_pages_num; j++) {
             for (unsigned int i = 0; __key_conf_pages[j].data[i].key; ++ i) {
@@ -817,6 +927,26 @@ on_default_toggle_button_toggled (GtkToggleButton *togglebutton,
 
     if (toggle) {
         *toggle = gtk_toggle_button_get_active (togglebutton);
+        __have_changed = true;
+    }
+}
+
+static void
+on_default_color_button_set (GtkColorButton *colorbutton,
+                             gpointer        user_data)
+{
+    ColorConfigData *entry = static_cast<ColorConfigData*> (user_data);
+
+    if (entry) {
+        GdkColor color;
+        gchar color_str[8];
+        gtk_color_button_get_color(colorbutton, &color);
+        g_snprintf(color_str, G_N_ELEMENTS (color_str),
+                   "#%02X%02X%02X",
+                   (color.red>>8),
+                   (color.green>>8),
+                   (color.blue>>8));
+        entry->value = String(color_str);
         __have_changed = true;
     }
 }

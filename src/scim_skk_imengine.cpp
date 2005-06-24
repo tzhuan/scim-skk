@@ -131,7 +131,8 @@ bool annot_target
 int candvec_size = SCIM_SKK_CONFIG_CANDVEC_SIZE_DEFAULT;
 
 bool annot_highlight = SCIM_SKK_CONFIG_ANNOT_HIGHLIGHT_DEFAULT;
-int annot_bgcolor = SCIM_SKK_CONFIG_ANNOT_BGCOLOR_DEFAULT;
+int annot_bgcolor = strtol(SCIM_SKK_CONFIG_ANNOT_BGCOLOR_DEFAULT+1,
+                           (char**)NULL, 16);
 
 SKKFactory::SKKFactory (const String &lang,
                         const String &uuid,
@@ -143,7 +144,7 @@ SKKFactory::SKKFactory (const String &lang,
 {
     SCIM_DEBUG_IMENGINE(0) << "Create SKK Factory :\n";
     SCIM_DEBUG_IMENGINE(0) << "Lang : " << lang << "\n";
-    SCIM_DEBUG_IMENGINE(0) << "UUID :" << uuid << "\n";
+    SCIM_DEBUG_IMENGINE(0) << "UUID : " << uuid << "\n";
 
     if (lang.length() >= 2)
         set_languages(lang);
@@ -232,9 +233,9 @@ SKKFactory::reload_config (const ConfigPointer &config)
         annot_highlight =
             config->read(String(SCIM_SKK_CONFIG_ANNOT_HIGHLIGHT),
                          SCIM_SKK_CONFIG_ANNOT_HIGHLIGHT_DEFAULT);
-        annot_bgcolor =
-            config->read(String(SCIM_SKK_CONFIG_ANNOT_HIGHLIGHT),
-                         SCIM_SKK_CONFIG_ANNOT_BGCOLOR_DEFAULT);
+        str = config->read(String(SCIM_SKK_CONFIG_ANNOT_BGCOLOR),
+                           String(SCIM_SKK_CONFIG_ANNOT_BGCOLOR_DEFAULT));
+        annot_bgcolor = strtol(str.c_str() + 1, (char**)NULL, 16);
 
         str = config->read(String(SCIM_SKK_CONFIG_KAKUTEI_KEY),
                            String(SCIM_SKK_CONFIG_KAKUTEI_KEY_DEFAULT));

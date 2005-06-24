@@ -30,8 +30,6 @@
 
 using namespace scim;
 
-#include "scim_skk_prefs.h"
-
 typedef WideString Candidate;
 typedef WideString Annotation;
 typedef std::pair<Candidate, Annotation> CandPair;
