@@ -53,7 +53,7 @@
 
 
 /* default values */
-#define SCIM_SKK_CONFIG_KAKUTEI_KEY_DEFAULT          "Control+j,Return"
+#define SCIM_SKK_CONFIG_KAKUTEI_KEY_DEFAULT          "Control+j"
 #define SCIM_SKK_CONFIG_KATAKANA_KEY_DEFAULT         "q"
 #define SCIM_SKK_CONFIG_HALF_KATAKANA_KEY_DEFAULT    ""
 #define SCIM_SKK_CONFIG_ASCII_KEY_DEFAULT            "l"
