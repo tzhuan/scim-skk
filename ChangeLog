@@ -3,6 +3,9 @@
 	* src/scim_skk_imengine_setup.cpp: add color button to setup
 	module.
 
+	* src/scim_skk_imengine_setup.cpp (create_options_page): toggle
+	sensitivity of children.
+
 2005-06-23  Jun Mukai  <mukai@jmuk.org>
 
 	* src/scim_skk_core.cpp (action_nextpage, action_prevpage): set

@@ -425,6 +425,8 @@ static void on_default_spin_button_changed    (GtkSpinButton   *spin_button,
                                                gpointer         user_data);
 static void on_default_toggle_button_toggled  (GtkToggleButton *togglebutton,
                                                gpointer         user_data);
+static void toggle_sensitivity                (GtkToggleButton *togglebutton,
+                                               gpointer         user_data);
 static void on_default_color_button_set       (GtkColorButton  *button,
                                                gpointer         user_data);
 static void on_default_file_selection_clicked (GtkButton       *button,
@@ -507,7 +509,8 @@ create_color_button (ColorConfigData *entry)
 static GtkWidget *
 create_options_page ()
 {
-    GtkWidget *vbox, *hbox, *widget, *label;
+    GtkWidget *vbox, *hbox, *widget, *label, *alignment;
+    GtkWidget *annot_widgets, *bgcolor_widgets;
 
     vbox = gtk_vbox_new (FALSE, 0);
     gtk_widget_show (vbox);
@@ -541,26 +544,35 @@ create_options_page ()
     __widget_annot_highlight = gtk_check_button_new_with_mnemonic(_("Highlight Annotation."));
     gtk_widget_show(__widget_annot_highlight);
     gtk_box_pack_start(GTK_BOX(hbox), __widget_annot_highlight, TRUE, TRUE, 0);
-    widget = create_color_button(&annot_bgcolor);
-    gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, FALSE, 4);
+    bgcolor_widgets = create_color_button(&annot_bgcolor);
+    gtk_box_pack_start(GTK_BOX(hbox), bgcolor_widgets, TRUE, TRUE, 0);
 
     /* view annot */
     __widget_annot_view = gtk_check_button_new_with_mnemonic (_("View Annotation."));
     gtk_widget_show (__widget_annot_view);
     gtk_box_pack_start (GTK_BOX (vbox), __widget_annot_view, FALSE, FALSE, 4);
-    gtk_container_set_border_width (GTK_CONTAINER (__widget_annot_view), 4);
+    gtk_container_set_border_width (GTK_CONTAINER (__widget_annot_view), 0);
 
+    alignment = gtk_alignment_new(0, 0, 1, 1);
+    gtk_box_pack_start (GTK_BOX(vbox), alignment, FALSE, FALSE, 4);
+    gtk_alignment_set_padding(GTK_ALIGNMENT(alignment), 0, 0, 20, 0);
+    gtk_widget_show(alignment);
+
+    annot_widgets = gtk_vbox_new(FALSE, 0);
+    //gtk_box_pack_start(GTK_BOX(alignment), annot_widgets, FALSE, FALSE, 4);
+    gtk_container_add(GTK_CONTAINER(alignment), annot_widgets);
+    gtk_widget_show(annot_widgets);
     widget = create_combo_widget (_("Position of Annotation:"),
                                   &__widget_annot_pos,
                                   (gpointer) &__config_annot_pos,
                                   (gpointer) &annot_position);
-    gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (annot_widgets), widget, FALSE, FALSE, 0);
 
     widget = create_combo_widget (_("Printed Annotation:"),
                                   &__widget_annot_target,
                                   (gpointer) &__config_annot_target,
                                   (gpointer) &annot_target);
-    gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (annot_widgets), widget, FALSE, FALSE, 0);
 
     // Connect all signals.
     g_signal_connect ((gpointer) __widget_listsize, "value-changed",
@@ -569,9 +581,15 @@ create_options_page ()
     g_signal_connect ((gpointer) __widget_annot_highlight, "toggled",
                       G_CALLBACK (on_default_toggle_button_toggled),
                       &__config_annot_highlight);
+    g_signal_connect ((gpointer) __widget_annot_highlight, "toggled",
+                      G_CALLBACK (toggle_sensitivity),
+                      bgcolor_widgets);
     g_signal_connect ((gpointer) __widget_annot_view, "toggled",
                       G_CALLBACK (on_default_toggle_button_toggled),
                       &__config_annot_view);
+    g_signal_connect ((gpointer) __widget_annot_view, "toggled",
+                      G_CALLBACK (toggle_sensitivity),
+                      annot_widgets);
     return vbox;
 }
 
@@ -928,6 +946,18 @@ on_default_toggle_button_toggled (GtkToggleButton *togglebutton,
     if (toggle) {
         *toggle = gtk_toggle_button_get_active (togglebutton);
         __have_changed = true;
+    }
+}
+
+static void
+toggle_sensitivity (GtkToggleButton *togglebutton,
+                    gpointer         user_data)
+{
+    GtkWidget *widget = static_cast<GtkWidget*> (user_data);
+
+    if (widget) {
+        gboolean toggle = gtk_toggle_button_get_active (togglebutton);
+        gtk_widget_set_sensitive(widget, toggle);
     }
 }
 
