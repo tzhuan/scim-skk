@@ -164,7 +164,8 @@ static int    __config_listsize     = SCIM_SKK_CONFIG_CANDVEC_SIZE_DEFAULT;
 static bool   __config_annot_view   = SCIM_SKK_CONFIG_ANNOT_VIEW_DEFAULT;
 
 static bool __config_annot_highlight = SCIM_SKK_CONFIG_ANNOT_HIGHLIGHT_DEFAULT;
-//static int  __config_annot_bgcolor   = SCIM_SKK_CONFIG_ANNOT_BGCOLOR_DEFAULT;
+
+static bool __config_ignore_return = SCIM_SKK_CONFIG_IGNORE_RETURN_DEFAULT;
 
 static String __config_annot_pos    = SCIM_SKK_CONFIG_ANNOT_POS_DEFAULT;
 static String __config_annot_target = SCIM_SKK_CONFIG_ANNOT_TARGET_DEFAULT;
@@ -178,6 +179,7 @@ static GtkWidget    * __widget_annot_view      = 0;
 static GtkWidget    * __widget_annot_pos       = 0;
 static GtkWidget    * __widget_annot_target    = 0;
 static GtkWidget    * __widget_annot_highlight = 0;
+static GtkWidget    * __widget_ignore_return   = 0;
 static GtkWidget    * __widget_selection_style = 0;
 static GtkTooltips  * __widget_tooltips        = 0;
 
@@ -537,6 +539,10 @@ create_options_page ()
     gtk_widget_show(widget);
     gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, FALSE, 4);
 
+    __widget_ignore_return = gtk_check_button_new_with_mnemonic(_("Ignore Return at the end of learning."));
+    gtk_widget_show(__widget_ignore_return);
+    gtk_box_pack_start(GTK_BOX(vbox), __widget_ignore_return, FALSE, FALSE, 4);
+
     /* annotation color */
     hbox = gtk_hbox_new(FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 4);
@@ -578,6 +584,9 @@ create_options_page ()
     g_signal_connect ((gpointer) __widget_listsize, "value-changed",
                       G_CALLBACK (on_default_spin_button_changed),
                       &__config_listsize);
+    g_signal_connect ((gpointer) __widget_ignore_return, "toggled",
+                      G_CALLBACK (on_default_toggle_button_toggled),
+                      &__config_ignore_return);
     g_signal_connect ((gpointer) __widget_annot_highlight, "toggled",
                       G_CALLBACK (on_default_toggle_button_toggled),
                       &__config_annot_highlight);
@@ -797,6 +806,12 @@ setup_widget_value ()
             __config_annot_view);
     }
 
+    if (__widget_ignore_return) {
+        gtk_toggle_button_set_active (
+            GTK_TOGGLE_BUTTON (__widget_ignore_return),
+            __config_ignore_return);
+    }
+
     if (__widget_listsize) {
         gtk_spin_button_set_value (
             GTK_SPIN_BUTTON (__widget_listsize),
@@ -867,6 +882,10 @@ load_config (const ConfigPointer &config)
             config->read (String (SCIM_SKK_CONFIG_ANNOT_HIGHLIGHT),
                           __config_annot_highlight);
 
+        __config_ignore_return =
+            config->read (String (SCIM_SKK_CONFIG_IGNORE_RETURN),
+                          __config_ignore_return);
+
         annot_bgcolor.value = config->read(String(annot_bgcolor.key),
                                            annot_bgcolor.value);
 
@@ -904,6 +923,8 @@ save_config (const ConfigPointer &config)
                         __config_selection_style);
         config->write (String (SCIM_SKK_CONFIG_ANNOT_HIGHLIGHT),
                        __config_annot_highlight);
+        config->write (String (SCIM_SKK_CONFIG_IGNORE_RETURN),
+                       __config_ignore_return);
 
         config->write(String(annot_bgcolor.key),
                       annot_bgcolor.value);

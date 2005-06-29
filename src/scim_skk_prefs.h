@@ -51,6 +51,7 @@
 #define SCIM_SKK_CONFIG_ANNOT_HIGHLIGHT "/IMEngine/SKK/AnnotHighlight"
 #define SCIM_SKK_CONFIG_ANNOT_BGCOLOR   "/IMEngine/SKK/AnnotBGColor"
 
+#define SCIM_SKK_CONFIG_IGNORE_RETURN   "/IMEngine/SKK/IgnoreReturn"
 
 /* default values */
 #define SCIM_SKK_CONFIG_KAKUTEI_KEY_DEFAULT          "Control+j"
@@ -81,4 +82,6 @@
 
 #define SCIM_SKK_CONFIG_ANNOT_HIGHLIGHT_DEFAULT true
 #define SCIM_SKK_CONFIG_ANNOT_BGCOLOR_DEFAULT   "#a0ff80"
+
+#define SCIM_SKK_CONFIG_IGNORE_RETURN_DEFAULT   false
 #endif

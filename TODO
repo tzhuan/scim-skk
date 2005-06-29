@@ -1,18 +1,8 @@
-* Home/End key
-
 * special conversion / number conversion
-
-* Bugs in qtim
 
 * Tab completion
 
 * Implementation of preference management object (for following features).
-
-* behaviors like skk-egg-like-newline
-
-* uppercase/lowercase toggle key(\C-u). 
-  explained in detail on scim-thread of 2ch.
-  The behavior as input `/who\C-u' as committed WHO.
 
 * customization of punctuation marks.
 

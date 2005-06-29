@@ -33,6 +33,8 @@ extern bool annot_pos;
 extern bool annot_highlight;
 extern int annot_bgcolor;
 
+extern bool ignore_return;
+
 static void convert_char_to_wide         (const int c,
                                           WideString &result,
                                           bool space = true);
@@ -1186,6 +1188,8 @@ SKKCore::process_key_event (const KeyEvent key)
         bool retval = m_learning->process_key_event(key);
         char code = key.get_ascii_code();
         if (key.code == SCIM_KEY_Return || m_learning->m_end_flag) {
+            if (ignore_return && key.code == SCIM_KEY_Return)
+                retval = true;
             if (m_learning->m_commitstr.empty()) {
                 /* learning is canceled */
                 delete m_learning;

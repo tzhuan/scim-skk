@@ -134,6 +134,8 @@ bool annot_highlight = SCIM_SKK_CONFIG_ANNOT_HIGHLIGHT_DEFAULT;
 int annot_bgcolor = strtol(SCIM_SKK_CONFIG_ANNOT_BGCOLOR_DEFAULT+1,
                            (char**)NULL, 16);
 
+bool ignore_return = SCIM_SKK_CONFIG_IGNORE_RETURN_DEFAULT;
+
 SKKFactory::SKKFactory (const String &lang,
                         const String &uuid,
                         const ConfigPointer &config)
@@ -236,6 +238,9 @@ SKKFactory::reload_config (const ConfigPointer &config)
         str = config->read(String(SCIM_SKK_CONFIG_ANNOT_BGCOLOR),
                            String(SCIM_SKK_CONFIG_ANNOT_BGCOLOR_DEFAULT));
         annot_bgcolor = strtol(str.c_str() + 1, (char**)NULL, 16);
+
+        ignore_return = config->read(String(SCIM_SKK_CONFIG_IGNORE_RETURN),
+                                     SCIM_SKK_CONFIG_IGNORE_RETURN_DEFAULT);
 
         str = config->read(String(SCIM_SKK_CONFIG_KAKUTEI_KEY),
                            String(SCIM_SKK_CONFIG_KAKUTEI_KEY_DEFAULT));
