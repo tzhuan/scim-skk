@@ -8,6 +8,8 @@ INCLUDE	= \
 
 noinst_HEADERS = \
 	conv_table.h \
+	scim_skk_lookup_table.h \
+	scim_skk_automaton.h \
 	scim_skk_imengine.h \
 	scim_skk_dictionary.h \
 	scim_skk_core.h \
@@ -18,8 +20,9 @@ moduledir = @SCIM_MODULEDIR@/IMEngine
 module_LTLIBRARIES = skk.la
 
 skk_la_SOURCES = \
+	scim_skk_lookup_table.cpp \
 	scim_skk_imengine.cpp \
-	scim_anthy_automaton.cpp \
+	scim_skk_automaton.cpp \
 	scim_skk_dictionary.cpp \
 	scim_skk_core.cpp \
 	scim_skk_keybind.cpp \
@@ -35,24 +38,23 @@ skk_la_LDFLAGS = \
 	@SCIM_LIBS@
 
 
+if SCIM_BUILD_SETUP
+SETUP_MODULE = skk-imengine-setup.la
+endif
 
-#if SCIM_BUILD_SETUP
-#SETUP_MODULE = skk-imengine-setup.la
-#endif
-#
-#setupmoduledir           = @SCIM_MODULEDIR@/SetupUI
-#setupmodule_LTLIBRARIES  = $(SETUP_MODULE)
-#
-#anthy_imengine_setup_la_SOURCES = scim_anthy_imengine_setup.cpp
-#
-#anthy_imengine_setup_la_CFLAGS  = @SCIM_GTKUTILS_CFLAGS@ @SCIM_CFLAGS@ @SCIM_DEBUG_FLAGS@
-#
-#anthy_imengine_setup_la_CXXFLAGS= @SCIM_GTKUTILS_CFLAGS@ @SCIM_CFLAGS@ @SCIM_DEBUG_FLAGS@
-#
-#anthy_imengine_setup_la_LDFLAGS = -avoid-version \
-#                                   -rpath $(setupmoduledir) \
-#                                   -module \
-#                                   @LIBTOOL_EXPORT_OPTIONS@ \
-#                                   @SCIM_GTKUTILS_LIBS@ \
-#                                   @INTLLIBS@ \
-#                                   @SCIM_LIBS@
+setupmoduledir           = @SCIM_MODULEDIR@/SetupUI
+setupmodule_LTLIBRARIES  = $(SETUP_MODULE)
+
+skk_imengine_setup_la_SOURCES = scim_skk_imengine_setup.cpp
+
+skk_imengine_setup_la_CFLAGS  = @SCIM_GTKUTILS_CFLAGS@ @SCIM_CFLAGS@ @SCIM_DEBUG_FLAGS@
+
+skk_imengine_setup_la_CXXFLAGS= @SCIM_GTKUTILS_CFLAGS@ @SCIM_CFLAGS@ @SCIM_DEBUG_FLAGS@
+
+skk_imengine_setup_la_LDFLAGS = -avoid-version \
+                                -rpath $(setupmoduledir) \
+                                -module \
+                                @LIBTOOL_EXPORT_OPTIONS@ \
+                                @SCIM_GTKUTILS_LIBS@ \
+                                @INTLLIBS@ \
+                                @SCIM_LIBS@
