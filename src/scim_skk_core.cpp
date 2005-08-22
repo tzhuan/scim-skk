@@ -1259,7 +1259,10 @@ SKKCore::get_lookup_table (void)
 bool
 SKKCore::lookup_table_visible (void)
 {
-    return m_ltable.visible_table();
+    if (m_learning)
+        return m_learning->lookup_table_visible();
+    else
+        return m_ltable.visible_table();
 }
 
 static void

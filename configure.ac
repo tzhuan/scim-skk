@@ -18,8 +18,8 @@ AC_SUBST(SCIM_SKK_MICRO_VERSION)
 AC_SUBST(SCIM_SKK_VERSION)
 
 # Init automake stuff
-AM_INIT_AUTOMAKE
-AM_CONFIG_HEADER([config.h])
+AM_INIT_AUTOMAKE(scim-skk, 0.3.0)
+AM_CONFIG_HEADER(config.h)
 
 # Init gettext
 ALL_LINGUAS="ja"
