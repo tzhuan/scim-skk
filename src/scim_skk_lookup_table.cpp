@@ -57,14 +57,18 @@ SKKCandList::~SKKCandList (void)
 bool
 SKKCandList::has_candidate (const WideString &cand) const
 {
-    bool retval = true;
-    for (int i = 0; i < number_of_candidates(); i++) {
-        if (CommonLookupTable::get_candidate(i) == cand) {
-            retval = false;
-            break;
+    for (int i = 0; i < get_candvec_size(); i++) {
+        if (get_candidate_from_vector(i) == cand) {
+            return true;
         }
     }
-    return retval;
+
+    for (int i = 0; i < number_of_candidates(); i++) {
+        if (CommonLookupTable::get_candidate(i) == cand) {
+            return true;
+        }
+    }
+    return false;
 }
 
 WideString
@@ -153,19 +157,19 @@ SKKCandList::clear (void)
 
 /* candvec methods */
 WideString
-SKKCandList::get_cand_from_vector (int index)
+SKKCandList::get_cand_from_vector (int index) const
 {
     return get_candpair_from_vector(index).first;
 }
 
 WideString
-SKKCandList::get_annot_from_vector (int index)
+SKKCandList::get_annot_from_vector (int index) const
 {
     return get_candpair_from_vector(index).second;
 }
 
 CandPair
-SKKCandList::get_candpair_from_vector (int index)
+SKKCandList::get_candpair_from_vector (int index) const
 {
     try {
         return m_candvec.at(index);
@@ -179,7 +183,7 @@ SKKCandList::get_candpair_from_vector (int index)
 }
 
 WideString 
-SKKCandList::get_candidate_from_vector (int index)
+SKKCandList::get_candidate_from_vector (int index) const
 {
     CandPair p = get_candpair_from_vector(index);
     if (annot_view && annot_pos && !p.second.empty())
@@ -189,19 +193,19 @@ SKKCandList::get_candidate_from_vector (int index)
 }
 
 int
-SKKCandList::get_candvec_size (void)
+SKKCandList::get_candvec_size (void) const
 {
     return m_candvec.size();
 }
 
 bool
-SKKCandList::visible_table (void)
+SKKCandList::visible_table (void) const
 {
     return m_candindex >= m_candvec.size() && number_of_candidates() > 0;
 }
 
 bool
-SKKCandList::vector_empty (void)
+SKKCandList::vector_empty (void) const
 {
     return m_candvec.size() == 0;
 }

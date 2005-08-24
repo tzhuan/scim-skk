@@ -1,7 +1,7 @@
 AM_CPPFLAGS = \
 	-DSCIM_SKK_LOCALEDIR=\"$(datadir)/locale\" \
 	-DSCIM_ICONDIR=\"@SCIM_ICONDIR@\"
-INCLUDE	= \
+INCLUDES	= \
 	-I$(top_builddir) \
 	-I$(top_srcdir) \
 	-I$(top_srcdir)/src 

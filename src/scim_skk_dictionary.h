@@ -41,6 +41,8 @@ class SKKDictionary
     SKKUserDict *m_userdict;
 
     DictCache m_cache;
+    void lookup_main (const WideString &key, const bool okuri,
+                      std::list<CandPair> &result);
 public:
     SKKDictionary  (void);
     ~SKKDictionary (void);

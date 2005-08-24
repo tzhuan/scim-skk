@@ -31,6 +31,7 @@
 
 #include <scim_iconv.h>
 
+
 #define SKKDICT_CHARCODE      "EUC-JP"
 
 using namespace std;
@@ -40,6 +41,15 @@ static IConvert converter;
 static void append_candpair(const WideString &cand,
                             const WideString &annot,
                             list<CandPair> &result);
+
+inline void convert_num1 (WideString key, WideString &result);
+inline void convert_num2 (WideString key, WideString &result);
+inline void convert_num3 (WideString key, WideString &result);
+inline void convert_num5 (WideString key, WideString &result);
+inline void convert_num9 (WideString key, WideString &result);
+
+inline WideString lltows(unsigned long long n);
+inline unsigned long long wstoll(WideString ws);
 
 class SKKDictBase
 {
@@ -473,26 +483,105 @@ SKKDictionary::dump_userdict (void)
 }
 
 void
-SKKDictionary::lookup (const WideString &key, const bool okuri,
-                         SKKCandList &result)
+SKKDictionary::lookup_main (const WideString &key, const bool okuri,
+                            list<CandPair> &result)
 {
     DictCache::const_iterator cit = m_cache.find(key);
     result.clear();
     if (cit == m_cache.end()) {
-        list<CandPair> cl;
-        m_userdict->lookup(key, okuri, cl);
+        m_userdict->lookup(key, okuri, result);
         for (list<SKKDictBase*>::const_iterator it = m_sysdicts.begin();
              it != m_sysdicts.end(); it++) {
-            (*it)->lookup(key, okuri, cl);
+            (*it)->lookup(key, okuri, result);
         }
-        for(list<CandPair>::const_iterator it = cl.begin();
-            it != cl.end(); it++) {
-            result.append_candidate(it->first, it->second);
-        }
-        m_cache.insert(make_pair(key, cl));
+        m_cache.insert(make_pair(key, result));
     } else {
         for(list<CandPair>::const_iterator it = cit->second.begin();
             it != cit->second.end(); it++) {
+            result.push_back(*it);
+        }
+    }
+}
+
+static const ucs4_t zero = 0x30;
+static const ucs4_t nine = 0x39;
+static const ucs4_t sharp = 0x23;
+
+void
+SKKDictionary::lookup (const WideString &key_const, const bool okuri,
+                       SKKCandList &result)
+{
+    WideString key = key_const;
+    list<WideString> numbers;
+    list<CandPair> cl;
+
+    for (int i = 0; i < key.size(); i++) {
+        int start = i;
+        while (key[i] >= zero && key[i] <= nine) i++;
+        if (start < i) {
+            WideString num = key.substr(start, i-start);
+            numbers.push_back(num);
+            key.replace(start, i, 1, sharp);
+        }
+        i = start;
+    }
+    lookup_main(key, okuri, cl);
+    for (list<CandPair>::iterator it = cl.begin(); it != cl.end(); it++) {
+        if (numbers.size() != 0) {
+            WideString cand;
+            list<WideString>::iterator nit = numbers.begin();
+            int start = 0;
+            int sharp_pos;
+            while(nit != numbers.end() &&
+                  (sharp_pos = it->first.find(sharp, start)) != WideString::npos) {
+                if (sharp_pos < it->first.size()-1 &&
+                    it->first[sharp_pos+1] >= zero &&
+                    it->first[sharp_pos+1] <= nine) {
+                    if (sharp_pos > start)
+                        cand.append(it->first, start, sharp_pos - start);
+                    switch (it->first[sharp_pos+1] - zero) {
+                    case 0:
+                        cand.append(*nit);
+                        break;
+                    case 1:
+                        convert_num1(*nit, cand);
+                        break;
+                    case 2:
+                        convert_num2(*nit, cand);
+                        break;
+                    case 3:
+                        convert_num3(*nit, cand);
+                        break;
+                    case 4:
+                        {
+                            list<CandPair> cl2;
+                            lookup_main(*nit, 0, cl2);
+                            if (cl2.size() > 0) {
+                                cand += cl2.begin()->first;
+                            }
+                        }
+                    case 5:
+                        convert_num5(*nit, cand);
+                        break;
+                    case 9:
+                        convert_num9(*nit, cand);
+                        break;
+                    default:
+                        cand += it->first.substr(sharp_pos, 2);
+                    }
+                    start = sharp_pos + 2;
+                    nit++;
+                } else { /* not conversion */
+                    cand.append(1, sharp);
+                    start = sharp_pos + 1;
+                }
+            }
+            if (start < it->first.size())
+                cand.append(it->first, start, it->first.size() - start);
+            if (!result.has_candidate(cand)) {
+                result.append_candidate(cand, it->second);
+            }
+        } else {
             result.append_candidate(it->first, it->second);
         }
     }
@@ -527,76 +616,168 @@ bool SKKNumDict::compare (const String &dictname) { return false; }
 bool SKKNumDict::compare (const String &host, const int port) { return false; }
 
 
-void
-convert_int_to_num1 (int src, WideString &dst)
+static WideString digits_wide = utf8_mbstowcs("\xEF\xBC\x90" // 0
+                                              "\xEF\xBC\x91" // 1
+                                              "\xEF\xBC\x92" // 2
+                                              "\xEF\xBC\x93" // 3
+                                              "\xEF\xBC\x94" // 4
+                                              "\xEF\xBC\x95" // 5
+                                              "\xEF\xBC\x96" // 6
+                                              "\xEF\xBC\x97" // 7
+                                              "\xEF\xBC\x98" // 8
+                                              "\xEF\xBC\x99" ); // 9
+
+static WideString digits_kanji = utf8_mbstowcs("\xE3\x80\x87" // 0
+                                               "\xE4\xB8\x80" // 1
+                                               "\xE4\xBA\x8C" // 2
+                                               "\xE4\xB8\x89" // 3
+                                               "\xE5\x9B\x9B" // 4
+                                               "\xE4\xBA\x94" // 5
+                                               "\xE5\x85\xAD" // 6
+                                               "\xE4\xB8\x83" // 7
+                                               "\xE5\x85\xAB" // 8
+                                               "\xE4\xB9\x9D" ); // 9
+
+
+static WideString kei_kanji   = utf8_mbstowcs("\xE4\xBA\xAC");
+static WideString chou_kanji  = utf8_mbstowcs("\xE5\x85\x86");
+static WideString oku_kanji   = utf8_mbstowcs("\xE5\x84\x84");
+static WideString man_kanji   = utf8_mbstowcs("\xE4\xB8\x87");
+static WideString sen_kanji   = utf8_mbstowcs("\xE5\x8D\x83");
+static WideString hyaku_kanji = utf8_mbstowcs("\xE7\x99\xBE");
+static WideString juu_kanji   = utf8_mbstowcs("\xE5\x8D\x81");
+
+
+static WideString digits_kanji_old = utf8_mbstowcs("\xE3\x80\x87" // 0
+                                                   "\xE5\xA3\xB1" // 1
+                                                   "\xE5\xBC\x90" // 2
+                                                   "\xE5\x8F\x82" // 3
+                                                   "\xE5\x9B\x9B" // 4
+                                                   "\xE4\xBC\x8D" // 5
+                                                   "\xE5\x85\xAD" // 6
+                                                   "\xE4\xB8\x83" // 7
+                                                   "\xE5\x85\xAB" // 8
+                                                   "\xE4\xB9\x9D" ); // 9
+static WideString man_kanji_old = utf8_mbstowcs("\xE8\x90\xAC");
+static WideString sen_kanji_old = utf8_mbstowcs("\xE9\x98\xA1");
+static WideString juu_kanji_old = utf8_mbstowcs("\xE6\x8B\xBE");
+
+/* convert function for #1 and #2 */
+inline void
+convert_num_each_char (WideString key, WideString &result,
+                       const WideString &digits)
 {
-    switch (src) {
-    case 1:
-        dst += utf8_mbstowcs("\xE4\xB8\x80");
-        break;
-    case 2:
-        dst += utf8_mbstowcs("\xE4\xB8\x8C");
-        break;
-    case 3:
-        dst += utf8_mbstowcs("\xE4\xB8\x89");
-        break;
-    case 4:
-        dst += utf8_mbstowcs("\xE5\x9B\x9B");
-        break;
-    case 5:
-        dst += utf8_mbstowcs("\xE4\xBA\x94");
-        break;
-    case 6:
-        dst += utf8_mbstowcs("\xE5\x85\xAD");
-        break;
-    case 7:
-        dst += utf8_mbstowcs("\xE4\xB8\x83");
-        break;
-    case 8:
-        dst += utf8_mbstowcs("\xE5\x85\xAB");
-        break;
-    case 9:
-        dst += utf8_mbstowcs("\xE4\xB9\x9D");
-        break;
+    for (WideString::const_iterator it = key.begin(); it != key.end(); it++) {
+        result.append(1, digits[*it - zero]);
     }
 }
 
-void
-convert_int_to_num (int src, WideString &dst)
+inline void
+convert_num1 (WideString key, WideString &result)
 {
-    if (src >= 100000000) {
-        convert_int_to_num(src/100000000, dst);
-        dst += utf8_mbstowcs("\xE5\x84\x84"); /* oku */
-        src = src % 100000000;
+    convert_num_each_char(key, result, digits_wide);
+}
+
+inline void
+convert_num2 (WideString key, WideString &result)
+{
+    convert_num_each_char(key, result, digits_kanji);
+}
+
+/* conversion for #3 and #5 */
+inline void
+convert_num_with_ranks (WideString key, WideString &result,
+                        const WideString &digits,
+                        const WideString &kei,
+                        const WideString &chou,
+                        const WideString &oku,
+                        const WideString &man,
+                        const WideString &sen,
+                        const WideString &hyaku,
+                        const WideString &juu,
+                        const bool ichi_flag)
+{
+    unsigned long long ikey = wstoll(key);
+    if (ikey >= 10000000000000000ull) { 
+        convert_num_with_ranks(lltows(ikey/10000000000000000ull),
+                               result,
+                               digits, kei, chou, oku, man, sen, hyaku, juu,
+                               ichi_flag);
+        result += kei;
+        ikey = ikey % 10000000000000000ull;
     }
-    if (src >= 10000) {
-        convert_int_to_num(src/10000, dst);
-        dst += utf8_mbstowcs("\xE4\xB8\x87"); /* man */
-        src = src % 10000;
+    if (ikey >= 1000000000000ull) { 
+        convert_num_with_ranks(lltows(ikey/1000000000000ull),
+                               result,
+                               digits, kei, chou, oku, man, sen, hyaku, juu,
+                               ichi_flag);
+        result += chou;
+        ikey = ikey % 1000000000000ull;
     }
-    if (src >= 1000) {
-        if (src / 1000 != 1) {
-            convert_int_to_num1(src/1000, dst);
-        }
-        dst += utf8_mbstowcs("\xE5\x8D\x83"); /* sen */
-        src = src % 1000;
+    if (ikey >= 100000000) { 
+        convert_num_with_ranks(lltows(ikey/100000000),
+                               result,
+                               digits, kei, chou, oku, man, sen, hyaku, juu,
+                               ichi_flag);
+        result += oku;
+        ikey = ikey % 100000000;
     }
-    if (src > 100) {
-        if (src / 100 != 1) {
-            convert_int_to_num1(src/100, dst);
-        }
-        convert_int_to_num1(src/100, dst);
-        dst += utf8_mbstowcs("\xE7\x99\xBE"); /* hyaku */
-        src = src % 100;
+    if (ikey >= 10000) {
+        if (ikey / 10000000 == 1)
+            result += digits[1];
+        convert_num_with_ranks(lltows(ikey/10000),
+                               result,
+                               digits, kei, chou, oku, man, sen, hyaku, juu,
+                               ichi_flag);
+        result += man;
+        ikey = ikey % 10000;
     }
-    if (src > 10) {
-        if (src / 10 != 1) {
-            convert_int_to_num1(src/10, dst);
-        }
-        dst += utf8_mbstowcs("\xE5\x8D\x81"); /* juu */
-        src = src % 10;
+    if (ikey >= 1000) {
+        if (ichi_flag || ikey / 1000 != 1)
+            result += digits[ikey/1000];
+        result += sen;
+        ikey = ikey % 1000;
     }
-    convert_int_to_num1(src, dst);
+    if (ikey > 100) {
+        if (ichi_flag || ikey / 100 != 1)
+            result += digits[ikey/100];
+        result += hyaku;
+        ikey = ikey % 100;
+    }
+    if (ikey > 10) {
+        if (ichi_flag || ikey / 10 > 1)
+            result += digits[ikey/10];
+        result += juu;
+        ikey = ikey % 10;
+    }
+    if (ikey > 0)
+        result += digits[ikey];
+}
+
+inline void
+convert_num3 (WideString key, WideString &result)
+{
+    convert_num_with_ranks(key, result, digits_kanji,
+                           kei_kanji, chou_kanji, oku_kanji, man_kanji,
+                           sen_kanji, hyaku_kanji, juu_kanji, false);
+}
+
+inline void
+convert_num5 (WideString key, WideString &result)
+{
+    convert_num_with_ranks(key, result, digits_kanji_old,
+                           kei_kanji, chou_kanji, oku_kanji, man_kanji_old,
+                           sen_kanji_old, hyaku_kanji, juu_kanji_old, true);
+}
+
+inline void
+convert_num9 (WideString key, WideString &result)
+{
+    if (key.size() == 2) {
+        int a = key[0]-zero, b = key[1]-zero;
+        result += digits_wide[a];
+        result += digits_kanji[b];
+    }
 }
 
 void
@@ -612,4 +793,36 @@ append_candpair (const WideString &cand, const WideString &annot,
         /* new candidate */
         result.push_back(make_pair(cand, annot));
     }
+}
+
+inline WideString lltows(unsigned long long n)
+{
+    WideString ret;
+    list<ucs4_t> l;
+    if (n == 0) {
+        ret.append(1, zero);
+        return ret;
+    }
+    while (n > 0) {
+        l.push_front(n%10+zero);
+        n/=10;
+    }
+    for (list<ucs4_t>::const_iterator it = l.begin(); it != l.end(); it++) {
+        ret.append(1, *it);
+    }
+    return ret;
+}
+
+inline unsigned long long wstoll(WideString ws)
+{
+    unsigned long long int ret = 0;
+    for (int i = 0; i < ws.size(); i++) {
+        if (ws[i] >= zero && ws[i] <= nine) {
+            ret *= 10;
+            ret += ws[i] - zero;
+        } else {
+            break;
+        }
+    }
+    return ret;
 }

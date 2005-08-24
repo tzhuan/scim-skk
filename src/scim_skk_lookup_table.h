@@ -49,15 +49,15 @@ public:
     WideString get_annot (int index) const;
 
     /* candvec methods */
-    virtual WideString get_cand_from_vector (int index = -1);
-    virtual WideString get_annot_from_vector (int index = -1);
-    virtual WideString get_candidate_from_vector (int index = -1);
-    virtual CandPair   get_candpair_from_vector (int index = -1);
-    virtual int get_candvec_size (void);
+    virtual WideString get_cand_from_vector (int index = -1) const;
+    virtual WideString get_annot_from_vector (int index = -1) const;
+    virtual WideString get_candidate_from_vector (int index = -1) const;
+    virtual CandPair   get_candpair_from_vector (int index = -1) const;
+    virtual int get_candvec_size (void) const;
     virtual bool next_candidate (void);
     virtual bool prev_candidate (void);
-    virtual bool vector_empty (void);
-    virtual bool visible_table (void);
+    virtual bool vector_empty (void) const;
+    virtual bool visible_table (void) const;
 
     /* normal lookup table methods */
     virtual bool has_candidate (const WideString &cand) const;
