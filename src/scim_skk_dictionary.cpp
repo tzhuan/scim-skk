@@ -738,13 +738,13 @@ convert_num_with_ranks (WideString key, WideString &result,
         result += sen;
         ikey = ikey % 1000;
     }
-    if (ikey > 100) {
+    if (ikey >= 100) {
         if (ichi_flag || ikey / 100 != 1)
             result += digits[ikey/100];
         result += hyaku;
         ikey = ikey % 100;
     }
-    if (ikey > 10) {
+    if (ikey >= 10) {
         if (ichi_flag || ikey / 10 > 1)
             result += digits[ikey/10];
         result += juu;
