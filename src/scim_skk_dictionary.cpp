@@ -243,6 +243,8 @@ SKKSysDict::lookup (const WideString &key, const bool okuri,
 
     converter.convert(key_s, key);
 
+    if(indice.size() == 0) return;
+	
     ub = indice.size();
     lb = 0;
 
