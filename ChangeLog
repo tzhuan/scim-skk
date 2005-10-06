@@ -1,3 +1,8 @@
+2005-10-06  Jun Mukai  <mukai@jmuk.org>
+	* src/scim_skk_looup_table.h: change the classname from CandPair
+	to CandEnt for learning with number conversions.  
+	* src/scim_skk_dictionary.cpp: Fix bugs with number conversions.
+
 2005-09-13  Takuro Ashie  <ashie@homa.ne.jp>
 
 	* src/scim_skk_dictionary.cpp: Fix a bug that scim-skk clashes when

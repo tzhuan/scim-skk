@@ -238,13 +238,12 @@ void
 SKKCore::commit_converting (int index)
 {
     if (!m_ltable.vector_empty() && !m_ltable.visible_table()) {
-        WideString str = m_ltable.get_cand_from_vector();
-        commit_string(str);
+        CandEnt cent = m_ltable.get_candent_from_vector();
+        commit_string(cent.cand);
         commit_string(m_okuristr);
         if (m_okurihead != 0)
             m_preeditstr += m_okurihead;
-        scim_skkdict->write(m_preeditstr,
-                            make_pair(str, m_ltable.get_annot_from_vector()));
+        scim_skkdict->write(m_preeditstr, cent.cand_orig, cent.annot);
         m_ltable.clear();
         clear_preedit();
         if (m_skk_mode == SKK_MODE_ASCII)
@@ -257,11 +256,12 @@ SKKCore::commit_converting (int index)
         }
         WideString cand  = m_ltable.get_cand(index);
         WideString annot = m_ltable.get_annot(index);
+        WideString cand_orig = m_ltable.get_cand_orig(index);
         commit_string(cand);
         commit_string(m_okuristr);
         if (m_okurihead != 0)
             m_preeditstr += m_okurihead;
-        scim_skkdict->write(m_preeditstr, make_pair(cand, annot));
+        scim_skkdict->write(m_preeditstr, cand_orig, annot);
         m_ltable.clear();
         clear_preedit();
         if (m_skk_mode == SKK_MODE_ASCII)
@@ -1216,8 +1216,8 @@ SKKCore::process_key_event (const KeyEvent key)
                 if (m_okurihead != 0)
                     m_preeditstr += m_okurihead;
                 scim_skkdict->write(m_preeditstr,
-                                    make_pair(m_learning->m_commitstr,
-                                              WideString()));
+                                    m_learning->m_commitstr,
+                                    WideString());
                 clear_preedit();
                 m_ltable.clear();
                 m_learning->clear();

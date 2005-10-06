@@ -22,7 +22,6 @@
 
 #include <vector>
 #include <list>
-#include <utility>
 
 #define Uses_SCIM_LOOKUP_TABLE
 
@@ -32,27 +31,38 @@ using namespace scim;
 
 typedef WideString Candidate;
 typedef WideString Annotation;
-typedef std::pair<Candidate, Annotation> CandPair;
+
+struct CandEnt {
+    Candidate  cand;   /* candidate string */
+    Annotation annot;  /* annotation string */
+    Candidate  cand_orig; /* candidate string with #-notation */
+    CandEnt (const Candidate &cand = Candidate(),
+             const Annotation &annot = Annotation(),
+             const Candidate &cand_orig = Candidate());
+};
 
 class SKKCandList : public CommonLookupTable {
-    struct AnnotBuf;
-    AnnotBuf *m_annots;
+    struct CLBuffer;
+    CLBuffer *m_annot_buf;
+    CLBuffer *m_cand_orig_buf;
+    
 
-    std::vector<CandPair> m_candvec;
+    std::vector<CandEnt> m_candvec;
     int m_candindex;
 public:
     SKKCandList  (int page_size = 10);
     SKKCandList  (int page_size, const std::vector<WideString> &labels);
     ~SKKCandList (void);
 
-    WideString get_cand (int index) const;
-    WideString get_annot (int index) const;
+    Candidate  get_cand (int index) const;
+    Annotation get_annot (int index) const;
+    Candidate  get_cand_orig (int index) const;
 
     /* candvec methods */
     virtual WideString get_cand_from_vector (int index = -1) const;
     virtual WideString get_annot_from_vector (int index = -1) const;
     virtual WideString get_candidate_from_vector (int index = -1) const;
-    virtual CandPair   get_candpair_from_vector (int index = -1) const;
+    virtual CandEnt    get_candent_from_vector (int index = -1) const;
     virtual int get_candvec_size (void) const;
     virtual bool next_candidate (void);
     virtual bool prev_candidate (void);
@@ -67,12 +77,13 @@ public:
     virtual AttributeList get_attributes (int index) const;
     bool append_candidate (const WideString &cand,
                            const WideString &annot = WideString(),
+                           const WideString &cand_orig = WideString(),
                            const AttributeList &attrs = AttributeList());
 
     virtual bool empty (void);
 
     /* list methods */
-    virtual void copy (std::list<CandPair> &dst);
+    virtual void copy (std::list<CandEnt> &dst);
 
 
     void SKKCandList::get_annot_string (WideString &result);

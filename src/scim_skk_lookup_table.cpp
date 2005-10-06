@@ -27,16 +27,22 @@ extern int candvec_size;
 extern bool annot_highlight;
 extern int annot_bgcolor;
 
-struct SKKCandList::AnnotBuf
+struct SKKCandList::CLBuffer
 {
 public:
     std::vector <ucs4_t> m_buffer;
     std::vector <uint32> m_index;
 };
 
+CandEnt::CandEnt (const Candidate &c, const Annotation &a, const Candidate &co)
+    : cand(c), annot(a), cand_orig((co.empty())? c : co)
+{
+}
+
 SKKCandList::SKKCandList (int page_size)
     : CommonLookupTable (page_size),
-      m_annots (new AnnotBuf),
+      m_annot_buf (new CLBuffer),
+      m_cand_orig_buf (new CLBuffer),
       m_candindex(0)
 {
 }
@@ -44,14 +50,16 @@ SKKCandList::SKKCandList (int page_size)
 SKKCandList::SKKCandList (int page_size,
                           const std::vector<WideString> &labels)
     : CommonLookupTable (page_size, labels),
-      m_annots (new AnnotBuf),
+      m_annot_buf (new CLBuffer),
+      m_cand_orig_buf (new CLBuffer),
       m_candindex(0)
 {
 }
 
 SKKCandList::~SKKCandList (void)
 {
-    delete m_annots;
+    delete m_annot_buf;
+    delete m_cand_orig_buf;
 }
 
 bool
@@ -71,23 +79,39 @@ SKKCandList::has_candidate (const WideString &cand) const
     return false;
 }
 
-WideString
+Candidate
 SKKCandList::get_cand (int index) const
 {
     return CommonLookupTable::get_candidate(index);
 }
 
-WideString
+Annotation
 SKKCandList::get_annot (int index) const
 {
     if (index < 0 || index >= number_of_candidates())
         return WideString ();
     std::vector<ucs4_t>::const_iterator start, end;
-    start = m_annots->m_buffer.begin() + m_annots->m_index[index];
+    start = m_annot_buf->m_buffer.begin() + m_annot_buf->m_index[index];
     if (index < number_of_candidates() - 1)
-        end = m_annots->m_buffer.begin() + m_annots->m_index[index+1];
+        end = m_annot_buf->m_buffer.begin() + m_annot_buf->m_index[index+1];
     else
-        end = m_annots->m_buffer.end();
+        end = m_annot_buf->m_buffer.end();
+    return WideString (start, end);
+}
+
+Candidate
+SKKCandList::get_cand_orig (int index) const
+{
+    if (index < 0 || index >= number_of_candidates())
+        return WideString ();
+    std::vector<ucs4_t>::const_iterator start, end;
+    start = m_cand_orig_buf->m_buffer.begin() +
+        m_cand_orig_buf->m_index[index];
+    if (index < number_of_candidates() - 1)
+        end = m_cand_orig_buf->m_buffer.begin() +
+            m_cand_orig_buf->m_index[index+1];
+    else
+        end = m_cand_orig_buf->m_buffer.end();
     return WideString (start, end);
 }
 
@@ -127,19 +151,25 @@ SKKCandList::get_attributes (int index) const
 bool
 SKKCandList::append_candidate (const WideString &cand,
                                const WideString &annot,
+                               const WideString &cand_orig,
                                const AttributeList &attrs)
 {
     if (cand.length() == 0)
         return false;
 
     if (m_candvec.size() < candvec_size) {
-        m_candvec.push_back(make_pair(cand, annot));
+        m_candvec.push_back(CandEnt(cand, annot, cand_orig));
         return true;
     } else {
-        m_annots->m_index.push_back(m_annots->m_buffer.size());
+        m_annot_buf->m_index.push_back(m_annot_buf->m_buffer.size());
         if (!annot.empty())
-            m_annots->m_buffer.insert(m_annots->m_buffer.end(),
+            m_annot_buf->m_buffer.insert(m_annot_buf->m_buffer.end(),
                                       annot.begin(), annot.end());
+        m_cand_orig_buf->m_index.push_back(m_cand_orig_buf->m_buffer.size());
+        if (!cand_orig.empty())
+            m_cand_orig_buf->m_buffer.insert(m_cand_orig_buf->m_buffer.end(),
+                                             cand_orig.begin(),
+                                             cand_orig.end());
         return CommonLookupTable::append_candidate(cand, attrs);
     }
 }
@@ -149,8 +179,10 @@ SKKCandList::clear (void)
 {
     m_candvec.clear();
     m_candindex = 0;
-    m_annots->m_buffer.clear();
-    m_annots->m_index.clear();
+    m_annot_buf->m_buffer.clear();
+    m_annot_buf->m_index.clear();
+    m_cand_orig_buf->m_buffer.clear();
+    m_cand_orig_buf->m_index.clear();
     CommonLookupTable::clear();
 }
 
@@ -159,17 +191,17 @@ SKKCandList::clear (void)
 WideString
 SKKCandList::get_cand_from_vector (int index) const
 {
-    return get_candpair_from_vector(index).first;
+    return get_candent_from_vector(index).cand;
 }
 
 WideString
 SKKCandList::get_annot_from_vector (int index) const
 {
-    return get_candpair_from_vector(index).second;
+    return get_candent_from_vector(index).annot;
 }
 
-CandPair
-SKKCandList::get_candpair_from_vector (int index) const
+CandEnt
+SKKCandList::get_candent_from_vector (int index) const
 {
     try {
         return m_candvec.at(index);
@@ -177,7 +209,7 @@ SKKCandList::get_candpair_from_vector (int index) const
         try {
             return m_candvec.at(m_candindex);
         } catch(...) {
-            return make_pair(WideString(), WideString());
+            return CandEnt();
         }
     }
 }
@@ -185,11 +217,11 @@ SKKCandList::get_candpair_from_vector (int index) const
 WideString 
 SKKCandList::get_candidate_from_vector (int index) const
 {
-    CandPair p = get_candpair_from_vector(index);
-    if (annot_view && annot_pos && !p.second.empty())
-        return  p.first + utf8_mbstowcs(";") + p.second;
+    CandEnt p = get_candent_from_vector(index);
+    if (annot_view && annot_pos && !p.annot.empty())
+        return  p.cand + utf8_mbstowcs(";") + p.annot;
     else
-        return p.first;
+        return p.cand;
 }
 
 int
@@ -226,17 +258,18 @@ SKKCandList::prev_candidate (void)
 }
 
 void
-SKKCandList::copy (std::list<CandPair> &dst)
+SKKCandList::copy (std::list<CandEnt> &dst)
 {
-    for(std::vector<CandPair>::const_iterator it  = m_candvec.begin();
+    for(std::vector<CandEnt>::const_iterator it  = m_candvec.begin();
         it != m_candvec.end(); it++) {
         dst.push_back(*it);
     }
     int n = number_of_candidates();
     for (int i = 0; i < n; i++) {
-        WideString cand = get_cand(i);
-        WideString annot = get_annot(i);
-        dst.push_back(make_pair(cand, annot));
+        Candidate  cand = get_cand(i);
+        Annotation annot = get_annot(i);
+        Candidate  cand_orig = get_cand_orig(i);
+        dst.push_back(CandEnt(cand, annot, cand_orig));
     }
 }
 
@@ -258,11 +291,11 @@ SKKCandList::get_annot_string (WideString &result)
         int cpos = get_cursor_pos_in_current_page();
         for (int j = 0; j < s; i++, j++) {
             std::vector<ucs4_t>::const_iterator start, end;
-            start = m_annots->m_buffer.begin() + m_annots->m_index[i];
+            start = m_annot_buf->m_buffer.begin() + m_annot_buf->m_index[i];
             if (i < number_of_candidates() - 1)
-                end = m_annots->m_buffer.begin() + m_annots->m_index[i+1];
+                end = m_annot_buf->m_buffer.begin()+m_annot_buf->m_index[i+1];
             else
-                end = m_annots->m_buffer.end();
+                end = m_annot_buf->m_buffer.end();
             if (start != end && (annot_target || j == cpos)) {
                 if (is_first)
                     is_first = false;

@@ -38,6 +38,9 @@ using namespace std;
 
 static IConvert converter;
 
+typedef std::pair<WideString, WideString> CandPair;
+
+
 static void append_candpair(const WideString &cand,
                             const WideString &annot,
                             list<CandPair> &result);
@@ -58,9 +61,51 @@ public:
     virtual ~SKKDictBase (void) {}
 
     virtual void lookup (const WideString &key, const bool okuri,
-                         std::list<CandPair> &result) = 0;
+                         list<CandPair> &result) = 0;
     virtual bool compare (const String &dictname) = 0;
     virtual bool compare (const String &host, const int port) = 0;
+};
+
+class DictCache : public SKKDictBase
+{
+    map<WideString, list<CandPair> > m_cache;
+public:
+    DictCache  (void) {}
+    ~DictCache (void) { m_cache.clear(); }
+
+    void lookup (const WideString &key, const bool okuri,
+                 list<CandPair> &result)
+    {
+        map<WideString, list<CandPair> >::const_iterator cit
+            = m_cache.find(key);
+        if (cit != m_cache.end()) {
+            for(list<CandPair>::const_iterator it = cit->second.begin();
+                it != cit->second.end(); it++) {
+                result.push_back(*it);
+            }
+        }
+    }
+    void write (const WideString &key, const list<CandPair> &data)
+    {
+        list<CandPair> &cl = m_cache[key];
+        cl.clear();
+        cl.assign(data.begin(), data.end());
+    }
+    void write (const WideString &key, const CandPair &data)
+    {
+        list<CandPair> &cl = m_cache[key];
+        for (list<CandPair>::iterator cit = cl.begin();
+             cit != cl.end(); cit++) {
+            if (cit->first == data.first) {
+                cl.erase(cit);
+                break;
+            }
+        }
+        cl.push_front(data);
+    }
+    void clear (void) { m_cache.clear(); }
+    bool compare (const String &dictname) { return false; }
+    bool compare (const String &host, const int port) { return false; }
 };
 
 class SKKSysDict : public SKKDictBase
@@ -105,18 +150,6 @@ public:
     void lookup    (const WideString &key, const bool okuri,
                     list<CandPair> &result);
     void write     (const WideString &key, const CandPair &data);
-    bool compare (const String &dictname);
-    bool compare (const String &host, const int port);
-};
-
-class SKKNumDict : SKKDictBase
-{
-public:
-    SKKNumDict  (void);
-    virtual ~SKKNumDict (void);
-
-    void lookup (const WideString &key, const bool okuri,
-                 list<CandPair> &result);
     bool compare (const String &dictname);
     bool compare (const String &host, const int port);
 };
@@ -363,7 +396,7 @@ SKKUserDict::load_dict (const String &dictpath)
 void
 SKKUserDict::dump_dict (void)
 {
-    DictCache::const_iterator dit;
+    map<WideString, list<CandPair> >::const_iterator dit;
     ofstream dictfs;
 
     if (m_writeflag) {
@@ -433,7 +466,8 @@ SKKUserDict::compare (const String &host, const int portn)
 
 
 SKKDictionary::SKKDictionary (void)
-    : m_userdict(new SKKUserDict())
+    : m_userdict(new SKKUserDict()),
+      m_cache(new DictCache())
 {
     converter.set_encoding(String(SKKDICT_CHARCODE));
 }
@@ -443,6 +477,7 @@ SKKDictionary::~SKKDictionary (void)
     for (list<SKKDictBase*>::iterator i = m_sysdicts.begin();
          i != m_sysdicts.end(); i++)
         delete *i;
+    if (m_cache) delete m_cache;
     if (m_userdict) delete m_userdict;
 }
 
@@ -455,7 +490,7 @@ SKKDictionary::add_sysdict (const String &dictname)
     if (it == m_sysdicts.end()) {
         m_sysdicts.push_back((SKKDictBase*)new SKKSysDict(dictname));
     }
-    m_cache.clear();
+    m_cache->clear();
 }
 
 void
@@ -484,27 +519,6 @@ SKKDictionary::dump_userdict (void)
     m_userdict->dump_dict();
 }
 
-void
-SKKDictionary::lookup_main (const WideString &key, const bool okuri,
-                            list<CandPair> &result)
-{
-    DictCache::const_iterator cit = m_cache.find(key);
-    result.clear();
-    if (cit == m_cache.end()) {
-        m_userdict->lookup(key, okuri, result);
-        for (list<SKKDictBase*>::const_iterator it = m_sysdicts.begin();
-             it != m_sysdicts.end(); it++) {
-            (*it)->lookup(key, okuri, result);
-        }
-        m_cache.insert(make_pair(key, result));
-    } else {
-        for(list<CandPair>::const_iterator it = cit->second.begin();
-            it != cit->second.end(); it++) {
-            result.push_back(*it);
-        }
-    }
-}
-
 static const ucs4_t zero = 0x30;
 static const ucs4_t nine = 0x39;
 static const ucs4_t sharp = 0x23;
@@ -513,21 +527,34 @@ void
 SKKDictionary::lookup (const WideString &key_const, const bool okuri,
                        SKKCandList &result)
 {
-    WideString key = key_const;
+    WideString key;
     list<WideString> numbers;
     list<CandPair> cl;
 
-    for (int i = 0; i < key.size(); i++) {
+    for (int i = 0; i < key_const.size(); i++) {
         int start = i;
-        while (key[i] >= zero && key[i] <= nine) i++;
+        while (i < key_const.size() &&
+               key_const[i] >= zero && key_const[i] <= nine) i++;
         if (start < i) {
-            WideString num = key.substr(start, i-start);
+            WideString num = key_const.substr(start, i-start);
             numbers.push_back(num);
-            key.replace(start, i, 1, sharp);
+            key += sharp;
+            if (i < key_const.size())
+                key += key_const[i];
+        } else {
+            key += key_const[i];
         }
-        i = start;
     }
-    lookup_main(key, okuri, cl);
+    cl.clear();
+    m_cache->lookup(key, okuri, cl);
+    if (cl.empty()) {
+        m_userdict->lookup(key, okuri, cl);
+        for (list<SKKDictBase*>::const_iterator it = m_sysdicts.begin();
+             it != m_sysdicts.end(); it++) {
+            (*it)->lookup(key, okuri, cl);
+        }
+        m_cache->write(key, cl);
+    }
     for (list<CandPair>::iterator it = cl.begin(); it != cl.end(); it++) {
         if (numbers.size() != 0) {
             WideString cand;
@@ -557,8 +584,16 @@ SKKDictionary::lookup (const WideString &key_const, const bool okuri,
                     case 4:
                         {
                             list<CandPair> cl2;
-                            lookup_main(*nit, 0, cl2);
-                            if (cl2.size() > 0) {
+                            m_userdict->lookup(key, okuri, cl2);
+                            if (cl2.empty()) {
+                                for (list<SKKDictBase*>::const_iterator it =
+                                         m_sysdicts.begin();
+                                     it != m_sysdicts.end(); it++) {
+                                    (*it)->lookup(key, okuri, cl2);
+                                }
+                                m_cache->write(key, cl2);
+                            }
+                            if (!cl2.empty()) {
                                 cand += cl2.begin()->first;
                             }
                         }
@@ -581,7 +616,7 @@ SKKDictionary::lookup (const WideString &key_const, const bool okuri,
             if (start < it->first.size())
                 cand.append(it->first, start, it->first.size() - start);
             if (!result.has_candidate(cand)) {
-                result.append_candidate(cand, it->second);
+                result.append_candidate(cand, it->second, it->first);
             }
         } else {
             result.append_candidate(it->first, it->second);
@@ -590,33 +625,24 @@ SKKDictionary::lookup (const WideString &key_const, const bool okuri,
 }
 
 void
-SKKDictionary::write (const WideString &key, const CandPair &data)
+SKKDictionary::write (const WideString &key,
+                      const Candidate &cand, const Annotation &annot)
 {
-    if (data.first.empty()) return;
-    m_userdict->write(key, data);
-    list<CandPair> &cl = m_cache[key];
-    for (list<CandPair>::iterator cit = cl.begin();
-         cit != cl.end(); cit++) {
-        if (cit->first == data.first) {
-            cl.erase(cit);
-            break;
+    if (cand.empty()) return;
+    WideString key2;
+    for (int i = 0; i < key.size(); i++) {
+        int start = i;
+        while (i < key.size() && key[i] >= zero && key[i] <= nine) i++;
+        if (start < i) {
+            key2 += sharp;
+            if (i < key.size()) key2 += key[i];
+        } else {
+            key2 += key[i];
         }
     }
-    cl.push_front(data);
+    m_userdict->write(key2, make_pair(cand, annot));
+    m_cache->write(key2, make_pair(cand, annot));
 }
-
-void
-SKKNumDict::lookup (const WideString &key, const bool okuri,
-                    list<CandPair> &result)
-{
-    /* int x = atoi(key.c_str()); */
-
-    /* result.push_back(key); */
-}
-
-bool SKKNumDict::compare (const String &dictname) { return false; }
-bool SKKNumDict::compare (const String &host, const int port) { return false; }
-
 
 static WideString digits_wide = utf8_mbstowcs("\xEF\xBC\x90" // 0
                                               "\xEF\xBC\x91" // 1
@@ -784,7 +810,7 @@ convert_num9 (WideString key, WideString &result)
 
 void
 append_candpair (const WideString &cand, const WideString &annot,
-                 list<CandPair> &result)
+                list<CandPair> &result)
 {
     list<CandPair>::const_iterator it;
     for (it = result.begin(); it != result.end(); it++) {

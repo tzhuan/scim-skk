@@ -30,19 +30,17 @@
 using namespace scim;
 
 
-typedef std::map<WideString, std::list<CandPair> > DictCache;
-
 class SKKDictBase;
 class SKKUserDict;
+
+class DictCache;
 
 class SKKDictionary
 {
     std::list<SKKDictBase*> m_sysdicts;
     SKKUserDict *m_userdict;
 
-    DictCache m_cache;
-    void lookup_main (const WideString &key, const bool okuri,
-                      std::list<CandPair> &result);
+    DictCache *m_cache;
 public:
     SKKDictionary  (void);
     ~SKKDictionary (void);
@@ -55,6 +53,7 @@ public:
 
     void lookup (const WideString &key, const bool okuri,
                  SKKCandList &result);
-    void write (const WideString &key, const CandPair &data);
+    void write (const WideString &key,
+                const Candidate &cand, const Annotation &annot);
 };
 #endif
