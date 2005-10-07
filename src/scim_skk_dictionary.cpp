@@ -31,7 +31,6 @@
 
 #include <scim_iconv.h>
 
-
 #define SKKDICT_CHARCODE      "EUC-JP"
 
 using namespace std;
@@ -523,6 +522,25 @@ static const ucs4_t zero = 0x30;
 static const ucs4_t nine = 0x39;
 static const ucs4_t sharp = 0x23;
 
+inline void 
+lookup_main (const WideString &key, const bool okuri,
+             DictCache *cache, SKKUserDict *userdict,
+             const list<SKKDictBase*> &sysdicts,
+             list<CandPair> &result)
+{
+    list<CandPair> cl;
+    cache->lookup(key, okuri, cl);
+    if (cl.empty()) {
+        userdict->lookup(key, okuri, cl);
+        for (list<SKKDictBase*>::const_iterator it = sysdicts.begin();
+             it != sysdicts.end(); it++) {
+            (*it)->lookup(key, okuri, cl);
+        }
+        cache->write(key, cl);
+    }
+    result.insert(result.end(), cl.begin(), cl.end());
+}
+
 void
 SKKDictionary::lookup (const WideString &key_const, const bool okuri,
                        SKKCandList &result)
@@ -530,6 +548,13 @@ SKKDictionary::lookup (const WideString &key_const, const bool okuri,
     WideString key;
     list<WideString> numbers;
     list<CandPair> cl;
+
+    lookup_main(key_const, okuri, m_cache, m_userdict, m_sysdicts, cl);
+    for (list<CandPair>::const_iterator it = cl.begin();
+         it != cl.end(); it++) {
+        result.append_candidate(it->first, it->second);
+    }
+    cl.clear();
 
     for (int i = 0; i < key_const.size(); i++) {
         int start = i;
@@ -545,22 +570,16 @@ SKKDictionary::lookup (const WideString &key_const, const bool okuri,
             key += key_const[i];
         }
     }
-    cl.clear();
-    m_cache->lookup(key, okuri, cl);
-    if (cl.empty()) {
-        m_userdict->lookup(key, okuri, cl);
-        for (list<SKKDictBase*>::const_iterator it = m_sysdicts.begin();
-             it != m_sysdicts.end(); it++) {
-            (*it)->lookup(key, okuri, cl);
-        }
-        m_cache->write(key, cl);
-    }
-    for (list<CandPair>::iterator it = cl.begin(); it != cl.end(); it++) {
-        if (numbers.size() != 0) {
+
+    if (!numbers.empty()) {
+        lookup_main(key, okuri, m_cache, m_userdict, m_sysdicts, cl);
+
+        for (list<CandPair>::iterator it = cl.begin(); it != cl.end(); it++) {
             WideString cand;
             list<WideString>::iterator nit = numbers.begin();
             int start = 0;
             int sharp_pos;
+            bool failflag = true;
             while(nit != numbers.end() &&
                   (sharp_pos = it->first.find(sharp, start)) != WideString::npos) {
                 if (sharp_pos < it->first.size()-1 &&
@@ -584,19 +603,15 @@ SKKDictionary::lookup (const WideString &key_const, const bool okuri,
                     case 4:
                         {
                             list<CandPair> cl2;
-                            m_userdict->lookup(key, okuri, cl2);
-                            if (cl2.empty()) {
-                                for (list<SKKDictBase*>::const_iterator it =
-                                         m_sysdicts.begin();
-                                     it != m_sysdicts.end(); it++) {
-                                    (*it)->lookup(key, okuri, cl2);
-                                }
-                                m_cache->write(key, cl2);
-                            }
+                            lookup_main(*nit, okuri,
+                                        m_cache, m_userdict, m_sysdicts, cl2);
                             if (!cl2.empty()) {
                                 cand += cl2.begin()->first;
+                            } else {
+                                failflag = false;
                             }
                         }
+                        break;
                     case 5:
                         convert_num5(*nit, cand);
                         break;
@@ -608,6 +623,7 @@ SKKDictionary::lookup (const WideString &key_const, const bool okuri,
                     }
                     start = sharp_pos + 2;
                     nit++;
+                    if (failflag) nit = numbers.end();
                 } else { /* not conversion */
                     cand.append(1, sharp);
                     start = sharp_pos + 1;
@@ -615,11 +631,9 @@ SKKDictionary::lookup (const WideString &key_const, const bool okuri,
             }
             if (start < it->first.size())
                 cand.append(it->first, start, it->first.size() - start);
-            if (!result.has_candidate(cand)) {
+            if (failflag && !result.has_candidate(cand)) {
                 result.append_candidate(cand, it->second, it->first);
             }
-        } else {
-            result.append_candidate(it->first, it->second);
         }
     }
 }

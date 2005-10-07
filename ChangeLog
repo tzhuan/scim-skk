@@ -1,3 +1,8 @@
+2005-10-07  Jun Mukai  <mukai@localhost.localdomain>
+
+	* src/scim_skk_dictionary.cpp (lookup): Fix a bug that confuse #4
+	and #5. Add conversion without number translation.
+
 2005-10-06  Jun Mukai  <mukai@jmuk.org>
 	* src/scim_skk_looup_table.h: change the classname from CandPair
 	to CandEnt for learning with number conversions.  
