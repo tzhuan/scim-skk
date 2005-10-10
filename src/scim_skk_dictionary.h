@@ -53,7 +53,13 @@ public:
 
     void lookup (const WideString &key, const bool okuri,
                  SKKCandList &result);
-    void write (const WideString &key,
-                const Candidate &cand, const Annotation &annot);
+    void write (const WideString &key, const CandEnt &ent);
+    void extract_numbers (const WideString &key,
+                          std::list<WideString> &result,
+                          WideString &newkey);
+    bool number_conversion (const std::list<WideString> &numbers,
+                            const WideString &cand,
+                            WideString &result);
 };
+
 #endif

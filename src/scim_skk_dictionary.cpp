@@ -401,26 +401,28 @@ SKKUserDict::dump_dict (void)
     if (m_writeflag) {
         dictfs.open(m_dictpath.c_str());
         for (dit = m_dictdata.begin(); dit != m_dictdata.end(); dit++) {
-            String line;
-            String tmp;
-            converter.convert(tmp, dit->first);
-            line += tmp;
-            line += ' ';
-
-            for(list<CandPair>::const_iterator cit = dit->second.begin();
-                cit != dit->second.end(); cit++) {
-                tmp.clear();
-                converter.convert(tmp, cit->first);
-                line += '/';
+            if (!dit->second.empty()) {
+                String line;
+                String tmp;
+                converter.convert(tmp, dit->first);
                 line += tmp;
-                if (!cit->second.empty()) {
+                line += ' ';
+
+                for(list<CandPair>::const_iterator cit = dit->second.begin();
+                    cit != dit->second.end(); cit++) {
                     tmp.clear();
-                    converter.convert(tmp, cit->second);
-                    line += ';';
+                    converter.convert(tmp, cit->first);
+                    line += '/';
                     line += tmp;
+                    if (!cit->second.empty()) {
+                        tmp.clear();
+                        converter.convert(tmp, cit->second);
+                        line += ';';
+                        line += tmp;
+                    }
                 }
+                dictfs << line << '/' << endl;
             }
-            dictfs << line << '/' << endl;
         }
         dictfs.close();
     }
@@ -556,106 +558,41 @@ SKKDictionary::lookup (const WideString &key_const, const bool okuri,
     }
     cl.clear();
 
-    for (int i = 0; i < key_const.size(); i++) {
-        int start = i;
-        while (i < key_const.size() &&
-               key_const[i] >= zero && key_const[i] <= nine) i++;
-        if (start < i) {
-            WideString num = key_const.substr(start, i-start);
-            numbers.push_back(num);
-            key += sharp;
-            if (i < key_const.size())
-                key += key_const[i];
-        } else {
-            key += key_const[i];
-        }
-    }
+    extract_numbers(key_const, numbers, key);
 
-    if (!numbers.empty()) {
-        lookup_main(key, okuri, m_cache, m_userdict, m_sysdicts, cl);
-
-        for (list<CandPair>::iterator it = cl.begin(); it != cl.end(); it++) {
-            WideString cand;
-            list<WideString>::iterator nit = numbers.begin();
-            int start = 0;
-            int sharp_pos;
-            bool failflag = true;
-            while(nit != numbers.end() &&
-                  (sharp_pos = it->first.find(sharp, start)) != WideString::npos) {
-                if (sharp_pos < it->first.size()-1 &&
-                    it->first[sharp_pos+1] >= zero &&
-                    it->first[sharp_pos+1] <= nine) {
-                    if (sharp_pos > start)
-                        cand.append(it->first, start, sharp_pos - start);
-                    switch (it->first[sharp_pos+1] - zero) {
-                    case 0:
-                        cand.append(*nit);
-                        break;
-                    case 1:
-                        convert_num1(*nit, cand);
-                        break;
-                    case 2:
-                        convert_num2(*nit, cand);
-                        break;
-                    case 3:
-                        convert_num3(*nit, cand);
-                        break;
-                    case 4:
-                        {
-                            list<CandPair> cl2;
-                            lookup_main(*nit, okuri,
-                                        m_cache, m_userdict, m_sysdicts, cl2);
-                            if (!cl2.empty()) {
-                                cand += cl2.begin()->first;
-                            } else {
-                                failflag = false;
-                            }
-                        }
-                        break;
-                    case 5:
-                        convert_num5(*nit, cand);
-                        break;
-                    case 9:
-                        convert_num9(*nit, cand);
-                        break;
-                    default:
-                        cand += it->first.substr(sharp_pos, 2);
-                    }
-                    start = sharp_pos + 2;
-                    nit++;
-                    if (failflag) nit = numbers.end();
-                } else { /* not conversion */
-                    cand.append(1, sharp);
-                    start = sharp_pos + 1;
-                }
-            }
-            if (start < it->first.size())
-                cand.append(it->first, start, it->first.size() - start);
-            if (failflag && !result.has_candidate(cand)) {
-                result.append_candidate(cand, it->second, it->first);
-            }
+    lookup_main(key, okuri, m_cache, m_userdict, m_sysdicts, cl);
+    for (list<CandPair>::const_iterator it = cl.begin();
+         it != cl.end(); it++) {
+        WideString cand;
+        bool flag = number_conversion(numbers, it->first, cand);
+        if (flag && !result.has_candidate(cand)) {
+            result.append_candidate(cand, it->second, it->first);
         }
     }
 }
 
 void
-SKKDictionary::write (const WideString &key,
-                      const Candidate &cand, const Annotation &annot)
+SKKDictionary::write (const WideString &key,  const CandEnt &ent)
 {
-    if (cand.empty()) return;
-    WideString key2;
-    for (int i = 0; i < key.size(); i++) {
-        int start = i;
-        while (i < key.size() && key[i] >= zero && key[i] <= nine) i++;
-        if (start < i) {
-            key2 += sharp;
-            if (i < key.size()) key2 += key[i];
-        } else {
-            key2 += key[i];
+    if (ent.cand.empty()) return;
+    if (ent.cand != ent.cand_orig) {
+        WideString key2;
+        for (int i = 0; i < key.size(); i++) {
+            int start = i;
+            while (i < key.size() && key[i] >= zero && key[i] <= nine) i++;
+            if (start < i) {
+                key2 += sharp;
+                if (i < key.size()) key2 += key[i];
+            } else {
+                key2 += key[i];
+            }
         }
+        m_userdict->write(key2, make_pair(ent.cand_orig, ent.annot));
+        m_cache->write(key2, make_pair(ent.cand_orig, ent.annot));
+    } else {
+        m_userdict->write(key, make_pair(ent.cand, ent.annot));
+        m_cache->write(key, make_pair(ent.cand, ent.annot));
     }
-    m_userdict->write(key2, make_pair(cand, annot));
-    m_cache->write(key2, make_pair(cand, annot));
 }
 
 static WideString digits_wide = utf8_mbstowcs("\xEF\xBC\x90" // 0
@@ -821,6 +758,96 @@ convert_num9 (WideString key, WideString &result)
         result += digits_kanji[b];
     }
 }
+
+void
+SKKDictionary::extract_numbers (const WideString &key,
+                                std::list<WideString> &result /* return value */,
+                                WideString &newkey /* return value */)
+{
+    for (int i = 0; i < key.size(); i++) {
+        int start = i;
+        while (i < key.size() &&
+               key[i] >= zero && key[i] <= nine) i++;
+        if (start < i) {
+            WideString num = key.substr(start, i-start);
+            result.push_back(num);
+            newkey += sharp;
+            if (i < key.size())
+                newkey += key[i];
+        } else {
+            newkey += key[i];
+        }
+    }
+}
+
+bool
+SKKDictionary::number_conversion (const std::list<WideString> &numbers,
+                                  const WideString &cand,
+                                  WideString &result /* return value */)
+{
+    bool conversion_success = true;
+    if (!numbers.empty()) {
+        list<WideString>::const_iterator nit = numbers.begin();
+        int start = 0;
+        int sharp_pos;
+        while(nit != numbers.end() &&
+              (sharp_pos = cand.find(sharp, start)) != WideString::npos) {
+            if (sharp_pos < cand.size()-1 &&
+                cand[sharp_pos+1] >= zero &&
+                cand[sharp_pos+1] <= nine) {
+                if (sharp_pos > start)
+                    result.append(cand, start, sharp_pos - start);
+                switch (cand[sharp_pos+1] - zero) {
+                case 0:
+                    result.append(*nit);
+                    break;
+                case 1:
+                    convert_num1(*nit, result);
+                    break;
+                case 2:
+                    convert_num2(*nit, result);
+                    break;
+                case 3:
+                    convert_num3(*nit, result);
+                    break;
+                case 4:
+                    {
+                        list<CandPair> cl;
+                        lookup_main(*nit, false,
+                                    m_cache, m_userdict, m_sysdicts, cl);
+                        if (!cl.empty()) {
+                            result += cl.begin()->first;
+                        } else {
+                            conversion_success = false;
+                        }
+                    }
+                    break;
+                case 5:
+                    convert_num5(*nit, result);
+                    break;
+                case 9:
+                    convert_num9(*nit, result);
+                    break;
+                default:
+                    result += cand.substr(sharp_pos, 2);
+                }
+                start = sharp_pos + 2;
+                nit++;
+                if (!conversion_success) nit = numbers.end();
+            } else { /* not conversion */
+                result.append(1, sharp);
+                start = sharp_pos + 1;
+            }
+        }
+        if (start < cand.size())
+            result.append(cand, start, cand.size() - start);
+        return conversion_success;
+    } else {
+        result.append(cand);
+        return true;
+    }
+}
+
 
 void
 append_candpair (const WideString &cand, const WideString &annot,

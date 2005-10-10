@@ -243,7 +243,7 @@ SKKCore::commit_converting (int index)
         commit_string(m_okuristr);
         if (m_okurihead != 0)
             m_preeditstr += m_okurihead;
-        scim_skkdict->write(m_preeditstr, cent.cand_orig, cent.annot);
+        scim_skkdict->write(m_preeditstr, cent);
         m_ltable.clear();
         clear_preedit();
         if (m_skk_mode == SKK_MODE_ASCII)
@@ -261,7 +261,7 @@ SKKCore::commit_converting (int index)
         commit_string(m_okuristr);
         if (m_okurihead != 0)
             m_preeditstr += m_okurihead;
-        scim_skkdict->write(m_preeditstr, cand_orig, annot);
+        scim_skkdict->write(m_preeditstr, cand);
         m_ltable.clear();
         clear_preedit();
         if (m_skk_mode == SKK_MODE_ASCII)
@@ -1211,13 +1211,25 @@ SKKCore::process_key_event (const KeyEvent key)
                 retval = true;
             } else {
                 /* learning is committed */
-                commit_string(m_learning->m_commitstr);
+                static const ucs4_t sharp = 0x23; /* code for number sign */
+                if (m_learning->m_commitstr.find(sharp) != WideString::npos) {
+                    WideString result, keystr;
+                    std::list<WideString> numbers;
+                    scim_skkdict->extract_numbers(m_preeditstr,
+                                                  numbers, keystr);
+                    scim_skkdict->number_conversion(numbers,
+                                                    m_learning->m_commitstr,
+                                                    result);
+                    m_preeditstr.assign(keystr);
+                    commit_string(result);
+                } else {
+                    commit_string(m_learning->m_commitstr);
+                }
                 commit_string(m_okuristr);
                 if (m_okurihead != 0)
                     m_preeditstr += m_okurihead;
                 scim_skkdict->write(m_preeditstr,
-                                    m_learning->m_commitstr,
-                                    WideString());
+                                    CandEnt(m_learning->m_commitstr));
                 clear_preedit();
                 m_ltable.clear();
                 m_learning->clear();

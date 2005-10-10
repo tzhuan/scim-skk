@@ -1,4 +1,10 @@
-2005-10-07  Jun Mukai  <mukai@localhost.localdomain>
+2005-10-10  Jun Mukai  <mukai@jmuk.org>
+
+	* src/scim_skk_dictionary.cpp: Fix a bug that inappropriate entry
+	key including numbers when commiting string does not include number
+	signs.
+
+2005-10-07  Jun Mukai  <mukai@jmuk.org>
 
 	* src/scim_skk_dictionary.cpp (lookup): Fix a bug that confuse #4
 	and #5. Add conversion without number translation.
