@@ -27,7 +27,6 @@
 
 using namespace scim;
 
-namespace scim_skk {
 typedef enum {
     SKK_MODE_HIRAGANA,
     SKK_MODE_KATAKANA,
@@ -138,6 +137,5 @@ public:
     bool action_prevpage        (void);
     void action_select_index    (int i);
 };
-}
 
 #endif

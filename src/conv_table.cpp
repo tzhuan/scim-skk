@@ -2,8 +2,6 @@
 
 #include "scim_skk_automaton.h"
 
-using namespace scim_skk;
-
 /* from Suikyo but modified by mukai */
 ConvRule skk_romakana_table[] = {
 #if 0

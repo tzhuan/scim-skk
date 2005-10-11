@@ -70,10 +70,26 @@
 #endif
 
 
-using namespace scim_skk;
-
 static ConfigPointer  _scim_config (0);
 SKKDictionary *scim_skkdict = 0;
+
+
+bool annot_view = SCIM_SKK_CONFIG_ANNOT_VIEW_DEFAULT;
+/* view annotation if true */
+bool annot_pos =
+  (strncmp(SCIM_SKK_CONFIG_ANNOT_POS_DEFAULT, "inline", 6) == 0);
+/* inline if true, auxwindow if otherwise */
+bool annot_target =
+  (strncmp(SCIM_SKK_CONFIG_ANNOT_TARGET_DEFAULT, "all", 3) == 0);
+/* all if true, caret position otherwise */
+int candvec_size = SCIM_SKK_CONFIG_CANDVEC_SIZE_DEFAULT;
+
+bool annot_highlight = SCIM_SKK_CONFIG_ANNOT_HIGHLIGHT_DEFAULT;
+int annot_bgcolor = strtol(SCIM_SKK_CONFIG_ANNOT_BGCOLOR_DEFAULT+1,
+                           (char**)NULL, 16);
+
+bool ignore_return = SCIM_SKK_CONFIG_IGNORE_RETURN_DEFAULT;
+
 
 extern "C" {
     void scim_module_init (void)
@@ -120,22 +136,6 @@ extern "C" {
     }
 }
 
-
-bool annot_view = SCIM_SKK_CONFIG_ANNOT_VIEW_DEFAULT;
-/* view annotation if true */
-bool annot_pos =
-  (strncmp(SCIM_SKK_CONFIG_ANNOT_POS_DEFAULT, "inline", 6) == 0);
-/* inline if true, auxwindow if otherwise */
-bool annot_target
-  (strncmp(SCIM_SKK_CONFIG_ANNOT_TARGET_DEFAULT, "all", 3) == 0);
-/* all if true, caret position otherwise */
-int candvec_size = SCIM_SKK_CONFIG_CANDVEC_SIZE_DEFAULT;
-
-bool annot_highlight = SCIM_SKK_CONFIG_ANNOT_HIGHLIGHT_DEFAULT;
-int annot_bgcolor = strtol(SCIM_SKK_CONFIG_ANNOT_BGCOLOR_DEFAULT+1,
-                           (char**)NULL, 16);
-
-bool ignore_return = SCIM_SKK_CONFIG_IGNORE_RETURN_DEFAULT;
 
 SKKFactory::SKKFactory (const String &lang,
                         const String &uuid,

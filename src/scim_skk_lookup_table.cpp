@@ -19,14 +19,11 @@
 
 #include "scim_skk_lookup_table.h"
 
-using namespace scim_skk;
-
 extern bool annot_view;
 extern bool annot_pos;
 extern bool annot_target;
-extern int candvec_size;
-
 extern bool annot_highlight;
+extern int candvec_size;
 extern int annot_bgcolor;
 
 struct SKKCandList::CLBuffer

@@ -1,7 +1,5 @@
 #include "scim_skk_automaton.h"
 
-namespace scim_skk {
-
 extern ConvRule skk_romakana_table[];
 extern ConvRule ja_kana_table[];
 extern ConvRule romakana_ja_period_rule[];
@@ -16,4 +14,3 @@ extern ConvRule space_rule[];
 extern HiraganaKatakanaRule ja_hiragana_katakana_table[];
 
 extern WideRule ja_wide_table[];
-}
