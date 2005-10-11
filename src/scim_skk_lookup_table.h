@@ -29,6 +29,8 @@
 
 using namespace scim;
 
+namespace scim_skk {
+
 typedef WideString Candidate;
 typedef WideString Annotation;
 
@@ -88,4 +90,5 @@ public:
 
     void SKKCandList::get_annot_string (WideString &result);
 };
+}
 #endif

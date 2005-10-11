@@ -26,6 +26,8 @@
 #include "conv_table.h"
 #include "scim_skk_dictionary.h"
 
+using namespace scim_skk;
+
 extern SKKDictionary *scim_skkdict;
 extern bool annot_view;
 extern bool annot_pos;

@@ -19,6 +19,8 @@
 
 #include "scim_skk_lookup_table.h"
 
+using namespace scim_skk;
+
 extern bool annot_view;
 extern bool annot_pos;
 extern bool annot_target;

@@ -29,6 +29,7 @@
 
 using namespace scim;
 
+namespace scim_skk {
 
 class SKKDictBase;
 class SKKUserDict;

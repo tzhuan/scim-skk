@@ -34,6 +34,7 @@
 #define SKKDICT_CHARCODE      "EUC-JP"
 
 using namespace std;
+using namespace scim_skk;
 
 static IConvert converter;
 
@@ -52,6 +53,8 @@ inline void convert_num9 (WideString key, WideString &result);
 
 inline WideString lltows(unsigned long long n);
 inline unsigned long long wstoll(WideString ws);
+
+namespace scim_skk {
 
 class SKKDictBase
 {
@@ -152,7 +155,7 @@ public:
     bool compare (const String &dictname);
     bool compare (const String &host, const int port);
 };
-
+}
 
 
 SKKSysDict::SKKSysDict (const String &dictpath)

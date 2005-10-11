@@ -20,6 +20,8 @@
 #define Uses_SCIM_EVENT
 #include "scim_skk_keybind.h"
 
+using namespace scim_skk;
+
 #define qwerty_vec_len 7
 #define dvorak_vec_len 8
 #define number_vec_len 10

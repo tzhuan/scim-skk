@@ -70,6 +70,7 @@
 #endif
 
 
+using namespace scim_skk;
 
 static ConfigPointer  _scim_config (0);
 SKKDictionary *scim_skkdict = 0;

@@ -1,3 +1,7 @@
+2005-10-11  Jun Mukai  <mukai@jmuk.org>
+
+	* src/*: using namespace `scim_skk'. Thanks to zoe.
+
 2005-10-10  Jun Mukai  <mukai@jmuk.org>
 
 	* src/scim_skk_dictionary.cpp: Fix a bug that inappropriate entry
