@@ -35,19 +35,21 @@
 #include <gtk/scimkeyselection.h>
 #include "scim_skk_prefs.h"
 
+using namespace scim;
+
 #ifdef HAVE_GETTEXT
-#  include <libintl.h>
-#  define _(String) dgettext(GETTEXT_PACKAGE,String)
-#  define N_(String) (String)
+#include <libintl.h>
+#define _(String) dgettext(GETTEXT_PACKAGE,String)
+#define N_(String) (String)
 #else
-#  define _(String) (String)
-#  define N_(String) (String)
-#  define bindtextdomain(Package,Directory)
-#  define textdomain(domain)
-#  define bind_textdomain_codeset(domain,codeset)
+#define _(String) (String)
+#define N_(String) (String)
+#define bindtextdomain(Package,Directory)
+#define textdomain(domain)
+#define bind_textdomain_codeset(domain,codeset)
 #endif
 
-using namespace scim;
+namespace scim_skk {
 
 #define scim_module_init skk_imengine_setup_LTX_scim_module_init
 #define scim_module_exit skk_imengine_setup_LTX_scim_module_exit
@@ -1096,6 +1098,7 @@ on_default_combo_changed (GtkEditable *editable,
     }
 }
 
+} /* namespace scim-skk */
 /*
 vi:ts=4:nowrap:ai:expandtab
 */

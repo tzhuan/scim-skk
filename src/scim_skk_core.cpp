@@ -24,16 +24,8 @@
 
 #include "scim_skk_core.h"
 #include "conv_table.h"
-#include "scim_skk_dictionary.h"
 
-extern SKKDictionary *scim_skkdict;
-
-extern bool annot_highlight;
-extern int annot_bgcolor;
-extern bool annot_view;
-extern bool annot_pos;
-extern bool ignore_return;
-
+using namespace scim_skk;
 
 static void convert_char_to_wide         (const int c,
                                           WideString &result,
@@ -45,8 +37,11 @@ static void convert_hiragana_to_katakana (const WideString &hira,
 static int skk_key_mask = SCIM_KEY_ControlMask | SCIM_KEY_AltMask;
 
 
-SKKCore::SKKCore      (KeyBind *keybind, SKKAutomaton *key2kana)
-    : m_keybind(keybind),
+SKKCore::SKKCore      (KeyBind *keybind, SKKAutomaton *key2kana,
+                       SKKConfig *config, SKKDictionary *dict)
+    : m_skkconfig(config),
+      m_keybind(keybind),
+      m_dict(dict),
       m_skk_mode(SKK_MODE_HIRAGANA),
       m_input_mode(INPUT_MODE_DIRECT),
       m_key2kana(key2kana),
@@ -55,7 +50,7 @@ SKKCore::SKKCore      (KeyBind *keybind, SKKAutomaton *key2kana)
       m_end_flag(false),
       m_preedit_pos(0),
       m_commit_pos(0),
-      m_ltable()
+      m_ltable(config)
 {
     std::vector<WideString> result;
     m_keybind->selection_labels(result);
@@ -92,19 +87,19 @@ SKKCore::get_preedit_attributes (AttributeList &alist)
             int len2 = m_ltable.get_annot(cpos).length();
             alist.push_back(Attribute(1, len1, SCIM_ATTR_DECORATE,
                                       SCIM_ATTR_DECORATE_HIGHLIGHT));
-            if (annot_highlight && len2 > 0)
+            if (m_skkconfig->annot_highlight && len2 > 0)
                 alist.push_back(Attribute(len1+m_okuristr.length()+2, len2,
                                           SCIM_ATTR_BACKGROUND,
-                                          annot_bgcolor));
+                                          m_skkconfig->annot_bgcolor));
         } else {
             int len1 = m_ltable.get_cand_from_vector().length();
             int len2 = m_ltable.get_annot_from_vector().length();
             alist.push_back(Attribute(1, len1, SCIM_ATTR_DECORATE,
                                       SCIM_ATTR_DECORATE_HIGHLIGHT));
-            if (annot_highlight && len2 > 0)
+            if (m_skkconfig->annot_highlight && len2 > 0)
                 alist.push_back(Attribute(len1+m_okuristr.length()+2, len2,
                                           SCIM_ATTR_BACKGROUND,
-                                          annot_bgcolor)); 
+                                          m_skkconfig->annot_bgcolor)); 
         }
         break;
     default:
@@ -158,7 +153,8 @@ SKKCore::get_preedit_string (WideString &result)
         if (!m_okuristr.empty()) {
             result += m_okuristr;
         }
-        if (annot_view && annot_pos && !m_ltable.visible_table()) {
+        if (m_skkconfig->annot_view && m_skkconfig->annot_pos &&
+            !m_ltable.visible_table()) {
             WideString annot = m_ltable.get_annot_from_vector();
             if (annot.length() > 0) {
                 result += utf8_mbstowcs(";");
@@ -211,10 +207,11 @@ SKKCore::commit_or_preedit (const WideString &str)
         m_okuristr += str;
         if (m_pendingstr.empty()) {
             m_ltable.clear();
-            scim_skkdict->lookup(m_preeditstr+m_okurihead, true, m_ltable);
+            m_dict->lookup(m_preeditstr+m_okurihead, true, m_ltable);
             if (m_ltable.empty()) {
                 set_input_mode(INPUT_MODE_LEARNING);
-                m_learning = new SKKCore(m_keybind, m_key2kana);
+                m_learning = new SKKCore(m_keybind, m_key2kana,
+                                         m_skkconfig, m_dict);
             } else {
                 set_input_mode(INPUT_MODE_CONVERTING);
             }
@@ -243,7 +240,7 @@ SKKCore::commit_converting (int index)
         commit_string(m_okuristr);
         if (m_okurihead != 0)
             m_preeditstr += m_okurihead;
-        scim_skkdict->write(m_preeditstr, cent);
+        m_dict->write(m_preeditstr, cent);
         m_ltable.clear();
         clear_preedit();
         if (m_skk_mode == SKK_MODE_ASCII)
@@ -261,7 +258,7 @@ SKKCore::commit_converting (int index)
         commit_string(m_okuristr);
         if (m_okurihead != 0)
             m_preeditstr += m_okurihead;
-        scim_skkdict->write(m_preeditstr, cand);
+        m_dict->write(m_preeditstr, cand);
         m_ltable.clear();
         clear_preedit();
         if (m_skk_mode == SKK_MODE_ASCII)
@@ -527,15 +524,17 @@ SKKCore::action_convert (void)
         retval = action_nextpage();
         if (!retval) {
             set_input_mode(INPUT_MODE_LEARNING);
-            m_learning = new SKKCore(m_keybind, m_key2kana);
+            m_learning = new SKKCore(m_keybind, m_key2kana,
+                                     m_skkconfig, m_dict);
         }
         return true;
     case INPUT_MODE_PREEDIT:
         clear_pending();
-        scim_skkdict->lookup(m_preeditstr, false, m_ltable);
+        m_dict->lookup(m_preeditstr, false, m_ltable);
         if (m_ltable.empty()) {
             set_input_mode(INPUT_MODE_LEARNING);
-            m_learning = new SKKCore(m_keybind, m_key2kana);
+            m_learning = new SKKCore(m_keybind, m_key2kana,
+                                     m_skkconfig, m_dict);
         } else {
             set_input_mode(INPUT_MODE_CONVERTING);
         }
@@ -787,7 +786,8 @@ SKKCore::action_forward (void)
         if (m_ltable.visible_table()) {
             if (!m_ltable.cursor_down()) {
                 set_input_mode(INPUT_MODE_LEARNING);
-                m_learning = new SKKCore(m_keybind, m_key2kana);
+                m_learning = new SKKCore(m_keybind, m_key2kana,
+                                         m_skkconfig, m_dict);
             }
             return true;
         } else {
@@ -1188,7 +1188,7 @@ SKKCore::process_key_event (const KeyEvent key)
         bool retval = m_learning->process_key_event(key);
         char code = key.get_ascii_code();
         if (key.code == SCIM_KEY_Return || m_learning->m_end_flag) {
-            if (ignore_return && key.code == SCIM_KEY_Return)
+            if (m_skkconfig->ignore_return && key.code == SCIM_KEY_Return)
                 retval = true;
             if (m_learning->m_commitstr.empty()) {
                 /* learning is canceled */
@@ -1215,11 +1215,11 @@ SKKCore::process_key_event (const KeyEvent key)
                 if (m_learning->m_commitstr.find(sharp) != WideString::npos) {
                     WideString result, keystr;
                     std::list<WideString> numbers;
-                    scim_skkdict->extract_numbers(m_preeditstr,
-                                                  numbers, keystr);
-                    scim_skkdict->number_conversion(numbers,
-                                                    m_learning->m_commitstr,
-                                                    result);
+                    m_dict->extract_numbers(m_preeditstr,
+                                            numbers, keystr);
+                    m_dict->number_conversion(numbers,
+                                              m_learning->m_commitstr,
+                                              result);
                     m_preeditstr.assign(keystr);
                     commit_string(result);
                 } else {
@@ -1228,8 +1228,8 @@ SKKCore::process_key_event (const KeyEvent key)
                 commit_string(m_okuristr);
                 if (m_okurihead != 0)
                     m_preeditstr += m_okurihead;
-                scim_skkdict->write(m_preeditstr,
-                                    CandEnt(m_learning->m_commitstr));
+                m_dict->write(m_preeditstr,
+                              CandEnt(m_learning->m_commitstr));
                 clear_preedit();
                 m_ltable.clear();
                 m_learning->clear();
@@ -1286,9 +1286,9 @@ convert_char_to_wide (const int c, WideString & wide, bool space)
     char cc[2]; cc[0] = c; cc[1] = '\0';
     bool found = false;
 
-    for (unsigned int i = 0; ja_wide_table[i].code; i++) {
-        if (ja_wide_table[i].code && *ja_wide_table[i].code == c) {
-            wide += utf8_mbstowcs (ja_wide_table[i].wide);
+    for (unsigned int i = 0; wide_table[i].code; i++) {
+        if (wide_table[i].code && *wide_table[i].code == c) {
+            wide += utf8_mbstowcs (wide_table[i].wide);
             found = true;
             break;
         }
@@ -1314,13 +1314,13 @@ convert_hiragana_to_katakana (const WideString & hira, WideString & kata,
         WideString tmpwide;
         bool found = false;
 
-        for (unsigned int j = 0; ja_hiragana_katakana_table[j].hiragana; j++) {
-            tmpwide = utf8_mbstowcs (ja_hiragana_katakana_table[j].hiragana);
+        for (unsigned int j = 0; hiragana_katakana_table[j].hiragana; j++) {
+            tmpwide = utf8_mbstowcs (hiragana_katakana_table[j].hiragana);
             if (hira.substr(i, 1) == tmpwide) {
                 if (half)
-                    kata += utf8_mbstowcs (ja_hiragana_katakana_table[j].half_katakana);
+                    kata += utf8_mbstowcs (hiragana_katakana_table[j].half_katakana);
                 else
-                    kata += utf8_mbstowcs (ja_hiragana_katakana_table[j].katakana);
+                    kata += utf8_mbstowcs (hiragana_katakana_table[j].katakana);
                 found = true;
                 break;
             }

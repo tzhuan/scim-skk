@@ -2,8 +2,10 @@
 
 #include "scim_skk_automaton.h"
 
+namespace scim_skk {
+
 /* from Suikyo but modified by mukai */
-ConvRule skk_romakana_table[] = {
+ConvRule romakana_table[] = {
 #if 0
     {"va",	"う゛ぁ",	""},
     {"vi",	"う゛ぃ",	""},
@@ -314,7 +316,7 @@ ConvRule skk_romakana_table[] = {
     {NULL,	NULL,	NULL}
 };
 
-ConvRule ja_kana_table[] = {
+ConvRule kana_table[] = {
     {"#",	"ぁ",	""},
     {"E",	"ぃ",	""},
     {"$",	"ぅ",	""},
@@ -452,7 +454,7 @@ ConvRule space_rule[] = {
     {NULL,	NULL,	NULL},
 };
 
-HiraganaKatakanaRule ja_hiragana_katakana_table[] = {
+HiraganaKatakanaRule hiragana_katakana_table[] = {
     {"あ", "ア", "ｱ"},
     {"い", "イ", "ｲ"},
     {"う", "ウ", "ｳ"},
@@ -588,7 +590,7 @@ HiraganaKatakanaRule ja_hiragana_katakana_table[] = {
 };
 
 /* from uim */
-WideRule ja_wide_table[] = {
+WideRule wide_table[] = {
     {"a", "ａ"},
     {"b", "ｂ"},
     {"c", "ｃ"},
@@ -684,3 +686,5 @@ WideRule ja_wide_table[] = {
     {"_",  "＿"},
     {NULL, NULL},
 };
+
+} /* namespace scim-skk */

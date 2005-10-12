@@ -32,6 +32,7 @@
 #include "scim_skk_core.h"
 #include "scim_skk_dictionary.h"
 #include "scim_skk_lookup_table.h"
+#include "scim_skk_config.h"
 
 using namespace scim;
 
@@ -44,10 +45,7 @@ class SKKFactory : public IMEngineFactoryBase
     /* dictionary */
     String         m_sysdictpath;
     String         m_userdictname;
-    bool           m_annot_view;
-    bool           m_annot_pos;
-    int            m_candvec_size;
-    
+    SKKConfig     *m_skkconfig;
 
     /* config */
     ConfigPointer m_config;
@@ -78,15 +76,12 @@ private:
 
 class SKKInstance : public IMEngineInstanceBase
 {
-    //SKKFactory    *m_factory;
     SKKAutomaton   m_key2kana;
     PropertyList   m_properties;
+    SKKConfig     *m_skkconfig;
 
     /* for displaying SKKMode */
     SKKMode        m_skk_mode;
-
-    //    /* for candidates window */
-    //    SKKLookupTable    *m_ltable;
 
     /* core of SKK */
     SKKCore        m_skkcore;

@@ -1,3 +1,8 @@
+2005-10-13  Jun Mukai  <mukai@jmuk.org>
+
+	* src/*: global variables are now static or blocked in namespace
+	`scim_skk'.
+
 2005-10-11  Jun Mukai  <mukai@jmuk.org>
 
 	* src/*: using namespace `scim_skk'. Thanks to zoe.

@@ -23,6 +23,7 @@
 #include <map>
 #include <list>
 
+#define Uses_SCIM_ICONV
 #include <scim.h>
 
 #include "scim_skk_lookup_table.h"
@@ -36,6 +37,8 @@ class DictCache;
 
 class SKKDictionary
 {
+    IConvert *m_converter;
+
     std::list<SKKDictBase*> m_sysdicts;
     SKKUserDict *m_userdict;
 

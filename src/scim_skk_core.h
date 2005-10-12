@@ -24,6 +24,8 @@
 #include "scim_skk_keybind.h"
 #include "scim_skk_automaton.h"
 #include "scim_skk_lookup_table.h"
+#include "scim_skk_config.h"
+#include "scim_skk_dictionary.h"
 
 using namespace scim;
 
@@ -55,6 +57,9 @@ typedef enum {
 class SKKCore
 {
     KeyBind       *m_keybind;
+
+    SKKConfig     *m_skkconfig;
+    SKKDictionary *m_dict;
 
     SKKMode        m_skk_mode;
     InputMode      m_input_mode;
@@ -108,7 +113,8 @@ class SKKCore
 
     void init_key2kana (void);
 public:
-    SKKCore  (KeyBind *keybind, SKKAutomaton *key2kana);
+    SKKCore  (KeyBind *keybind, SKKAutomaton *key2kana,
+              SKKConfig *config, SKKDictionary *dict);
     ~SKKCore (void);
 
     void        get_preedit_string (WideString &result);

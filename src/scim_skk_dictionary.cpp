@@ -35,8 +35,6 @@
 
 using namespace std;
 
-static IConvert converter;
-
 typedef std::pair<WideString, WideString> CandPair;
 
 
@@ -57,7 +55,9 @@ inline unsigned long long wstoll(WideString ws);
 class SKKDictBase
 {
 public:
-    SKKDictBase  (void) {}
+    IConvert *m_converter;
+
+    SKKDictBase  (IConvert *conv=0) : m_converter(conv) {}
     virtual ~SKKDictBase (void) {}
 
     virtual void lookup (const WideString &key, const bool okuri,
@@ -124,7 +124,7 @@ class SKKSysDict : public SKKDictBase
 
     void clear (void);
 public:
-    SKKSysDict  (const String &dictpath = 0);
+    SKKSysDict  (IConvert *conv, const String &dictpath = 0);
     ~SKKSysDict (void);
 
     void load_dict (const String &dictpath);
@@ -142,7 +142,7 @@ class SKKUserDict : public SKKDictBase
 
     bool m_writeflag;
 public:
-    SKKUserDict  (void);
+    SKKUserDict  (IConvert *conv);
     ~SKKUserDict (void);
 
     void load_dict (const String &dictpath);
@@ -155,8 +155,9 @@ public:
 };
 
 
-SKKSysDict::SKKSysDict (const String &dictpath)
-    : m_dictdata(0),
+SKKSysDict::SKKSysDict (IConvert *conv, const String &dictpath)
+    : SKKDictBase(conv),
+      m_dictdata(0),
       m_dictpath("")
 {
     if (!dictpath.empty())
@@ -250,13 +251,13 @@ SKKSysDict::get_cands_from_index(int index, list<CandPair> &result)
         /* clip a candidate */
         s = index;
         for (; m_dictdata[index] != ';' && m_dictdata[index] != '/'; index++);
-        converter.convert(cand, m_dictdata+s, index - s);
+        m_converter->convert(cand, m_dictdata+s, index - s);
         if (m_dictdata[index] == ';') {
             /* clip an annotation */
             index++;
             s = index;
             for (; m_dictdata[index] != '/'; index++);
-            converter.convert(annot, m_dictdata+s, index-s);
+            m_converter->convert(annot, m_dictdata+s, index-s);
         }
         index++;
 
@@ -273,7 +274,7 @@ SKKSysDict::lookup (const WideString &key, const bool okuri,
     vector<int> &indice = (okuri)? m_okuri_indice : m_normal_indice;
     int ub, lb, pos;
 
-    converter.convert(key_s, key);
+    m_converter->convert(key_s, key);
 
     if(indice.size() == 0) return;
 	
@@ -314,8 +315,9 @@ SKKSysDict::compare (const String &host, const int port)
     return false;
 }
 
-SKKUserDict::SKKUserDict  (void)
-    : m_writeflag  (false)
+SKKUserDict::SKKUserDict  (IConvert *conv)
+    : SKKDictBase(conv),
+      m_writeflag  (false)
 {
 }
 
@@ -358,7 +360,7 @@ SKKUserDict::load_dict (const String &dictpath)
                 key.clear();
                 cl.clear();
                 for (keylen = 0; i < length && buf[i+keylen] != ' '; keylen++);
-                converter.convert(key, buf+i, keylen);
+                m_converter->convert(key, buf+i, keylen);
 
                 i += keylen+2;
                 while (buf[i] != '\n') {
@@ -373,12 +375,12 @@ SKKUserDict::load_dict (const String &dictpath)
                     candlen = 1;
                     while (buf[i+candlen] != '/' && buf[i+candlen] != ';')
                         candlen++;
-                    converter.convert(cand, buf+i, candlen);
+                    m_converter->convert(cand, buf+i, candlen);
                     i += candlen+1;
                     if (buf[i-1] == ';') {
                         candlen = 0;
                         while(buf[i+candlen] != '/') candlen++;
-                        converter.convert(annot, buf+i, candlen);
+                        m_converter->convert(annot, buf+i, candlen);
                         i += candlen + 1;
                     }
                     cl.push_back(make_pair(cand, annot));
@@ -404,19 +406,19 @@ SKKUserDict::dump_dict (void)
             if (!dit->second.empty()) {
                 String line;
                 String tmp;
-                converter.convert(tmp, dit->first);
+                m_converter->convert(tmp, dit->first);
                 line += tmp;
                 line += ' ';
 
                 for(list<CandPair>::const_iterator cit = dit->second.begin();
                     cit != dit->second.end(); cit++) {
                     tmp.clear();
-                    converter.convert(tmp, cit->first);
+                    m_converter->convert(tmp, cit->first);
                     line += '/';
                     line += tmp;
                     if (!cit->second.empty()) {
                         tmp.clear();
-                        converter.convert(tmp, cit->second);
+                        m_converter->convert(tmp, cit->second);
                         line += ';';
                         line += tmp;
                     }
@@ -467,10 +469,11 @@ SKKUserDict::compare (const String &host, const int portn)
 
 
 SKKDictionary::SKKDictionary (void)
-    : m_userdict(new SKKUserDict()),
+    : m_converter(new IConvert),
+      m_userdict(new SKKUserDict(m_converter)),
       m_cache(new DictCache())
 {
-    converter.set_encoding(String(SKKDICT_CHARCODE));
+    m_converter->set_encoding(String(SKKDICT_CHARCODE));
 }
 
 SKKDictionary::~SKKDictionary (void)
@@ -478,6 +481,7 @@ SKKDictionary::~SKKDictionary (void)
     for (list<SKKDictBase*>::iterator i = m_sysdicts.begin();
          i != m_sysdicts.end(); i++)
         delete *i;
+    if (m_converter) delete m_converter;
     if (m_cache) delete m_cache;
     if (m_userdict) delete m_userdict;
 }
@@ -489,7 +493,8 @@ SKKDictionary::add_sysdict (const String &dictname)
     for(; it != m_sysdicts.end(); it++)
         if ((*it)->compare(dictname)) break;
     if (it == m_sysdicts.end()) {
-        m_sysdicts.push_back((SKKDictBase*)new SKKSysDict(dictname));
+        m_sysdicts.push_back((SKKDictBase*)new SKKSysDict(m_converter,
+                                                          dictname));
     }
     m_cache->clear();
 }

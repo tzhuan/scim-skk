@@ -27,6 +27,8 @@
 
 #include <scim.h>
 
+#include "scim_skk_config.h"
+
 using namespace scim;
 
 typedef WideString Candidate;
@@ -45,12 +47,13 @@ class SKKCandList : public CommonLookupTable {
     struct CLBuffer;
     CLBuffer *m_annot_buf;
     CLBuffer *m_cand_orig_buf;
-    
+
+    SKKConfig *m_skkconfig;
 
     std::vector<CandEnt> m_candvec;
     int m_candindex;
 public:
-    SKKCandList  (int page_size = 10);
+    SKKCandList  (SKKConfig *config, int page_size = 10);
     SKKCandList  (int page_size, const std::vector<WideString> &labels);
     ~SKKCandList (void);
 

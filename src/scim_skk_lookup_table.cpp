@@ -19,13 +19,6 @@
 
 #include "scim_skk_lookup_table.h"
 
-extern bool annot_view;
-extern bool annot_pos;
-extern bool annot_target;
-extern bool annot_highlight;
-extern int candvec_size;
-extern int annot_bgcolor;
-
 struct SKKCandList::CLBuffer
 {
 public:
@@ -38,8 +31,9 @@ CandEnt::CandEnt (const Candidate &c, const Annotation &a, const Candidate &co)
 {
 }
 
-SKKCandList::SKKCandList (int page_size)
+SKKCandList::SKKCandList (SKKConfig *config, int page_size)
     : CommonLookupTable (page_size),
+      m_skkconfig (config),
       m_annot_buf (new CLBuffer),
       m_cand_orig_buf (new CLBuffer),
       m_candindex(0)
@@ -118,11 +112,11 @@ WideString
 SKKCandList::get_candidate (int index) const
 {
     WideString cand = CommonLookupTable::get_candidate(index);
-    if (annot_view && annot_pos &&
-        (annot_target || get_cursor_pos() == index)) {
+    if (m_skkconfig->annot_view && m_skkconfig->annot_pos &&
+        (m_skkconfig->annot_target || get_cursor_pos() == index)) {
         WideString annot = get_annot(index);
         if (!annot.empty()) {
-            if (!annot_highlight)
+            if (!m_skkconfig->annot_highlight)
                 cand += utf8_mbstowcs(";");
             cand += get_annot(index);
         }
@@ -134,14 +128,14 @@ AttributeList
 SKKCandList::get_attributes (int index) const
 {
     AttributeList al = CommonLookupTable::get_attributes(index);
-    if (annot_view && annot_pos &&
-        (annot_target || get_cursor_pos() == index)) {
+    if (m_skkconfig->annot_view && m_skkconfig->annot_pos &&
+        (m_skkconfig->annot_target || get_cursor_pos() == index)) {
         WideString annot = get_annot(index);
         WideString cand = get_cand(index);
-        if (annot_highlight && !annot.empty()) {
+        if (m_skkconfig->annot_highlight && !annot.empty()) {
             al.push_back(Attribute(cand.length(), annot.length(),
                                    SCIM_ATTR_BACKGROUND,
-                                   annot_bgcolor));
+                                   m_skkconfig->annot_bgcolor));
         }
     }
     return al;
@@ -156,7 +150,7 @@ SKKCandList::append_candidate (const WideString &cand,
     if (cand.length() == 0)
         return false;
 
-    if (m_candvec.size() < candvec_size) {
+    if (m_candvec.size() < m_skkconfig->candvec_size) {
         m_candvec.push_back(CandEnt(cand, annot, cand_orig));
         return true;
     } else {
@@ -217,7 +211,7 @@ WideString
 SKKCandList::get_candidate_from_vector (int index) const
 {
     CandEnt p = get_candent_from_vector(index);
-    if (annot_view && annot_pos && !p.annot.empty())
+    if (m_skkconfig->annot_view && m_skkconfig->annot_pos && !p.annot.empty())
         return  p.cand + utf8_mbstowcs(";") + p.annot;
     else
         return p.cand;
@@ -295,12 +289,12 @@ SKKCandList::get_annot_string (WideString &result)
                 end = m_annot_buf->m_buffer.begin()+m_annot_buf->m_index[i+1];
             else
                 end = m_annot_buf->m_buffer.end();
-            if (start != end && (annot_target || j == cpos)) {
+            if (start != end && (m_skkconfig->annot_target || j == cpos)) {
                 if (is_first)
                     is_first = false;
                 else
                     result += utf8_mbstowcs("  ");
-                if (annot_target) {
+                if (m_skkconfig->annot_target) {
                     result += get_candidate_label(j);
                     result += utf8_mbstowcs(".");
                 }
