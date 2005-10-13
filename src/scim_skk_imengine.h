@@ -36,6 +36,8 @@
 
 using namespace scim;
 
+namespace scim_skk {
+
 class SKKFactory : public IMEngineFactoryBase
 {
     friend class SKKInstance;
@@ -113,4 +115,5 @@ public:
     virtual void trigger_property (const String& property);
 };
 
+} /* namespace scim_skk */
 #endif /* __SCIM_SKK_IMENGINE_H__ */

@@ -34,20 +34,9 @@
 #include <scim.h>
 #include <gtk/scimkeyselection.h>
 #include "scim_skk_prefs.h"
+#include "scim_skk_intl.h"
 
 using namespace scim;
-
-#ifdef HAVE_GETTEXT
-#include <libintl.h>
-#define _(String) dgettext(GETTEXT_PACKAGE,String)
-#define N_(String) (String)
-#else
-#define _(String) (String)
-#define N_(String) (String)
-#define bindtextdomain(Package,Directory)
-#define textdomain(domain)
-#define bind_textdomain_codeset(domain,codeset)
-#endif
 
 namespace scim_skk {
 

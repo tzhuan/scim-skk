@@ -2,6 +2,7 @@
 
 	* src/*: global variables are now static or blocked in namespace
 	`scim_skk'.
+	* src/*: using namespace `scim-skk' again.
 
 2005-10-11  Jun Mukai  <mukai@jmuk.org>
 

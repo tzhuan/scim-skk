@@ -51,14 +51,15 @@ inline void convert_num9 (WideString key, WideString &result);
 inline WideString lltows(unsigned long long n);
 inline unsigned long long wstoll(WideString ws);
 
+namespace scim_skk {
 
-class SKKDictBase
+class DictBase
 {
 public:
     IConvert *m_converter;
 
-    SKKDictBase  (IConvert *conv=0) : m_converter(conv) {}
-    virtual ~SKKDictBase (void) {}
+    DictBase  (IConvert *conv=0) : m_converter(conv) {}
+    virtual ~DictBase (void) {}
 
     virtual void lookup (const WideString &key, const bool okuri,
                          list<CandPair> &result) = 0;
@@ -66,7 +67,7 @@ public:
     virtual bool compare (const String &host, const int port) = 0;
 };
 
-class DictCache : public SKKDictBase
+class DictCache : public DictBase
 {
     map<WideString, list<CandPair> > m_cache;
 public:
@@ -108,7 +109,7 @@ public:
     bool compare (const String &host, const int port) { return false; }
 };
 
-class SKKSysDict : public SKKDictBase
+class scim_skk::SysDict : public DictBase
 {
     String  m_dictpath;
     char   *m_dictdata;
@@ -124,8 +125,8 @@ class SKKSysDict : public SKKDictBase
 
     void clear (void);
 public:
-    SKKSysDict  (IConvert *conv, const String &dictpath = 0);
-    ~SKKSysDict (void);
+    SysDict  (IConvert *conv, const String &dictpath = 0);
+    ~SysDict (void);
 
     void load_dict (const String &dictpath);
     void lookup    (const WideString &key, const bool okuri,
@@ -135,15 +136,15 @@ public:
 };
 
 
-class SKKUserDict : public SKKDictBase
+class UserDict : public DictBase
 {
     String     m_dictpath;
     map<WideString, list<CandPair> >  m_dictdata;
 
     bool m_writeflag;
 public:
-    SKKUserDict  (IConvert *conv);
-    ~SKKUserDict (void);
+    UserDict  (IConvert *conv);
+    ~UserDict (void);
 
     void load_dict (const String &dictpath);
     void dump_dict (void);
@@ -153,10 +154,13 @@ public:
     bool compare (const String &dictname);
     bool compare (const String &host, const int port);
 };
+}
+
+using namespace scim_skk;
 
 
-SKKSysDict::SKKSysDict (IConvert *conv, const String &dictpath)
-    : SKKDictBase(conv),
+SysDict::SysDict (IConvert *conv, const String &dictpath)
+    : DictBase(conv),
       m_dictdata(0),
       m_dictpath("")
 {
@@ -164,13 +168,13 @@ SKKSysDict::SKKSysDict (IConvert *conv, const String &dictpath)
         load_dict(dictpath);
 }
 
-SKKSysDict::~SKKSysDict (void)
+SysDict::~SysDict (void)
 {
     //munmap(m_dictdata, m_length);
 }
 
 void
-SKKSysDict::load_dict (const String &dictpath)
+SysDict::load_dict (const String &dictpath)
 {
     m_dictpath.assign(dictpath);
     struct stat statbuf;
@@ -210,7 +214,7 @@ SKKSysDict::load_dict (const String &dictpath)
 }
 
 void
-SKKSysDict::get_key_from_index (int index, String &key)
+SysDict::get_key_from_index (int index, String &key)
 {
     key.clear();
     if (index == 0 || m_dictdata[index-1] == '\n') {
@@ -228,7 +232,7 @@ SKKSysDict::get_key_from_index (int index, String &key)
 }
 
 void
-SKKSysDict::get_cands_from_index(int index, list<CandPair> &result)
+SysDict::get_cands_from_index(int index, list<CandPair> &result)
 {
     if (index != 0 && m_dictdata[index-1] != '\n') return;
 
@@ -266,7 +270,7 @@ SKKSysDict::get_cands_from_index(int index, list<CandPair> &result)
 }
 
 void
-SKKSysDict::lookup (const WideString &key, const bool okuri,
+SysDict::lookup (const WideString &key, const bool okuri,
                     list<CandPair> &result)
 {
     String cmp_target;
@@ -304,29 +308,29 @@ SKKSysDict::lookup (const WideString &key, const bool okuri,
 }
 
 bool
-SKKSysDict::compare (const String &dictname)
+SysDict::compare (const String &dictname)
 {
     return (!m_dictpath.empty()) && dictname == m_dictpath;
 }
 
 bool
-SKKSysDict::compare (const String &host, const int port)
+SysDict::compare (const String &host, const int port)
 {
     return false;
 }
 
-SKKUserDict::SKKUserDict  (IConvert *conv)
-    : SKKDictBase(conv),
+UserDict::UserDict  (IConvert *conv)
+    : DictBase(conv),
       m_writeflag  (false)
 {
 }
 
-SKKUserDict::~SKKUserDict (void)
+UserDict::~UserDict (void)
 {
 }
 
 void
-SKKUserDict::load_dict (const String &dictpath)
+UserDict::load_dict (const String &dictpath)
 {
     //if (m_dictpath == dictpath) return;
 
@@ -395,7 +399,7 @@ SKKUserDict::load_dict (const String &dictpath)
 }
 
 void
-SKKUserDict::dump_dict (void)
+UserDict::dump_dict (void)
 {
     map<WideString, list<CandPair> >::const_iterator dit;
     ofstream dictfs;
@@ -431,7 +435,7 @@ SKKUserDict::dump_dict (void)
 }
 
 void
-SKKUserDict::lookup (const WideString &key, const bool okuri,
+UserDict::lookup (const WideString &key, const bool okuri,
                      list<CandPair> &result)
 {
     list<CandPair> &cl = m_dictdata[key];
@@ -442,7 +446,7 @@ SKKUserDict::lookup (const WideString &key, const bool okuri,
 }
 
 void
-SKKUserDict::write (const WideString &key, const CandPair &data)
+UserDict::write (const WideString &key, const CandPair &data)
 {
     list<CandPair> &cl = m_dictdata[key];
     for (list<CandPair>::iterator it = cl.begin(); it != cl.end(); it++) {
@@ -456,13 +460,13 @@ SKKUserDict::write (const WideString &key, const CandPair &data)
 }
 
 bool
-SKKUserDict::compare (const String &dictname)
+UserDict::compare (const String &dictname)
 {
     return (!m_dictpath.empty()) && dictname == m_dictpath;
 }
 
 bool
-SKKUserDict::compare (const String &host, const int portn)
+UserDict::compare (const String &host, const int portn)
 {
     return false;
 }
@@ -470,7 +474,7 @@ SKKUserDict::compare (const String &host, const int portn)
 
 SKKDictionary::SKKDictionary (void)
     : m_converter(new IConvert),
-      m_userdict(new SKKUserDict(m_converter)),
+      m_userdict(new UserDict(m_converter)),
       m_cache(new DictCache())
 {
     m_converter->set_encoding(String(SKKDICT_CHARCODE));
@@ -478,7 +482,7 @@ SKKDictionary::SKKDictionary (void)
 
 SKKDictionary::~SKKDictionary (void)
 {
-    for (list<SKKDictBase*>::iterator i = m_sysdicts.begin();
+    for (list<DictBase*>::iterator i = m_sysdicts.begin();
          i != m_sysdicts.end(); i++)
         delete *i;
     if (m_converter) delete m_converter;
@@ -489,12 +493,11 @@ SKKDictionary::~SKKDictionary (void)
 void
 SKKDictionary::add_sysdict (const String &dictname)
 {
-    list<SKKDictBase*>::const_iterator it = m_sysdicts.begin();
+    list<DictBase*>::const_iterator it = m_sysdicts.begin();
     for(; it != m_sysdicts.end(); it++)
         if ((*it)->compare(dictname)) break;
     if (it == m_sysdicts.end()) {
-        m_sysdicts.push_back((SKKDictBase*)new SKKSysDict(m_converter,
-                                                          dictname));
+        m_sysdicts.push_back((DictBase*)new SysDict(m_converter, dictname));
     }
     m_cache->clear();
 }
@@ -531,15 +534,15 @@ static const ucs4_t sharp = 0x23;
 
 inline void 
 lookup_main (const WideString &key, const bool okuri,
-             DictCache *cache, SKKUserDict *userdict,
-             const list<SKKDictBase*> &sysdicts,
+             DictCache *cache, UserDict *userdict,
+             const list<DictBase*> &sysdicts,
              list<CandPair> &result)
 {
     list<CandPair> cl;
     cache->lookup(key, okuri, cl);
     if (cl.empty()) {
         userdict->lookup(key, okuri, cl);
-        for (list<SKKDictBase*>::const_iterator it = sysdicts.begin();
+        for (list<DictBase*>::const_iterator it = sysdicts.begin();
              it != sysdicts.end(); it++) {
             (*it)->lookup(key, okuri, cl);
         }

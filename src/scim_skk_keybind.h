@@ -24,6 +24,8 @@
 
 using namespace scim;
 
+namespace scim_skk {
+
 typedef enum {
     SSTYLE_QWERTY,
     SSTYLE_DVORAK,
@@ -103,5 +105,7 @@ public:
 
     void selection_labels (std::vector<WideString> &result);
 };
+
+} /* namespace scim_skk */
 
 #endif /* __SCIM_SKK_KEYBINDS_H__ */

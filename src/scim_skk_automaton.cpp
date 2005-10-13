@@ -20,6 +20,8 @@
 
 #include "scim_skk_automaton.h"
 
+using namespace scim_skk;
+
 SKKAutomaton::SKKAutomaton ()
     : m_table (NULL),
       m_table_len (0),

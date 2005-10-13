@@ -25,6 +25,8 @@
 #include <scim.h>
 using namespace scim;
 
+namespace scim_skk {
+
 typedef struct _ConvRule
 {
     const char *string;
@@ -91,6 +93,7 @@ public:
     virtual void       remove_table       (ConvRule *table);
 };
 
+} /* namespace scim_skk */
 #endif /* __SCIM_ANTHY_AUTOMATON_H__ */
 /*
 vi:ts=4:nowrap:ai:expandtab

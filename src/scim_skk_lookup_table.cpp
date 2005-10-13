@@ -19,6 +19,8 @@
 
 #include "scim_skk_lookup_table.h"
 
+using namespace scim_skk;
+
 struct SKKCandList::CLBuffer
 {
 public:

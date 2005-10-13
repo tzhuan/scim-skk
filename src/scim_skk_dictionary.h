@@ -30,8 +30,10 @@
 
 using namespace scim;
 
-class SKKDictBase;
-class SKKUserDict;
+namespace scim_skk {
+
+class DictBase;
+class UserDict;
 
 class DictCache;
 
@@ -39,8 +41,8 @@ class SKKDictionary
 {
     IConvert *m_converter;
 
-    std::list<SKKDictBase*> m_sysdicts;
-    SKKUserDict *m_userdict;
+    std::list<DictBase*> m_sysdicts;
+    UserDict *m_userdict;
 
     DictCache *m_cache;
 public:
@@ -63,5 +65,7 @@ public:
                             const WideString &cand,
                             WideString &result);
 };
+
+} /* namespace scim_skk */
 
 #endif
