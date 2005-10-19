@@ -60,7 +60,6 @@ class SKKCore
 {
     KeyBind       *m_keybind;
 
-    SKKConfig     *m_skkconfig;
     SKKDictionary *m_dict;
 
     SKKMode        m_skk_mode;
@@ -115,8 +114,7 @@ class SKKCore
 
     void init_key2kana (void);
 public:
-    SKKCore  (KeyBind *keybind, SKKAutomaton *key2kana,
-              SKKConfig *config, SKKDictionary *dict);
+    SKKCore  (KeyBind *keybind, SKKAutomaton *key2kana, SKKDictionary *dict);
     ~SKKCore (void);
 
     void        get_preedit_string (WideString &result);

@@ -117,7 +117,6 @@ SKKFactory::SKKFactory (const String &lang,
     :  m_uuid(uuid),
        m_sysdictpath(SCIM_SKK_CONFIG_SYSDICT_DEFAULT),
        m_userdictname(SCIM_SKK_CONFIG_USERDICT_DEFAULT),
-       m_skkconfig(new SKKConfig()),
        m_config(config)
 {
     SCIM_DEBUG_IMENGINE(0) << "Create SKK Factory :\n";
@@ -135,7 +134,6 @@ SKKFactory::~SKKFactory ()
 {
     scim_skkdict->dump_userdict();
     m_reload_signal_connection.disconnect ();
-    delete m_skkconfig;
 }
 
 WideString
@@ -198,27 +196,27 @@ SKKFactory::reload_config (const ConfigPointer &config)
         m_userdictname = config->read(String(SCIM_SKK_CONFIG_USERDICT),
                                       String(SCIM_SKK_CONFIG_USERDICT_DEFAULT));
         scim_skkdict->set_userdict(m_userdictname);
-        m_skkconfig->candvec_size =
+        candvec_size =
             config->read(String(SCIM_SKK_CONFIG_CANDVEC_SIZE),
                          SCIM_SKK_CONFIG_CANDVEC_SIZE_DEFAULT);
-        m_skkconfig->annot_view =
+        annot_view =
             config->read(String(SCIM_SKK_CONFIG_ANNOT_VIEW),
                          SCIM_SKK_CONFIG_ANNOT_VIEW_DEFAULT);
         str = config->read(String(SCIM_SKK_CONFIG_ANNOT_POS),
                            String(SCIM_SKK_CONFIG_ANNOT_POS_DEFAULT));
-        m_skkconfig->annot_pos = (str == String("inline"));
+        annot_pos = (str == String("inline"));
         str = config->read(String(SCIM_SKK_CONFIG_ANNOT_TARGET),
                            String(SCIM_SKK_CONFIG_ANNOT_TARGET_DEFAULT));
-        m_skkconfig->annot_target = (str == String("all"));
+        annot_target = (str == String("all"));
 
-        m_skkconfig->annot_highlight =
+        annot_highlight =
             config->read(String(SCIM_SKK_CONFIG_ANNOT_HIGHLIGHT),
                          SCIM_SKK_CONFIG_ANNOT_HIGHLIGHT_DEFAULT);
         str = config->read(String(SCIM_SKK_CONFIG_ANNOT_BGCOLOR),
                            String(SCIM_SKK_CONFIG_ANNOT_BGCOLOR_DEFAULT));
-        m_skkconfig->annot_bgcolor = strtol(str.c_str() + 1, (char**)NULL, 16);
+        annot_bgcolor = strtol(str.c_str() + 1, (char**)NULL, 16);
 
-        m_skkconfig->ignore_return =
+        ignore_return =
             config->read(String(SCIM_SKK_CONFIG_IGNORE_RETURN),
                          SCIM_SKK_CONFIG_IGNORE_RETURN_DEFAULT);
 
@@ -285,10 +283,8 @@ SKKInstance::SKKInstance (SKKFactory   *factory,
                           const String &encoding,
                           int           id)
     : IMEngineInstanceBase (factory, encoding, id),
-      m_skkconfig (factory->m_skkconfig),
       m_skk_mode (SKK_MODE_HIRAGANA),
-      m_skkcore (&(factory->m_keybind), &(m_key2kana),
-                 m_skkconfig, scim_skkdict)
+      m_skkcore (&(factory->m_keybind), &(m_key2kana), scim_skkdict)
 {
     SCIM_DEBUG_IMENGINE(1) << "Create SKK Instance : ";
     init_key2kana();
@@ -325,7 +321,7 @@ SKKInstance::update_candidates (void)
         hide_preedit_string();
     }
 
-    if (m_skkconfig->annot_view && !m_skkconfig->annot_pos &&
+    if (annot_view && !annot_pos &&
         m_skkcore.get_input_mode() == INPUT_MODE_CONVERTING) {
         WideString auxstr;
         m_skkcore.get_lookup_table().get_annot_string(auxstr);

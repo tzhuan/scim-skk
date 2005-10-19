@@ -109,7 +109,7 @@ public:
     bool compare (const String &host, const int port) { return false; }
 };
 
-class scim_skk::SysDict : public DictBase
+class SysDict : public DictBase
 {
     String  m_dictpath;
     char   *m_dictdata;

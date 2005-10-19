@@ -50,12 +50,10 @@ class SKKCandList : public CommonLookupTable {
     CLBuffer *m_annot_buf;
     CLBuffer *m_cand_orig_buf;
 
-    SKKConfig *m_skkconfig;
-
     std::vector<CandEnt> m_candvec;
     int m_candindex;
 public:
-    SKKCandList  (SKKConfig *config, int page_size = 10);
+    SKKCandList  (int page_size = 10);
     SKKCandList  (int page_size, const std::vector<WideString> &labels);
     ~SKKCandList (void);
 
@@ -91,7 +89,7 @@ public:
     virtual void copy (std::list<CandEnt> &dst);
 
 
-    void SKKCandList::get_annot_string (WideString &result);
+    void get_annot_string (WideString &result);
 };
 
 } /* namespace scim_skk */

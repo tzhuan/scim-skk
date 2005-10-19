@@ -20,18 +20,16 @@
 #ifndef __SCIM_SKK_CONFIG_H__
 #define __SCIM_SKK_CONFIG_H__
 
-struct SKKConfig {
-  bool annot_view;   /* view annotation if true */
-  bool annot_pos;    /* inline if true, auxwindow if otherwise */
-  bool annot_target; /* all if true, caret position otherwise */
-  int candvec_size;
+namespace scim_skk {
+extern bool annot_view;   /* view annotation if true */
+extern bool annot_pos;    /* inline if true, auxwindow if otherwise */
+extern bool annot_target; /* all if true, caret position otherwise */
+extern int candvec_size;
 
-  bool annot_highlight;
-  int annot_bgcolor;
+extern bool annot_highlight;
+extern int annot_bgcolor;
 
-  bool ignore_return;
-
-  SKKConfig(void);
+extern bool ignore_return;
 };
 
 #endif /*  __SCIM_SKK_CONFIG_H__ */

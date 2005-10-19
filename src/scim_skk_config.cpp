@@ -20,16 +20,20 @@
 #include "scim_skk_prefs.h"
 #include "scim_skk_config.h"
 
+#include <scim.h>
 #include <cstdlib>
-#include <cstring>
 
-SKKConfig::SKKConfig (void)
-  : annot_view(SCIM_SKK_CONFIG_ANNOT_VIEW_DEFAULT),
-    annot_pos(strncmp(SCIM_SKK_CONFIG_ANNOT_POS_DEFAULT, "inline", 6) == 0),
-    annot_target(strncmp(SCIM_SKK_CONFIG_ANNOT_TARGET_DEFAULT, "all", 3) == 0),
-    candvec_size(SCIM_SKK_CONFIG_CANDVEC_SIZE_DEFAULT),
-    annot_highlight(SCIM_SKK_CONFIG_ANNOT_HIGHLIGHT_DEFAULT),
-    annot_bgcolor(strtol(SCIM_SKK_CONFIG_ANNOT_BGCOLOR_DEFAULT+1,
-                         (char**)NULL, 16)),
-    ignore_return(SCIM_SKK_CONFIG_IGNORE_RETURN_DEFAULT)
-{}
+using namespace scim;
+
+namespace scim_skk {
+    bool annot_view = SCIM_SKK_CONFIG_ANNOT_VIEW_DEFAULT;
+    bool annot_pos =
+    (String(SCIM_SKK_CONFIG_ANNOT_POS_DEFAULT) == String("inline"));
+    bool annot_target =
+    (String(SCIM_SKK_CONFIG_ANNOT_TARGET_DEFAULT) == String("all"));
+    int candvec_size = SCIM_SKK_CONFIG_CANDVEC_SIZE_DEFAULT;
+    bool annot_highlight = SCIM_SKK_CONFIG_ANNOT_HIGHLIGHT_DEFAULT;
+    int annot_bgcolor = strtol(SCIM_SKK_CONFIG_ANNOT_BGCOLOR_DEFAULT+1,
+                               (char**)NULL, 16);
+    bool ignore_return = SCIM_SKK_CONFIG_IGNORE_RETURN_DEFAULT;
+}

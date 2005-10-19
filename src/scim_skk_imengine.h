@@ -47,7 +47,6 @@ class SKKFactory : public IMEngineFactoryBase
     /* dictionary */
     String         m_sysdictpath;
     String         m_userdictname;
-    SKKConfig     *m_skkconfig;
 
     /* config */
     ConfigPointer m_config;
@@ -80,7 +79,6 @@ class SKKInstance : public IMEngineInstanceBase
 {
     SKKAutomaton   m_key2kana;
     PropertyList   m_properties;
-    SKKConfig     *m_skkconfig;
 
     /* for displaying SKKMode */
     SKKMode        m_skk_mode;
