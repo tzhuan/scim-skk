@@ -1,3 +1,9 @@
+2005-10-21  Takuro Ashie <ashie@homa.ne.jp>
+
+	* src/scim_skk_imengine_setup.cpp:
+	Fix a compile time warning.
+	Remove needless padding.
+
 2005-10-19  Jun Mukai  <mukai@jmuk.org>
 
 	* src/scim_skk_lookup_table.h: modify the prototype form of

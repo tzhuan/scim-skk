@@ -439,7 +439,6 @@ create_combo_widget (const char *label_text, GtkWidget **widget,
 
     hbox = gtk_hbox_new (FALSE, 0);
     gtk_widget_show (hbox);
-    gtk_container_set_border_width (GTK_CONTAINER (hbox), 4);
 
     label = gtk_label_new (label_text);
     gtk_widget_show (label);
@@ -464,7 +463,7 @@ create_combo_widget (const char *label_text, GtkWidget **widget,
 static GtkWidget *
 create_color_button (ColorConfigData *entry)
 {
-    GtkWidget *hbox, *label;
+    GtkWidget *hbox, *label = NULL;
     if (!entry) return NULL;
 
     hbox = gtk_hbox_new (FALSE, 0);
@@ -540,9 +539,14 @@ create_options_page ()
     gtk_widget_show(hbox);
     __widget_annot_highlight = gtk_check_button_new_with_mnemonic(_("Highlight Annotation."));
     gtk_widget_show(__widget_annot_highlight);
-    gtk_box_pack_start(GTK_BOX(hbox), __widget_annot_highlight, TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox), __widget_annot_highlight, FALSE, FALSE, 0);
+
+    alignment = gtk_alignment_new (0.5, 0.5, 1.0, 1.0);
+    gtk_alignment_set_padding (GTK_ALIGNMENT (alignment), 0, 0, 20, 0);
+    gtk_box_pack_start(GTK_BOX(hbox), alignment, FALSE, FALSE, 0);
+    gtk_widget_show(alignment);
     bgcolor_widgets = create_color_button(&annot_bgcolor);
-    gtk_box_pack_start(GTK_BOX(hbox), bgcolor_widgets, TRUE, TRUE, 0);
+    gtk_container_add (GTK_CONTAINER (alignment), bgcolor_widgets);
 
     /* view annot */
     __widget_annot_view = gtk_check_button_new_with_mnemonic (_("View Annotation."));
@@ -555,8 +559,8 @@ create_options_page ()
     gtk_alignment_set_padding(GTK_ALIGNMENT(alignment), 0, 0, 20, 0);
     gtk_widget_show(alignment);
 
-    annot_widgets = gtk_vbox_new(FALSE, 0);
-    //gtk_box_pack_start(GTK_BOX(alignment), annot_widgets, FALSE, FALSE, 4);
+    //annot_widgets = gtk_vbox_new(FALSE, 0);
+    annot_widgets = gtk_tabel_new (2, 2);
     gtk_container_add(GTK_CONTAINER(alignment), annot_widgets);
     gtk_widget_show(annot_widgets);
     widget = create_combo_widget (_("Position of Annotation:"),
