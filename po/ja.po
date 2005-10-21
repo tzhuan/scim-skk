@@ -333,7 +333,7 @@ msgstr "アノテーションを見る"
 
 #: src/scim_skk_imengine_setup.cpp:565
 msgid "Position of Annotation:"
-msgstr "アノテーションを見る:"
+msgstr "アノテーションの位置:"
 
 #: src/scim_skk_imengine_setup.cpp:571
 msgid "Printed Annotation:"
