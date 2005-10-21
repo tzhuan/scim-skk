@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: mukai@jmuk.org\n"
-"POT-Creation-Date: 2005-10-21 17:21+0900\n"
+"POT-Creation-Date: 2005-10-21 17:46+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -257,7 +257,7 @@ msgid "The key events to move the caret to the end of preedit. "
 msgstr ""
 
 #: src/scim_skk_imengine_setup.cpp:370
-msgid "System Dictionary Path"
+msgid "System Dictionary Path:"
 msgstr ""
 
 #: src/scim_skk_imengine_setup.cpp:378
@@ -341,7 +341,7 @@ msgid "Printed Annotation:"
 msgstr ""
 
 #: src/scim_skk_imengine_setup.cpp:627
-msgid "User Dictionary Name"
+msgid "User Dictionary Name:"
 msgstr ""
 
 #: src/scim_skk_imengine_setup.cpp:731

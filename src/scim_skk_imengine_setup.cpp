@@ -367,7 +367,7 @@ static KeyboardConfigData __config_keyboards_caret [] =
 };
 
 static FileConfigData __config_sysdict = {
-    N_("System Dictionary Path"),
+    N_("System Dictionary Path:"),
     SCIM_SKK_CONFIG_SYSDICT_DEFAULT,
     NULL,
     NULL,
@@ -624,7 +624,7 @@ create_dictionary_page ()
 
     /* user dictionary */
     widget            = gtk_hbox_new(FALSE, 0);
-    label             = gtk_label_new(_("User Dictionary Name"));
+    label             = gtk_label_new(_("User Dictionary Name:"));
     __widget_userdict = gtk_entry_new();
     gtk_widget_show(label);
     gtk_widget_show(__widget_userdict);
