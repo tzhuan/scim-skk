@@ -23,38 +23,65 @@
 #define SCIM_SKK_CONFIG_KAKUTEI_KEY          "/IMEngine/SKK/Kakutei"
 #define SCIM_SKK_CONFIG_KATAKANA_KEY         "/IMEngine/SKK/Katakana"
 #define SCIM_SKK_CONFIG_HALF_KATAKANA_KEY    "/IMEngine/SKK/HalfKatakana"
-#define SCIM_SKK_CONFIG_LATIN_KEY            "/IMEngine/SKK/Latin"
-#define SCIM_SKK_CONFIG_WIDE_LATIN_KEY       "/IMEngine/SKK/WideLatin"
+#define SCIM_SKK_CONFIG_ASCII_KEY            "/IMEngine/SKK/ASCII"
+#define SCIM_SKK_CONFIG_WIDE_ASCII_KEY       "/IMEngine/SKK/WideASCII"
 #define SCIM_SKK_CONFIG_CONVERT_KEY          "/IMEngine/SKK/Convert"
-#define SCIM_SKK_CONFIG_START_CONV_KEY       "/IMEngine/SKK/StartConv"
+#define SCIM_SKK_CONFIG_START_PREEDIT_KEY    "/IMEngine/SKK/StartPreedit"
 #define SCIM_SKK_CONFIG_CANCEL_KEY           "/IMEngine/SKK/Cancel"
-#define SCIM_SKK_CONFIG_LATIN_CONVERT_KEY    "/IMEngine/SKK/LatinConvert"
+#define SCIM_SKK_CONFIG_ASCII_CONVERT_KEY    "/IMEngine/SKK/ASCIIConvert"
 #define SCIM_SKK_CONFIG_PREVCAND_KEY         "/IMEngine/SKK/PrevCand"
 #define SCIM_SKK_CONFIG_BACKSPACE_KEY        "/IMEngine/SKK/BackSpace"
 #define SCIM_SKK_CONFIG_DELETE_KEY           "/IMEngine/SKK/Delete"
 #define SCIM_SKK_CONFIG_FORWARD_KEY          "/IMEngine/SKK/Forward"
 #define SCIM_SKK_CONFIG_BACKWARD_KEY         "/IMEngine/SKK/Backward"
+#define SCIM_SKK_CONFIG_HOME_KEY             "/IMEngine/SKK/Home"
+#define SCIM_SKK_CONFIG_END_KEY              "/IMEngine/SKK/End"
+#define SCIM_SKK_CONFIG_UPCASE_KEY           "/IMEngine/SKK/UPCASE"
+#define SCIM_SKK_CONFIG_SELECTION_STYLE      "/IMEngine/SKK/SelectionStyle"
 
 #define SCIM_SKK_CONFIG_SYSDICT          "/IMEngine/SKK/SysDict"
 #define SCIM_SKK_CONFIG_USERDICT         "/IMEngine/SKK/UserDict"
 
+#define SCIM_SKK_CONFIG_CANDVEC_SIZE      "/IMEngine/SKK/DictListSize"
+
+#define SCIM_SKK_CONFIG_ANNOT_VIEW     "/IMEngine/SKK/AnnotView"
+#define SCIM_SKK_CONFIG_ANNOT_POS      "/IMEngine/SKK/AnnotPos"
+#define SCIM_SKK_CONFIG_ANNOT_TARGET   "/IMEngine/SKK/AnnotTarget"
+
+#define SCIM_SKK_CONFIG_ANNOT_HIGHLIGHT "/IMEngine/SKK/AnnotHighlight"
+#define SCIM_SKK_CONFIG_ANNOT_BGCOLOR   "/IMEngine/SKK/AnnotBGColor"
+
+#define SCIM_SKK_CONFIG_IGNORE_RETURN   "/IMEngine/SKK/IgnoreReturn"
 
 /* default values */
 #define SCIM_SKK_CONFIG_KAKUTEI_KEY_DEFAULT          "Control+j"
 #define SCIM_SKK_CONFIG_KATAKANA_KEY_DEFAULT         "q"
 #define SCIM_SKK_CONFIG_HALF_KATAKANA_KEY_DEFAULT    ""
-#define SCIM_SKK_CONFIG_LATIN_KEY_DEFAULT            "l"
-#define SCIM_SKK_CONFIG_WIDE_LATIN_KEY_DEFAULT       "Shift+L"
+#define SCIM_SKK_CONFIG_ASCII_KEY_DEFAULT            "l"
+#define SCIM_SKK_CONFIG_WIDE_ASCII_KEY_DEFAULT       "Shift+L"
 #define SCIM_SKK_CONFIG_CONVERT_KEY_DEFAULT          "space"
-#define SCIM_SKK_CONFIG_START_CONV_KEY_DEFAULT       "Shift+Q"
-#define SCIM_SKK_CONFIG_CANCEL_KEY_DEFAULT           "Control+g"
-#define SCIM_SKK_CONFIG_LATIN_CONVERT_KEY_DEFAULT    "slash"
+#define SCIM_SKK_CONFIG_START_PREEDIT_KEY_DEFAULT    "Shift+Q"
+#define SCIM_SKK_CONFIG_CANCEL_KEY_DEFAULT           "Control+g,Escape"
+#define SCIM_SKK_CONFIG_ASCII_CONVERT_KEY_DEFAULT    "slash"
 #define SCIM_SKK_CONFIG_PREVCAND_KEY_DEFAULT         "x"
 #define SCIM_SKK_CONFIG_BACKSPACE_KEY_DEFAULT        "BackSpace,Control+h"
 #define SCIM_SKK_CONFIG_DELETE_KEY_DEFAULT           "Delete,Control+d"
 #define SCIM_SKK_CONFIG_FORWARD_KEY_DEFAULT          "Right,Control+f"
 #define SCIM_SKK_CONFIG_BACKWARD_KEY_DEFAULT         "Left,Control+b"
+#define SCIM_SKK_CONFIG_HOME_KEY_DEFAULT             "Home,Control+a"
+#define SCIM_SKK_CONFIG_END_KEY_DEFAULT              "End,Control+e"
+#define SCIM_SKK_CONFIG_UPCASE_KEY_DEFAULT           "Control+u"
+#define SCIM_SKK_CONFIG_SELECTION_STYLE_DEFAULT      "Qwerty"
 
 #define SCIM_SKK_CONFIG_SYSDICT_DEFAULT          "/usr/share/skk/SKK-JISYO.L"
 #define SCIM_SKK_CONFIG_USERDICT_DEFAULT         ".skk-scim-jisyo"
+#define SCIM_SKK_CONFIG_CANDVEC_SIZE_DEFAULT      4
+#define SCIM_SKK_CONFIG_ANNOT_VIEW_DEFAULT    true
+#define SCIM_SKK_CONFIG_ANNOT_POS_DEFAULT     "auxwindow"
+#define SCIM_SKK_CONFIG_ANNOT_TARGET_DEFAULT  "all"
+
+#define SCIM_SKK_CONFIG_ANNOT_HIGHLIGHT_DEFAULT true
+#define SCIM_SKK_CONFIG_ANNOT_BGCOLOR_DEFAULT   "#a0ff80"
+
+#define SCIM_SKK_CONFIG_IGNORE_RETURN_DEFAULT   false
 #endif
