@@ -559,21 +559,20 @@ create_options_page ()
     gtk_alignment_set_padding(GTK_ALIGNMENT(alignment), 0, 0, 20, 0);
     gtk_widget_show(alignment);
 
-    //annot_widgets = gtk_vbox_new(FALSE, 0);
-    annot_widgets = gtk_tabel_new (2, 2);
+    annot_widgets = gtk_vbox_new(FALSE, 0);
     gtk_container_add(GTK_CONTAINER(alignment), annot_widgets);
     gtk_widget_show(annot_widgets);
     widget = create_combo_widget (_("Position of Annotation:"),
                                   &__widget_annot_pos,
                                   (gpointer) &__config_annot_pos,
                                   (gpointer) &annot_position);
-    gtk_box_pack_start (GTK_BOX (annot_widgets), widget, FALSE, FALSE, 0);
+    gtk_box_pack_start (GTK_BOX (annot_widgets), widget, FALSE, FALSE, 4);
 
     widget = create_combo_widget (_("Printed Annotation:"),
                                   &__widget_annot_target,
                                   (gpointer) &__config_annot_target,
                                   (gpointer) &annot_target);
-    gtk_box_pack_start (GTK_BOX (annot_widgets), widget, FALSE, FALSE, 0);
+    gtk_box_pack_start (GTK_BOX (annot_widgets), widget, FALSE, FALSE, 4);
 
     // Connect all signals.
     g_signal_connect ((gpointer) __widget_listsize, "value-changed",
