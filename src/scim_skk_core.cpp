@@ -1177,7 +1177,8 @@ SKKCore::process_key_event (const KeyEvent key)
         }
         commit_converting();
         set_input_mode(INPUT_MODE_DIRECT);
-        if (ignore_return && key.code == SCIM_KEY_Return) {
+        if (key.code == SCIM_KEY_Return &&
+            (ignore_return ^ (key.mask & SCIM_KEY_ShiftMask != 0))) {
             return true;
         }
     }
@@ -1186,7 +1187,8 @@ SKKCore::process_key_event (const KeyEvent key)
         bool retval = m_learning->process_key_event(key);
         char code = key.get_ascii_code();
         if (key.code == SCIM_KEY_Return || m_learning->m_end_flag) {
-            if (ignore_return && key.code == SCIM_KEY_Return)
+            if (key.code == SCIM_KEY_Return &&
+                (ignore_return ^ (key.mask & SCIM_KEY_ShiftMask != 0)))
                 retval = true;
             if (m_learning->m_commitstr.empty()) {
                 /* learning is canceled */
