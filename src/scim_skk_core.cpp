@@ -1177,6 +1177,9 @@ SKKCore::process_key_event (const KeyEvent key)
         }
         commit_converting();
         set_input_mode(INPUT_MODE_DIRECT);
+        if (ignore_return && key.code == SCIM_KEY_Return) {
+            return true;
+        }
     }
 
     if (m_input_mode == INPUT_MODE_LEARNING) {

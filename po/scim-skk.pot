@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: mukai@jmuk.org\n"
-"POT-Creation-Date: 2005-10-21 17:46+0900\n"
+"POT-Creation-Date: 2005-11-07 23:39+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -273,11 +273,11 @@ msgid "number selection"
 msgstr ""
 
 #: src/scim_skk_imengine_setup.cpp:386
-msgid "aux window"
+msgid "Aux Window"
 msgstr ""
 
 #: src/scim_skk_imengine_setup.cpp:387
-msgid "inline"
+msgid "Inline"
 msgstr ""
 
 #: src/scim_skk_imengine_setup.cpp:393
@@ -321,7 +321,7 @@ msgid "List Size:"
 msgstr ""
 
 #: src/scim_skk_imengine_setup.cpp:532
-msgid "Ignore Return at the end of learning."
+msgid "Ignore Return at the commiting time."
 msgstr ""
 
 #: src/scim_skk_imengine_setup.cpp:540

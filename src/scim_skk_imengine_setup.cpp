@@ -383,8 +383,8 @@ static ComboConfigData selection_style[] =
 
 static ComboConfigData annot_position[] =
 {
-    {N_("aux window"), "auxwindow"},
-    {N_("inline"), "inline"},
+    {N_("Aux Window"), "AuxWindow"},
+    {N_("Inline"), "Inline"},
     {NULL, NULL},
 };
 
@@ -529,7 +529,7 @@ create_options_page ()
     gtk_widget_show(widget);
     gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, FALSE, 4);
 
-    __widget_ignore_return = gtk_check_button_new_with_mnemonic(_("Ignore Return at the end of learning."));
+    __widget_ignore_return = gtk_check_button_new_with_mnemonic(_("Ignore Return at the commiting time."));
     gtk_widget_show(__widget_ignore_return);
     gtk_box_pack_start(GTK_BOX(vbox), __widget_ignore_return, FALSE, FALSE, 4);
 

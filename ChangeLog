@@ -1,3 +1,11 @@
+2005-11-07  Jun Mukai <mukai@jmuk.org>
+
+	* src/scim_skk_core.cpp: fix the behaviors of `ignore_return'
+	settings to fit to `skk-egg-like-newline'.
+
+	* src/scim_skk_imengine_setup.cpp: modify `inline' to `Inline' and
+	`auxwindow' to `AuxWindow' for skim-scim-skk.
+
 2005-10-21  Takuro Ashie <ashie@homa.ne.jp>
 
 	* po/ja.po: Add missing colon.
