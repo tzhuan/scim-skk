@@ -1,10 +1,17 @@
+2005-11-10  Jun Mukai <mukai@jmuk.org>
+
+	* src/scim_skk_setup_dictionaries.cpp: new file for setup module
+	of dictionaries.
+
+	* new_feature: multi dictionaries are now available.
+
 2005-11-07  Jun Mukai <mukai@jmuk.org>
 
 	* src/scim_skk_core.cpp: Add new keybind `Shift-Return'. This
 	toggles the `ignore_return' at this conversion/learning only.
 
 	* src/scim_skk_core.cpp: fix the behaviors of `ignore_return'
-	settings to fit to `skk-egg-like-newline'.
+	settings to fit to `skk-egg-like-newline'. Thanks to Yamato-san.
 
 	* src/scim_skk_imengine_setup.cpp: modify `inline' to `Inline' and
 	`auxwindow' to `AuxWindow' for skim-scim-skk.

@@ -49,9 +49,8 @@ public:
     SKKDictionary  (void);
     ~SKKDictionary (void);
 
-    void add_sysdict  (const String &dictname);
+    void add_sysdict  (const String &dicturi);
     void set_userdict (const String &dictname);
-    void add_skkserv  (const String &host, const int port = -1);
 
     void dump_userdict (void);
 

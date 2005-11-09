@@ -31,6 +31,8 @@
 #  include <config.h>
 #endif
 
+#include <vector>
+
 #include <scim.h>
 #include <gtk/scimkeyselection.h>
 #include "scim_skk_prefs.h"
@@ -150,6 +152,7 @@ struct ColorConfigData
 };
 
 // Internal data declaration.
+static std::vector<String> __config_sysdicts;
 static String __config_userdict     = SCIM_SKK_CONFIG_USERDICT_DEFAULT;
 static int    __config_listsize     = SCIM_SKK_CONFIG_CANDVEC_SIZE_DEFAULT;
 static bool   __config_annot_view   = SCIM_SKK_CONFIG_ANNOT_VIEW_DEFAULT;
@@ -162,8 +165,9 @@ static String __config_annot_pos    = SCIM_SKK_CONFIG_ANNOT_POS_DEFAULT;
 static String __config_annot_target = SCIM_SKK_CONFIG_ANNOT_TARGET_DEFAULT;
 static String __config_selection_style = SCIM_SKK_CONFIG_SELECTION_STYLE_DEFAULT;
 
-static bool __have_changed    = true;
+bool __have_changed    = true;
 
+GtkWidget           * __widget_sysdicts        = 0;
 static GtkWidget    * __widget_userdict        = 0;
 static GtkWidget    * __widget_listsize        = 0;
 static GtkWidget    * __widget_annot_view      = 0;
@@ -424,6 +428,8 @@ static void on_default_color_button_set       (GtkColorButton  *button,
                                                gpointer         user_data);
 static void on_default_file_selection_clicked (GtkButton       *button,
                                                gpointer         user_data);
+void on_default_dict_selection_clicked (GtkButton       *button,
+                                        gpointer         user_data);
 static void on_default_key_selection_clicked  (GtkButton       *button,
                                                gpointer         user_data);
 static void on_default_combo_changed          (GtkEditable     *editable,
@@ -599,28 +605,27 @@ create_options_page ()
 static GtkWidget *
 create_dictionary_page ()
 {
-    GtkWidget *vbox, *widget, *label;
+    GtkWidget *vbox, *widget, *label, *button;
 
     vbox = gtk_vbox_new (FALSE, 0);
     gtk_widget_show (vbox);
 
-    /* system dictionary */
+    /* system dictionaries */
     widget = gtk_hbox_new(FALSE, 0);
-    label  = gtk_label_new(_(__config_sysdict.title));
-    __config_sysdict.entry = gtk_entry_new();
-    __config_sysdict.button = gtk_button_new_with_label ("...");
-    gtk_widget_show (label);
-    gtk_widget_show (__config_sysdict.entry);
-    gtk_widget_show (__config_sysdict.button);
-    gtk_box_pack_start (GTK_BOX (widget), label, FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (widget), __config_sysdict.entry,
-                        TRUE, TRUE, 4);
-    gtk_box_pack_start (GTK_BOX (widget), __config_sysdict.button,
-                        FALSE, FALSE, 4);
-    gtk_widget_show (widget);
+    label = gtk_label_new(_("Configure Dictionaries"));
+    gtk_widget_show(label);
+    gtk_box_pack_start(GTK_BOX(widget), label, FALSE, FALSE, 4);
+    __widget_sysdicts = gtk_entry_new();
+    gtk_widget_show(__widget_sysdicts);
+    gtk_box_pack_start(GTK_BOX(widget), __widget_sysdicts, TRUE, TRUE, 4);
+    button = gtk_button_new_with_label(_("setup"));
+    gtk_widget_show(button);
+    gtk_box_pack_start(GTK_BOX(widget), button, FALSE, FALSE, 4);
+    g_signal_connect ((gpointer) button, "clicked",
+                      G_CALLBACK (on_default_dict_selection_clicked),
+                      &__config_sysdicts);
+    gtk_widget_show(widget);
     gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, FALSE, 4);
-    gtk_label_set_mnemonic_widget (GTK_LABEL (label), __config_sysdict.entry);
-    gtk_label_set_mnemonic_widget (GTK_LABEL (label), __config_sysdict.button);
 
     /* user dictionary */
     widget            = gtk_hbox_new(FALSE, 0);
@@ -633,13 +638,6 @@ create_dictionary_page ()
     gtk_label_set_mnemonic_widget (GTK_LABEL (label), __widget_userdict);
     gtk_widget_show(widget);
     gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, FALSE, 4);
-
-    g_signal_connect ((gpointer) __config_sysdict.button, "clicked",
-                      G_CALLBACK (on_default_file_selection_clicked),
-                      &__config_sysdict);
-    g_signal_connect ((gpointer) __config_sysdict.entry, "changed",
-                      G_CALLBACK (on_default_editable_changed),
-                      &(__config_sysdict.data));
 
     g_signal_connect ((gpointer) __widget_userdict, "changed",
                       G_CALLBACK (on_default_editable_changed),
@@ -794,6 +792,16 @@ setup_widget_value ()
                            annot_target, __config_annot_target);
     }
 
+    if (__widget_sysdicts && __config_sysdicts.size() > 0) {
+        std::vector<String>::iterator it = __config_sysdicts.begin();
+        String s = *it;
+        for (; it != __config_sysdicts.end(); it++) {
+            s.append(1, ',');
+            s.append(*it);
+        }
+        gtk_entry_set_text(GTK_ENTRY(__widget_sysdicts), s.data());
+    }
+    
     if (__widget_annot_view) {
         gtk_toggle_button_set_active (
             GTK_TOGGLE_BUTTON (__widget_annot_view),
@@ -850,9 +858,9 @@ static void
 load_config (const ConfigPointer &config)
 {
     if (!config.null ()) {
-        __config_sysdict.data =
+        __config_sysdicts =
             config->read (String (SCIM_SKK_CONFIG_SYSDICT),
-                          __config_sysdict.data);
+                          __config_sysdicts);
         __config_userdict =
             config->read (String (SCIM_SKK_CONFIG_USERDICT),
                           __config_userdict);
@@ -902,7 +910,7 @@ save_config (const ConfigPointer &config)
 {
     if (!config.null ()) {
         config->write (String (SCIM_SKK_CONFIG_SYSDICT),
-                       __config_sysdict.data);
+                       __config_sysdicts);
         config->write (String (SCIM_SKK_CONFIG_USERDICT),
                        __config_userdict);
         config->write (String (SCIM_SKK_CONFIG_CANDVEC_SIZE),

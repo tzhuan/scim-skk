@@ -73,7 +73,7 @@
 #define SCIM_SKK_CONFIG_UPCASE_KEY_DEFAULT           "Control+u"
 #define SCIM_SKK_CONFIG_SELECTION_STYLE_DEFAULT      "Qwerty"
 
-#define SCIM_SKK_CONFIG_SYSDICT_DEFAULT          "/usr/share/skk/SKK-JISYO.L"
+#define SCIM_SKK_CONFIG_SYSDICT_DEFAULT          "DictFile:/usr/share/skk/SKK-JISYO.L"
 #define SCIM_SKK_CONFIG_USERDICT_DEFAULT         ".skk-scim-jisyo"
 #define SCIM_SKK_CONFIG_CANDVEC_SIZE_DEFAULT      4
 #define SCIM_SKK_CONFIG_ANNOT_VIEW_DEFAULT    true

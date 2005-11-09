@@ -28,8 +28,12 @@
 #include <map>
 #include <utility>
 #include <algorithm>
+#include <cstring>
+#include <fstream>
 
 #include <scim_iconv.h>
+
+#include <scim_socket.h>
 
 #define SKKDICT_CHARCODE      "EUC-JP"
 
@@ -42,6 +46,10 @@ static void append_candpair(const WideString &cand,
                             const WideString &annot,
                             list<CandPair> &result);
 
+static int parse_dictline (const IConvert *converter, const char *line,
+                           list<CandPair> &ret);
+static void rewrite_to_concatform (String &dst, const String &src);
+
 inline void convert_num1 (WideString key, WideString &result);
 inline void convert_num2 (WideString key, WideString &result);
 inline void convert_num3 (WideString key, WideString &result);
@@ -51,20 +59,21 @@ inline void convert_num9 (WideString key, WideString &result);
 inline WideString lltows(unsigned long long n);
 inline unsigned long long wstoll(WideString ws);
 
+/* class declarations */
 namespace scim_skk {
 
 class DictBase
 {
 public:
     IConvert *m_converter;
+    const String dicturi;
 
-    DictBase  (IConvert *conv=0) : m_converter(conv) {}
+    DictBase  (IConvert *conv=0, const String &uri = "")
+        : m_converter(conv), dicturi(uri) {}
     virtual ~DictBase (void) {}
 
     virtual void lookup (const WideString &key, const bool okuri,
                          list<CandPair> &result) = 0;
-    virtual bool compare (const String &dictname) = 0;
-    virtual bool compare (const String &host, const int port) = 0;
 };
 
 class DictCache : public DictBase
@@ -105,13 +114,10 @@ public:
         cl.push_front(data);
     }
     void clear (void) { m_cache.clear(); }
-    bool compare (const String &dictname) { return false; }
-    bool compare (const String &host, const int port) { return false; }
 };
 
-class SysDict : public DictBase
+class DictFile : public DictBase
 {
-    String  m_dictpath;
     char   *m_dictdata;
     int     m_length;
 
@@ -120,21 +126,34 @@ class SysDict : public DictBase
     vector<int> m_okuri_indice;
     vector<int> m_normal_indice;
 
+    const String m_dictpath;
+
     void get_key_from_index (int index, String &key);
     void get_cands_from_index (int index, list<CandPair> &result);
 
     void clear (void);
-public:
-    SysDict  (IConvert *conv, const String &dictpath = 0);
-    ~SysDict (void);
 
-    void load_dict (const String &dictpath);
+    void load_dict (void);
+public:
+    DictFile  (IConvert *conv, const String &dictpath = 0);
+    ~DictFile (void);
+
     void lookup    (const WideString &key, const bool okuri,
                     list<CandPair> &result);
-    bool compare (const String &dictname);
-    bool compare (const String &host, const int port);
 };
 
+class SKKServ : public DictBase
+{
+    SocketClient m_socket;
+    SocketAddress m_addr;
+
+    bool close(void);
+public:
+    SKKServ  (IConvert *conv, const String &addrstr);
+    ~SKKServ (void);
+    void lookup (const WideString &key, const bool okuri,
+                 list<CandPair> &result);
+};
 
 class UserDict : public DictBase
 {
@@ -143,6 +162,7 @@ class UserDict : public DictBase
 
     bool m_writeflag;
 public:
+    const String dicturi;
     UserDict  (IConvert *conv);
     ~UserDict (void);
 
@@ -151,32 +171,35 @@ public:
     void lookup    (const WideString &key, const bool okuri,
                     list<CandPair> &result);
     void write     (const WideString &key, const CandPair &data);
-    bool compare (const String &dictname);
-    bool compare (const String &host, const int port);
 };
+
 }
 
 using namespace scim_skk;
 
 
-SysDict::SysDict (IConvert *conv, const String &dictpath)
-    : DictBase(conv),
+/*
+ * scim_skk::DictFile
+ * a system dictionary object which access to the dictionary file directly.
+ */
+
+DictFile::DictFile (IConvert *conv, const String &dictpath)
+    : DictBase(conv, String("DictFile:")+dictpath),
       m_dictdata(0),
-      m_dictpath("")
+      m_dictpath(dictpath)
 {
     if (!dictpath.empty())
-        load_dict(dictpath);
+        load_dict();
 }
 
-SysDict::~SysDict (void)
+DictFile::~DictFile (void)
 {
     //munmap(m_dictdata, m_length);
 }
 
 void
-SysDict::load_dict (const String &dictpath)
+DictFile::load_dict (void)
 {
-    m_dictpath.assign(dictpath);
     struct stat statbuf;
     int fd;
     if (stat(m_dictpath.c_str(), &statbuf) < 0) return;
@@ -214,7 +237,7 @@ SysDict::load_dict (const String &dictpath)
 }
 
 void
-SysDict::get_key_from_index (int index, String &key)
+DictFile::get_key_from_index (int index, String &key)
 {
     key.clear();
     if (index == 0 || m_dictdata[index-1] == '\n') {
@@ -232,45 +255,15 @@ SysDict::get_key_from_index (int index, String &key)
 }
 
 void
-SysDict::get_cands_from_index(int index, list<CandPair> &result)
+DictFile::get_cands_from_index(int index, list<CandPair> &result)
 {
-    if (index != 0 && m_dictdata[index-1] != '\n') return;
-
-    /* skip key string */
-    for(; m_dictdata[index] != ' '; index++);
-    index+=2; /* skip first slash */
-
-    WideString cand;
-    WideString annot;
-    int s;
-    while (index < m_length && m_dictdata[index] != '\n') {
-        if (m_dictdata[index] == '[') {
-            /* skip [...] */
-            for (; m_dictdata[index] != ']'; index++);
-            index++;
-            continue;
-        }
-
-        cand.clear(); annot.clear();
-        /* clip a candidate */
-        s = index;
-        for (; m_dictdata[index] != ';' && m_dictdata[index] != '/'; index++);
-        m_converter->convert(cand, m_dictdata+s, index - s);
-        if (m_dictdata[index] == ';') {
-            /* clip an annotation */
-            index++;
-            s = index;
-            for (; m_dictdata[index] != '/'; index++);
-            m_converter->convert(annot, m_dictdata+s, index-s);
-        }
-        index++;
-
-        append_candpair(cand, annot, result);
-    }
+    int len;
+    for (len = 0; m_dictdata[index+len] != '\n'; len++);
+    parse_dictline(m_converter, m_dictdata+index, result);
 }
 
 void
-SysDict::lookup (const WideString &key, const bool okuri,
+DictFile::lookup (const WideString &key, const bool okuri,
                     list<CandPair> &result)
 {
     String cmp_target;
@@ -307,17 +300,76 @@ SysDict::lookup (const WideString &key, const bool okuri,
     }
 }
 
-bool
-SysDict::compare (const String &dictname)
+/*
+ * scim_skk::SKKServ
+ * a client which connect to skkserv.
+ */
+
+SKKServ::SKKServ  (IConvert *conv,
+                   const String &addressstr)
+    : DictBase(conv, String("SKKServ:") + addressstr),
+      m_addr(addressstr)
 {
-    return (!m_dictpath.empty()) && dictname == m_dictpath;
+}
+
+SKKServ::~SKKServ (void)
+{
+    if (m_socket.is_connected()) close();
 }
 
 bool
-SysDict::compare (const String &host, const int port)
+SKKServ::close (void)
 {
-    return false;
+    if (m_socket.is_connected()) {
+        if (m_socket.write("0\n", 2) > 0) {
+            m_socket.close();
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
 }
+
+void
+SKKServ::lookup (const WideString &key, const bool okuri,
+                 list<CandPair> &result)
+{
+    static const int buflen = 4096;
+
+    /* reconnect if the connection is closed */
+    if (!m_socket.is_connected() && !m_socket.connect(m_addr)) return;
+
+    String skey;
+    m_converter->convert(skey, key);
+    char writebuf[skey.size() + 3];
+    char readbuf[buflen];
+    writebuf[0] = '1';
+    
+    skey.copy(writebuf+1, skey.size());
+    writebuf[skey.size()+1] = ' ';
+    writebuf[skey.size()+2] = '\n';
+    if (m_socket.write(writebuf, skey.size()+3) != skey.size() + 3) {
+        close();
+        return;
+    }
+    if (m_socket.wait_for_data(60 * 1000) > 0) {
+        int len = m_socket.read(readbuf, buflen);
+        if (readbuf[0] == '1') {
+            if (readbuf[len-1] != '\n') {
+                readbuf[len-1] = '\n';
+            }
+            parse_dictline(m_converter, readbuf, result);
+        }
+    }
+}
+
+
+/*
+ * scim_skk::UserDict
+ * a dictionary object which access to user dictionary file directly.
+ */
 
 UserDict::UserDict  (IConvert *conv)
     : DictBase(conv),
@@ -348,47 +400,22 @@ UserDict::load_dict (const String &dictpath)
     char *buf = (char*)mmap(0, length, PROT_READ, MAP_PRIVATE, fd, 0);
 
     if (buf != MAP_FAILED) {
-        int keylen;
         WideString key;
-        Candidate cand;
-        Annotation annot;
         list<CandPair> cl;
-        int candlen;
+        int len;
         for (int i = 0; i < length; i++) {
             switch(buf[i]) {
             case ';':
-                for (;i < length && buf[i] != '\n'; i++);
+                for (; i < length && buf[i] != '\n'; i++);
             case '\n':
                 break;
             default:
                 key.clear();
                 cl.clear();
-                for (keylen = 0; i < length && buf[i+keylen] != ' '; keylen++);
-                m_converter->convert(key, buf+i, keylen);
-
-                i += keylen+2;
-                while (buf[i] != '\n') {
-                    if (buf[i] == '[') {
-                        for (; buf[i] != ']'; i++);
-                        i+=2;
-                        continue;
-                    }
-
-                    cand.clear();
-                    annot.clear();
-                    candlen = 1;
-                    while (buf[i+candlen] != '/' && buf[i+candlen] != ';')
-                        candlen++;
-                    m_converter->convert(cand, buf+i, candlen);
-                    i += candlen+1;
-                    if (buf[i-1] == ';') {
-                        candlen = 0;
-                        while(buf[i+candlen] != '/') candlen++;
-                        m_converter->convert(annot, buf+i, candlen);
-                        i += candlen + 1;
-                    }
-                    cl.push_back(make_pair(cand, annot));
-                }
+                for (len = 0; buf[i+len] != ' '; len++);
+                m_converter->convert(key, buf+i, len);
+                i += len;
+                i += parse_dictline(m_converter, buf+i, cl);
                 m_dictdata.insert(make_pair(key, cl));
                 break;
             }
@@ -416,13 +443,17 @@ UserDict::dump_dict (void)
 
                 for(list<CandPair>::const_iterator cit = dit->second.begin();
                     cit != dit->second.end(); cit++) {
+                    String tmp2;
+                    m_converter->convert(tmp2, cit->first);
                     tmp.clear();
-                    m_converter->convert(tmp, cit->first);
+                    rewrite_to_concatform(tmp, tmp2);
                     line += '/';
                     line += tmp;
                     if (!cit->second.empty()) {
+                        tmp2.clear();
                         tmp.clear();
-                        m_converter->convert(tmp, cit->second);
+                        m_converter->convert(tmp2, cit->second);
+                        rewrite_to_concatform(tmp, tmp2);
                         line += ';';
                         line += tmp;
                     }
@@ -459,18 +490,12 @@ UserDict::write (const WideString &key, const CandPair &data)
     m_writeflag = true;
 }
 
-bool
-UserDict::compare (const String &dictname)
-{
-    return (!m_dictpath.empty()) && dictname == m_dictpath;
-}
 
-bool
-UserDict::compare (const String &host, const int portn)
-{
-    return false;
-}
-
+/*
+ * SKKDictionary
+ * SKKDictionary manages all of the dictionary classes and does
+ * special conversions such like number conversions.
+ */
 
 SKKDictionary::SKKDictionary (void)
     : m_converter(new IConvert),
@@ -491,20 +516,26 @@ SKKDictionary::~SKKDictionary (void)
 }
 
 void
-SKKDictionary::add_sysdict (const String &dictname)
+SKKDictionary::add_sysdict (const String &dicturi)
 {
     list<DictBase*>::const_iterator it = m_sysdicts.begin();
+    int pos = dicturi.find(':');
+    String dicttype = (pos == String::npos)?
+        "DictFile" : dicturi.substr(0, pos);
+    String dictname = (pos == String::npos)?
+        dicturi : dicturi.substr(pos+1, String::npos);
     for(; it != m_sysdicts.end(); it++)
-        if ((*it)->compare(dictname)) break;
+        if ((*it)->dicturi == dicturi) break;
     if (it == m_sysdicts.end()) {
-        m_sysdicts.push_back((DictBase*)new SysDict(m_converter, dictname));
+        if (dicttype == "DictFile") {
+            m_sysdicts.push_back((DictBase*)new DictFile(m_converter,
+                                                         dictname));
+        } else if (dicttype == "SKKServ") {
+            m_sysdicts.push_back((DictBase*)new SKKServ(m_converter,
+                                                        dictname));
+        }
     }
     m_cache->clear();
-}
-
-void
-SKKDictionary::add_skkserv (const String &host, const int port)
-{
 }
 
 void
@@ -602,6 +633,116 @@ SKKDictionary::write (const WideString &key,  const CandEnt &ent)
         m_cache->write(key, make_pair(ent.cand, ent.annot));
     }
 }
+
+
+void
+SKKDictionary::extract_numbers (const WideString &key,
+                                std::list<WideString> &result /* return value */,
+                                WideString &newkey /* return value */)
+{
+    for (int i = 0; i < key.size(); i++) {
+        int start = i;
+        while (i < key.size() &&
+               key[i] >= zero && key[i] <= nine) i++;
+        if (start < i) {
+            WideString num = key.substr(start, i-start);
+            result.push_back(num);
+            newkey += sharp;
+            if (i < key.size())
+                newkey += key[i];
+        } else {
+            newkey += key[i];
+        }
+    }
+}
+
+bool
+SKKDictionary::number_conversion (const std::list<WideString> &numbers,
+                                  const WideString &cand,
+                                  WideString &result /* return value */)
+{
+    bool conversion_success = true;
+    if (!numbers.empty()) {
+        list<WideString>::const_iterator nit = numbers.begin();
+        int start = 0;
+        int sharp_pos;
+        while(nit != numbers.end() &&
+              (sharp_pos = cand.find(sharp, start)) != WideString::npos) {
+            if (sharp_pos < cand.size()-1 &&
+                cand[sharp_pos+1] >= zero &&
+                cand[sharp_pos+1] <= nine) {
+                if (sharp_pos > start)
+                    result.append(cand, start, sharp_pos - start);
+                switch (cand[sharp_pos+1] - zero) {
+                case 0:
+                    result.append(*nit);
+                    break;
+                case 1:
+                    convert_num1(*nit, result);
+                    break;
+                case 2:
+                    convert_num2(*nit, result);
+                    break;
+                case 3:
+                    convert_num3(*nit, result);
+                    break;
+                case 4:
+                    {
+                        list<CandPair> cl;
+                        lookup_main(*nit, false,
+                                    m_cache, m_userdict, m_sysdicts, cl);
+                        if (!cl.empty()) {
+                            result += cl.begin()->first;
+                        } else {
+                            conversion_success = false;
+                        }
+                    }
+                    break;
+                case 5:
+                    convert_num5(*nit, result);
+                    break;
+                case 9:
+                    convert_num9(*nit, result);
+                    break;
+                default:
+                    result += cand.substr(sharp_pos, 2);
+                }
+                start = sharp_pos + 2;
+                nit++;
+                if (!conversion_success) nit = numbers.end();
+            } else { /* not conversion */
+                result.append(1, sharp);
+                start = sharp_pos + 1;
+            }
+        }
+        if (start < cand.size())
+            result.append(cand, start, cand.size() - start);
+        return conversion_success;
+    } else {
+        result.append(cand);
+        return true;
+    }
+}
+
+
+void
+append_candpair (const WideString &cand, const WideString &annot,
+                list<CandPair> &result)
+{
+    list<CandPair>::const_iterator it;
+    for (it = result.begin(); it != result.end(); it++) {
+        if (it->first == cand)
+            break;
+    }
+    if (it == result.end()) {
+        /* new candidate */
+        result.push_back(make_pair(cand, annot));
+    }
+}
+
+/*
+ * functions and constants for number conversions.
+ */
 
 static WideString digits_wide = utf8_mbstowcs("\xEF\xBC\x90" // 0
                                               "\xEF\xBC\x91" // 1
@@ -767,108 +908,183 @@ convert_num9 (WideString key, WideString &result)
     }
 }
 
-void
-SKKDictionary::extract_numbers (const WideString &key,
-                                std::list<WideString> &result /* return value */,
-                                WideString &newkey /* return value */)
+
+/*
+ * parser for dictionary entry line
+ */
+
+inline int
+parse_skip_paren (const char *line, int i)
 {
-    for (int i = 0; i < key.size(); i++) {
-        int start = i;
-        while (i < key.size() &&
-               key[i] >= zero && key[i] <= nine) i++;
-        if (start < i) {
-            WideString num = key.substr(start, i-start);
-            result.push_back(num);
-            newkey += sharp;
-            if (i < key.size())
-                newkey += key[i];
-        } else {
-            newkey += key[i];
+    bool loopflag = true;
+
+    while (loopflag && line[i] != '\n') {
+        switch(line[i]) {
+        case '(':
+            i = parse_skip_paren(line, i+1);
+            break;
+        case ')':
+            loopflag = false;
+            i++;
+            break;
+        default:
+            i++;
+            break;
         }
     }
+    return i;
 }
 
-bool
-SKKDictionary::number_conversion (const std::list<WideString> &numbers,
-                                  const WideString &cand,
-                                  WideString &result /* return value */)
+inline int
+parse_eval_string (const char *line, int start,
+                   String &ret)
 {
-    bool conversion_success = true;
-    if (!numbers.empty()) {
-        list<WideString>::const_iterator nit = numbers.begin();
-        int start = 0;
-        int sharp_pos;
-        while(nit != numbers.end() &&
-              (sharp_pos = cand.find(sharp, start)) != WideString::npos) {
-            if (sharp_pos < cand.size()-1 &&
-                cand[sharp_pos+1] >= zero &&
-                cand[sharp_pos+1] <= nine) {
-                if (sharp_pos > start)
-                    result.append(cand, start, sharp_pos - start);
-                switch (cand[sharp_pos+1] - zero) {
-                case 0:
-                    result.append(*nit);
-                    break;
-                case 1:
-                    convert_num1(*nit, result);
-                    break;
-                case 2:
-                    convert_num2(*nit, result);
-                    break;
-                case 3:
-                    convert_num3(*nit, result);
-                    break;
-                case 4:
-                    {
-                        list<CandPair> cl;
-                        lookup_main(*nit, false,
-                                    m_cache, m_userdict, m_sysdicts, cl);
-                        if (!cl.empty()) {
-                            result += cl.begin()->first;
-                        } else {
-                            conversion_success = false;
-                        }
-                    }
-                    break;
-                case 5:
-                    convert_num5(*nit, result);
-                    break;
-                case 9:
-                    convert_num9(*nit, result);
-                    break;
-                default:
-                    result += cand.substr(sharp_pos, 2);
-                }
-                start = sharp_pos + 2;
-                nit++;
-                if (!conversion_success) nit = numbers.end();
-            } else { /* not conversion */
-                result.append(1, sharp);
-                start = sharp_pos + 1;
+    int i = start;
+    bool loopflag = true;
+    while (loopflag && line[i] != '\n') {
+        switch(line[i]) {
+        case '"':
+            i++;
+            loopflag = false;
+            break;
+        case '\\':
+            char c1 = line[i+1], c2 = line[i+2], c3 = line[i+3];
+            char code =
+                (c1 - '0') * 64 + (c2 - '0') * 8 + (c3 - '0');
+            ret.append(1, code);
+            i += 4;
+            break;
+        default:
+            ret.append(1, line[i]);
+            i++;
+            break;
+        }
+    }
+    return i;
+}
+
+inline int
+parse_paren (const char *line, int start,
+             String &ret)
+{
+    if (strncmp(line+start, "concat", 6) == 0) {
+        int i = start+6;
+        bool loopflag = true;
+        while (loopflag && line[i] != '\n') {
+            switch(line[i]) {
+            case '(':
+                i = parse_skip_paren(line, i+1);
+                break;
+            case ')':
+                loopflag = false;
+                i++;
+                break;
+            case '"':
+                i = parse_eval_string(line, i+1, ret);
+                break;
+            default:
+                i++;
             }
         }
-        if (start < cand.size())
-            result.append(cand, start, cand.size() - start);
-        return conversion_success;
+        return i;
     } else {
-        result.append(cand);
-        return true;
+        ret.append(1, '(');
+        return start;
     }
 }
 
-
-void
-append_candpair (const WideString &cand, const WideString &annot,
-                list<CandPair> &result)
+inline int
+parse_skip_bracket (const char *line, int i)
 {
-    list<CandPair>::const_iterator it;
-    for (it = result.begin(); it != result.end(); it++) {
-        if (it->first == cand)
+    while (line[i] != '\n' && line[i] != ']') i++;
+    if (line[i] == ']') i++;
+    return i;
+}
+
+static int
+parse_dictline (const IConvert *converter, const char *line,
+                list<CandPair> &ret)
+{
+    WideString candbuf;
+    WideString annotbuf;
+    WideString tmpstr;
+    WideString *target = &candbuf;
+    int i, start;
+    for (i = 0; line[i] != '/'; i++);
+    i++;
+    start = i;
+
+    while (line[i] != '\n') {
+        switch (line[i]) {
+        case '/':
+            tmpstr.clear();
+            converter->convert(tmpstr, line+start, i-start);
+            target->append(tmpstr);
+            i++;
+            start = i;
+            append_candpair(candbuf, annotbuf, ret);
+            candbuf.clear(); annotbuf.clear();
+            target = &candbuf;
             break;
+        case ';':
+            tmpstr.clear();
+            converter->convert(tmpstr, line+start, i-start);
+            target->append(tmpstr);
+            i++;
+            start = i;
+            target = &annotbuf;
+            break;
+        case '[':
+            i = parse_skip_bracket(line, i+1);
+            start = i;
+            break;
+        case '(':
+            {
+                tmpstr.clear();
+                converter->convert(tmpstr, line+start, i-start);
+                target->append(tmpstr);
+                String buf;
+                i = parse_paren(line, i+1, buf);
+                start = i;
+                tmpstr.clear();
+                converter->convert(tmpstr, buf);
+                target->append(tmpstr);
+            }
+            break;
+        default:
+            i++;
+            break;
+        }
     }
-    if (it == result.end()) {
-        /* new candidate */
-        result.push_back(make_pair(cand, annot));
+    return i;
+}
+
+static void
+rewrite_to_concatform (String &dst, const String &src)
+{
+    int slash_pos = src.find('/');
+    int semicolon_pos = src.find(';');
+    if (slash_pos == String::npos && semicolon_pos == String::npos) {
+        dst.assign(src);
+    } else {
+        dst.append("(concat \"");
+        for (int i = 0; i < src.size(); i++) {
+            switch (src[i]) {
+            case '/':
+                dst.append("\\057");
+                break;
+            case ';':
+                dst.append("\\073");
+                break;
+            case '"':
+                dst.append("\\042");
+                break;
+            default:
+                dst.append(1, src[i]);
+                break;
+            }
+        }
+        dst.append("\")");
     }
 }
 

@@ -45,8 +45,8 @@ class SKKFactory : public IMEngineFactoryBase
     String m_uuid;
 
     /* dictionary */
-    String         m_sysdictpath;
-    String         m_userdictname;
+    std::vector<String> m_sysdicts;
+    String              m_userdictname;
 
     /* config */
     ConfigPointer m_config;

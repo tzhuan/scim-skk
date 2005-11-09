@@ -115,7 +115,6 @@ SKKFactory::SKKFactory (const String &lang,
                         const String &uuid,
                         const ConfigPointer &config)
     :  m_uuid(uuid),
-       m_sysdictpath(SCIM_SKK_CONFIG_SYSDICT_DEFAULT),
        m_userdictname(SCIM_SKK_CONFIG_USERDICT_DEFAULT),
        m_config(config)
 {
@@ -190,9 +189,15 @@ SKKFactory::reload_config (const ConfigPointer &config)
     if (config) {
         String str;
 
-        m_sysdictpath = config->read(String(SCIM_SKK_CONFIG_SYSDICT),
-                                     String(SCIM_SKK_CONFIG_SYSDICT_DEFAULT));
-        scim_skkdict->add_sysdict(m_sysdictpath);
+        m_sysdicts = config->read(String(SCIM_SKK_CONFIG_SYSDICT), m_sysdicts);
+        if (m_sysdicts.size() > 0) {
+            for (std::vector<String>::const_iterator it = m_sysdicts.begin();
+                 it != m_sysdicts.end(); it++) {
+                scim_skkdict->add_sysdict(*it);
+            }
+        } else {
+            scim_skkdict->add_sysdict(String(SCIM_SKK_CONFIG_SYSDICT_DEFAULT));
+        }
         m_userdictname = config->read(String(SCIM_SKK_CONFIG_USERDICT),
                                       String(SCIM_SKK_CONFIG_USERDICT_DEFAULT));
         scim_skkdict->set_userdict(m_userdictname);
