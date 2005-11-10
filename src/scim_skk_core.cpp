@@ -1249,6 +1249,17 @@ SKKCore::process_key_event (const KeyEvent key)
         return retval;
     }
 
+    if (m_input_mode == INPUT_MODE_PREEDIT && key.code == SCIM_KEY_Return &&
+        !(key.mask & skk_key_mask)) {
+        action_kakutei();
+        if (ignore_return ^ (key.mask & SCIM_KEY_ShiftMask != 0)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
     switch (m_skk_mode) {
     case SKK_MODE_ASCII:
         return process_ascii(key);

@@ -8,6 +8,7 @@ INCLUDES	= \
 
 noinst_HEADERS = \
 	conv_table.h \
+	$(HELP_FILE) \
 	scim_skk_config.h \
 	scim_skk_lookup_table.h \
 	scim_skk_automaton.h \
@@ -63,3 +64,12 @@ skk_imengine_setup_la_LDFLAGS = -avoid-version \
                                 @SCIM_GTKUTILS_LIBS@ \
                                 @INTLLIBS@ \
                                 @SCIM_LIBS@
+
+
+HELP_SCRIPT		= ./help_message_conv.awk
+HELP_FILE               = scim_skk_help_message.txt
+
+$(HELP_FILE):
+	$(HELP_SCRIPT) $(HELP_FILE).in > $(HELP_FILE)
+
+scim_skk_imengine.cpp: $(HELP_FILE)

@@ -156,7 +156,7 @@ SKKFactory::get_icon_file () const
 WideString
 SKKFactory::get_authors () const
 {
-    return utf8_mbstowcs("Jun Mukai");
+    return utf8_mbstowcs("(C) 2004-2005 Jun Mukai <mukai@jmuk.org>");
 }
 
 WideString
@@ -168,7 +168,9 @@ SKKFactory::get_credits () const
 WideString
 SKKFactory::get_help () const
 {
-    return WideString();
+    return utf8_mbstowcs(
+#include "scim_skk_help_message.txt"
+);
 }
 
 void
