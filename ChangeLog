@@ -1,3 +1,9 @@
+2005-11-10  Jun Mukai  <mukai@localhost.localdomain>
+
+	* src/scim_skk_dictionary.cpp (parse_eval_string): A small bug
+	fixes for declaration of variables in a switch statement. Thanks
+	to Utsumi-san.
+
 2005-11-10  Takuro Ashie <ashie@homa.ne.jp>
 
 	* src/scim_skk_imengine.cpp, src/scim_skk_imengine_setup.cpp:

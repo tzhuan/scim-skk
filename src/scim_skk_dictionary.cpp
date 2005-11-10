@@ -948,11 +948,13 @@ parse_eval_string (const char *line, int start,
             loopflag = false;
             break;
         case '\\':
-            char c1 = line[i+1], c2 = line[i+2], c3 = line[i+3];
-            char code =
-                (c1 - '0') * 64 + (c2 - '0') * 8 + (c3 - '0');
-            ret.append(1, code);
-            i += 4;
+            {
+                char c1 = line[i+1], c2 = line[i+2], c3 = line[i+3];
+                char code =
+                    (c1 - '0') * 64 + (c2 - '0') * 8 + (c3 - '0');
+                ret.append(1, code);
+                i += 4;
+            }
             break;
         default:
             ret.append(1, line[i]);
