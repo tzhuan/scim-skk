@@ -184,12 +184,12 @@
                     <widget class="QComboBox" row="5" column="4" rowspan="1" colspan="4">
                         <item>
                             <property name="text">
-                                <string>aux window</string>
+                                <string>Aux Window</string>
                             </property>
                         </item>
                         <item>
                             <property name="text">
-                                <string>inline</string>
+                                <string>Inline</string>
                             </property>
                         </item>
                         <property name="name">
@@ -282,7 +282,7 @@
                             <cstring>kcfg__IMEngine_SKK_IgnoreReturn</cstring>
                         </property>
                         <property name="text">
-                            <string>Ignore Return &amp;at the end of learning</string>
+                            <string>Ignore Return &amp;at the commiting time</string>
                         </property>
                         <property name="accel">
                             <string>Alt+A</string>
