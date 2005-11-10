@@ -1,0 +1,192 @@
+# skim-scim-skk
+# Copyright (C) 2005 Takuro Ashie <ashie@homa.ne.jp>
+# This file is distributed under the same license as the skim-scim-skk package.
+# Takuro Ashie <ashie@homa.ne.jp>, 2005.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: skim-scim-skk\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2005-10-22 01:06+0000\n"
+"PO-Revision-Date: 2005-10-21 22:35+0900\n"
+"Last-Translator: Takuro Ashie <ashie@homa.ne.jp>\n"
+"Language-Team: Japanese <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../setupui/skkui.cpp:423
+msgid "SKK"
+msgstr "SKK"
+
+#: ../setupui/skkui.cpp:424
+msgid "Selection Style:"
+msgstr "候補選択スタイル:"
+
+#: ../setupui/skkui.cpp:426
+msgid "qwerty arrangement"
+msgstr "qwerty配列"
+
+#: ../setupui/skkui.cpp:427
+msgid "Dvorak arrangement"
+msgstr "Dvorak配列"
+
+#: ../setupui/skkui.cpp:428
+msgid "number selection"
+msgstr "数値選択"
+
+#: ../setupui/skkui.cpp:429
+msgid "List Size:"
+msgstr "候補リスト長:"
+
+#: ../setupui/skkui.cpp:430
+msgid "Printed Annotation:"
+msgstr "アノテーションの表示:"
+
+#: ../setupui/skkui.cpp:431
+msgid "Position of Annotation:"
+msgstr "アノテーションの位置:"
+
+#: ../setupui/skkui.cpp:433
+msgid "all"
+msgstr "全て"
+
+#: ../setupui/skkui.cpp:434
+msgid "cursor position only"
+msgstr "カーソルの位置のみ"
+
+#: ../setupui/skkui.cpp:436
+msgid "aux window"
+msgstr "補助ウィンドウ"
+
+#: ../setupui/skkui.cpp:437
+msgid "inline"
+msgstr "インライン"
+
+#: ../setupui/skkui.cpp:438
+msgid "&View Annotation"
+msgstr "アノテーションを見る(&V)"
+
+#: ../setupui/skkui.cpp:439
+msgid "Alt+V"
+msgstr "Alt+V"
+
+#: ../setupui/skkui.cpp:440
+msgid "Highlight A&nnotation"
+msgstr "アノテーションの色を設定する(&N)"
+
+#: ../setupui/skkui.cpp:441
+msgid "Alt+N"
+msgstr "Alt+N"
+
+#: ../setupui/skkui.cpp:442
+msgid "Ignore Return &at the end of learning"
+msgstr "学習終了時のReturnキーを無視する(&A)"
+
+#: ../setupui/skkui.cpp:443
+msgid "Alt+A"
+msgstr "Alt+A"
+
+#: ../setupui/skkui.cpp:444
+msgid "Color:"
+msgstr "色:"
+
+#: ../setupui/skkui.cpp:446
+msgid "&General"
+msgstr "一般(&G):"
+
+#: ../setupui/skkui.cpp:447
+msgid "System Dictionary Path:"
+msgstr "システム辞書のパス:"
+
+#: ../setupui/skkui.cpp:448
+msgid "User Dictionary Name:"
+msgstr "ユーザー辞書の名前:"
+
+#: ../setupui/skkui.cpp:449
+msgid "&Dictionary"
+msgstr "辞書(&D)"
+
+#: ../setupui/skkui.cpp:450
+msgid "Kakutei:"
+msgstr "確定:"
+
+#: ../setupui/skkui.cpp:451
+msgid "Cancel:"
+msgstr "キャンセル:"
+
+#: ../setupui/skkui.cpp:452
+msgid "Convert"
+msgstr "変換:"
+
+#: ../setupui/skkui.cpp:453
+msgid "Start-Preedit:"
+msgstr "変換開始"
+
+#: ../setupui/skkui.cpp:454
+msgid "ASCII-Convert:"
+msgstr "英数変換"
+
+#: ../setupui/skkui.cpp:455
+msgid "Previous Candidate:"
+msgstr "前の候補"
+
+#: ../setupui/skkui.cpp:456
+msgid "Upcase:"
+msgstr "大文字切替"
+
+#: ../setupui/skkui.cpp:457
+msgid "&Common"
+msgstr "一般(&C)"
+
+#: ../setupui/skkui.cpp:458
+msgid "Katakana:"
+msgstr "カタカナ:"
+
+#: ../setupui/skkui.cpp:459
+msgid "Half-Katakana:"
+msgstr "半角カタカナ:"
+
+#: ../setupui/skkui.cpp:460
+msgid "ASCII:"
+msgstr "英数:"
+
+#: ../setupui/skkui.cpp:461
+msgid "Wide-ASCII:"
+msgstr "全角英数:"
+
+#: ../setupui/skkui.cpp:462
+msgid "Mode"
+msgstr "モード"
+
+#: ../setupui/skkui.cpp:463
+msgid "Backspace:"
+msgstr "バックスペース:"
+
+#: ../setupui/skkui.cpp:464
+msgid "Delete:"
+msgstr "削除:"
+
+#: ../setupui/skkui.cpp:465
+msgid "Forward:"
+msgstr "前方へ移動:"
+
+#: ../setupui/skkui.cpp:466
+msgid "Backward:"
+msgstr "後方へ移動"
+
+#: ../setupui/skkui.cpp:467
+msgid "Home:"
+msgstr "先頭:"
+
+#: ../setupui/skkui.cpp:468
+msgid "End:"
+msgstr "終端:"
+
+#: ../setupui/skkui.cpp:469
+msgid "C&aret"
+msgstr "カーソル(&A)"
+
+#: ../setupui/skkui.cpp:470
+msgid "&Key bindings"
+msgstr "キーバインド(&K)"
