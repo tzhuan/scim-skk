@@ -126,14 +126,14 @@
     <entry name="_IMEngine_SKK_AnnotPos" key="/IMEngine/SKK/AnnotPos" type="String">
       <label>Position of Annotation</label>
       <choices>
-        <choice name="auxwindow">
-          <label>aux window</label>
+        <choice name="AuxWindow">
+          <label>Aux Window</label>
         </choice>
         <choice name="Inline">
           <label>Inline</label>
         </choice>
       </choices>
-      <default>auxwindow</default>
+      <default>AuxWindow</default>
     </entry>
     <entry name="_IMEngine_SKK_AnnotTarget" key="/IMEngine/SKK/AnnotTarget" type="String">
       <label>Printed Annotation</label>
@@ -159,7 +159,7 @@
     </entry>
 
     <entry name="_IMEngine_SKK_IgnoreReturn" key="/IMEngine/SKK/IgnoreReturn" type="Bool">
-      <label>Ignore Return at the end of learning</label>
+      <label>Ignore Return at the commiting time</label>
       <default>false</default>
     </entry>
   </group>
