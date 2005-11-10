@@ -188,8 +188,12 @@ SKKFactory::reload_config (const ConfigPointer &config)
 {
     if (config) {
         String str;
+        std::vector<String> sysdicts_default;
 
-        m_sysdicts = config->read(String(SCIM_SKK_CONFIG_SYSDICT), m_sysdicts);
+        scim_split_string_list (sysdicts_default,
+                                String (SCIM_SKK_CONFIG_SYSDICT_DEFAULT));
+        m_sysdicts = config->read(String(SCIM_SKK_CONFIG_SYSDICT),
+                                  sysdicts_default);
         if (m_sysdicts.size() > 0) {
             for (std::vector<String>::const_iterator it = m_sysdicts.begin();
                  it != m_sysdicts.end(); it++) {

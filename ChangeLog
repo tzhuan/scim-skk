@@ -1,3 +1,10 @@
+2005-11-10  Takuro Ashie <ashie@homa.ne.jp>
+
+	* src/scim_skk_imengine.cpp, src/scim_skk_imengine_setup.cpp:
+	Set default system dictionary list if its config is empty.
+	The bug that first entry of dictionary list is set twice to entry on
+	preference window has been fixed.
+
 2005-11-10  Jun Mukai <mukai@jmuk.org>
 
 	* src/scim_skk_setup_dictionaries.cpp: new file for setup module

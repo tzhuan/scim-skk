@@ -795,7 +795,7 @@ setup_widget_value ()
     if (__widget_sysdicts && __config_sysdicts.size() > 0) {
         std::vector<String>::iterator it = __config_sysdicts.begin();
         String s = *it;
-        for (; it != __config_sysdicts.end(); it++) {
+        for (it++; it != __config_sysdicts.end(); it++) {
             s.append(1, ',');
             s.append(*it);
         }
@@ -858,9 +858,12 @@ static void
 load_config (const ConfigPointer &config)
 {
     if (!config.null ()) {
+        std::vector<String> sysdicts_default;
+        scim_split_string_list (sysdicts_default,
+                                String (SCIM_SKK_CONFIG_SYSDICT_DEFAULT));
         __config_sysdicts =
             config->read (String (SCIM_SKK_CONFIG_SYSDICT),
-                          __config_sysdicts);
+                          sysdicts_default);
         __config_userdict =
             config->read (String (SCIM_SKK_CONFIG_USERDICT),
                           __config_userdict);
