@@ -1,4 +1,8 @@
-2005-11-10  Jun Mukai  <mukai@localhost.localdomain>
+2005-11-11  Jun Mukai  <mukai@jmuk.org>
+
+	* src/cdb.cpp: CDB files are now available.
+
+2005-11-10  Jun Mukai  <mukai@jmuk.org>
 
 	* src/scim_skk_dictionary.cpp (parse_eval_string): A small bug
 	fixes for declaration of variables in a switch statement. Thanks

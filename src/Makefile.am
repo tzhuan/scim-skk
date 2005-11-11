@@ -22,6 +22,7 @@ moduledir = @SCIM_MODULEDIR@/IMEngine
 module_LTLIBRARIES = skk.la
 
 skk_la_SOURCES = \
+	cdb.cpp \
 	scim_skk_config.cpp \
 	scim_skk_lookup_table.cpp \
 	scim_skk_imengine.cpp \

@@ -43,27 +43,52 @@ enum DictColumnType {
     DICT_N_COLUMNS
 };
 
-struct DictFileConfigWidgets {
+struct DictionaryConfigWidgets {
     gchar *title;
     GtkWidget *widget;
     GtkWidget *entry;
     GtkWidget *button;
-};
-
-struct SKKServConfigWidgets {
-    GtkWidget *widget;
-    GtkWidget *hostname_entry;
-    GtkWidget *port_entry;
+    GtkWidget *entry2;
 };
 
 static String __dict_type_names [] = {
     "DictFile",
     "SKKServ",
+    "CDBFile",
     ""
 };
 
-static DictFileConfigWidgets __widgets_dict_file;
-static SKKServConfigWidgets __widgets_skkserv;
+static DictionaryConfigWidgets __widgets_dicts [] = {
+    {
+        N_("System Dictionary Path:"),
+        NULL,
+        NULL,
+        NULL,
+        NULL
+    },
+    {
+        N_(""),
+        NULL,
+        NULL,
+        NULL,
+        NULL
+    },
+    {
+        N_("CDB Dictionary Path:"),
+        NULL,
+        NULL,
+        NULL,
+        NULL
+    },
+    {
+        "",
+        NULL,
+        NULL,
+        NULL,
+        NULL
+    }
+};
+
 static GtkWidget *__combo_box_dict_types = NULL;
 
 
@@ -71,7 +96,7 @@ static void
 file_selection_clicked_cb (GtkButton *button,
                            gpointer   user_data)
 {
-    DictFileConfigWidgets *data = static_cast <DictFileConfigWidgets *> (user_data);
+    DictionaryConfigWidgets *data = static_cast <DictionaryConfigWidgets *> (user_data);
 
     if (data) {
         GtkWidget *dialog = gtk_file_selection_new (_(data->title));
@@ -99,19 +124,17 @@ dict_type_changed_cb (GtkComboBox *combo,
                       gpointer userdata)
 {
     gchar *typetext = gtk_combo_box_get_active_text(combo);
-    if (String("DictFile") == typetext) {
-        gtk_widget_show_all(__widgets_dict_file.widget);
-        gtk_widget_hide_all(__widgets_skkserv.widget);
-        gtk_entry_set_text(GTK_ENTRY(__widgets_dict_file.entry), "");
-        gtk_entry_set_text(GTK_ENTRY(__widgets_skkserv.hostname_entry), "");
-        gtk_entry_set_text(GTK_ENTRY(__widgets_skkserv.port_entry), "1178");
-    } else if (String("SKKServ") == typetext) {
-        gtk_widget_hide_all(__widgets_dict_file.widget);
-        gtk_widget_show_all(__widgets_skkserv.widget);
-        gtk_entry_set_text(GTK_ENTRY(__widgets_dict_file.entry), "");
-        gtk_entry_set_text(GTK_ENTRY(__widgets_skkserv.hostname_entry), "");
-        gtk_entry_set_text(GTK_ENTRY(__widgets_skkserv.port_entry), "1178");
+    for (int i = 0; __dict_type_names[i] != ""; i++) {
+        if (__dict_type_names[i] == typetext) {
+            gtk_widget_show_all(__widgets_dicts[i].widget);
+        } else {
+            gtk_widget_hide_all(__widgets_dicts[i].widget);
+        }
     }
+    gtk_entry_set_text(GTK_ENTRY(__widgets_dicts[0].entry), "");
+    gtk_entry_set_text(GTK_ENTRY(__widgets_dicts[1].entry), "");
+    gtk_entry_set_text(GTK_ENTRY(__widgets_dicts[1].entry2), "1178");
+    gtk_entry_set_text(GTK_ENTRY(__widgets_dicts[2].entry), "");
 }
 
 static void
@@ -123,14 +146,14 @@ dict_list_add_clicked_cb (GtkButton *button,
     String dict_name;
     GtkTreeIter iter;
     GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(userdata));
-    if (dict_type == "DictFile") {
-        dict_name = gtk_entry_get_text(GTK_ENTRY(__widgets_dict_file.entry));
-    } else if (dict_type == "SKKServ") {
-        dict_name = gtk_entry_get_text(GTK_ENTRY(__widgets_skkserv.hostname_entry));
-        dict_name += ":";
-        dict_name += gtk_entry_get_text(GTK_ENTRY(__widgets_skkserv.port_entry));
-    } else {
-        return;
+    for (int i = 0; __dict_type_names[i] != ""; i++) {
+        if (__dict_type_names[i] == dict_type) {
+            dict_name = gtk_entry_get_text(GTK_ENTRY(__widgets_dicts[i].entry));
+            if (String("SKKServ") == dict_type) {
+                dict_name += ":";
+                dict_name += gtk_entry_get_text(GTK_ENTRY(__widgets_dicts[i].entry2));
+            }
+        }
     }
     gtk_list_store_append(GTK_LIST_STORE(model), &iter);
     gtk_list_store_set(GTK_LIST_STORE(model), &iter,
@@ -194,6 +217,8 @@ dict_list_down_clicked_cb (GtkButton *button,
     }
 }
 
+
+
 static void
 dict_list_selection_changed_cb (GtkTreeSelection *selection,
                                 gpointer data)
@@ -208,28 +233,31 @@ dict_list_selection_changed_cb (GtkTreeSelection *selection,
                            DICT_TYPE_COLUMN, &dict_type,
                            DICT_NAME_COLUMN, &dict_name,
                            -1);
-        if (String("DictFile") == dict_type) {
-            gtk_combo_box_set_active(GTK_COMBO_BOX(__combo_box_dict_types), 0);
-            dict_type_changed_cb(GTK_COMBO_BOX(__combo_box_dict_types), NULL);
-            gtk_entry_set_text(GTK_ENTRY(__widgets_dict_file.entry),
-                               dict_name);
-        } else if (String("SKKServ") == dict_type) {
-            String hostname = dict_name;
-            String portnum = "1178";
-            gint pos = hostname.find(':');
-            gtk_combo_box_set_active(GTK_COMBO_BOX(__combo_box_dict_types), 1);
-            dict_type_changed_cb(GTK_COMBO_BOX(__combo_box_dict_types), NULL);
-            if (pos != String::npos) {
-                portnum = hostname.substr(pos+1, String::npos);
-                hostname.erase(pos);
-            } 
-            gtk_entry_set_text(GTK_ENTRY(__widgets_skkserv.hostname_entry),
-                               hostname.data());
-            gtk_entry_set_text(GTK_ENTRY(__widgets_skkserv.port_entry),
-                               portnum.data());
+        for (int i = 0; __dict_type_names[i] != ""; i++) {
+            if (__dict_type_names[i] == dict_type) {
+                gtk_combo_box_set_active(GTK_COMBO_BOX(__combo_box_dict_types),
+                                         i);
+                dict_type_changed_cb(GTK_COMBO_BOX(__combo_box_dict_types),
+                                     NULL);
+                if (String("SKKServ") == dict_type) {
+                    String hostname = dict_name;
+                    String portnum = "1178";
+                    gint pos = hostname.find(':');
+                    if (pos != String::npos) {
+                        portnum = hostname.substr(pos+1, String::npos);
+                        hostname.erase(pos);
+                    } 
+                    gtk_entry_set_text(GTK_ENTRY(__widgets_dicts[i].entry),
+                                       hostname.data());
+                    gtk_entry_set_text(GTK_ENTRY(__widgets_dicts[i].entry2),
+                                       portnum.data());
+                } else {
+                    gtk_entry_set_text(GTK_ENTRY(__widgets_dicts[i].entry),
+                                       dict_name);
+                }
+            }
         }
     }
-    fflush(stdout);
 }
 
 inline GtkListStore*
@@ -288,6 +316,56 @@ dict_list_model_setup (GtkTreeModel *model)
 }
 
 
+inline void
+dict_entry_widgets_dictfile_setup (DictionaryConfigWidgets *widgets)
+{
+    GtkWidget *label;
+    widgets->widget = gtk_hbox_new(FALSE, 0);
+    label  = gtk_label_new(widgets->title);
+    widgets->entry = gtk_entry_new();
+    widgets->button = gtk_button_new_with_label ("...");
+    gtk_box_pack_start (GTK_BOX (widgets->widget),
+                        label, FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (widgets->widget),
+                        widgets->entry, TRUE, TRUE, 4);
+    gtk_box_pack_start (GTK_BOX (widgets->widget),
+                        widgets->button, FALSE, FALSE, 4);
+    gtk_widget_show_all (widgets->widget);
+    gtk_label_set_mnemonic_widget (GTK_LABEL (label),
+                                   widgets->entry);
+    gtk_label_set_mnemonic_widget (GTK_LABEL (label),
+                                   widgets->button);
+    g_signal_connect ((gpointer) widgets->button, "clicked",
+                      G_CALLBACK (file_selection_clicked_cb),
+                      widgets);
+}
+
+inline void
+dict_entry_widgets_skkserv_setup (DictionaryConfigWidgets *widgets)
+{
+    GtkWidget *hbox, *label;
+
+    widgets->widget = gtk_vbox_new(FALSE, 0);
+    hbox = gtk_hbox_new(FALSE, 0);
+    gtk_widget_hide(widgets->widget);
+    label = gtk_label_new(_("Server Name:"));
+    gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 4);
+    widgets->entry = gtk_entry_new();
+    gtk_box_pack_start(GTK_BOX(hbox), widgets->entry,
+                       TRUE, TRUE, 4);
+    gtk_box_pack_start(GTK_BOX(widgets->widget), hbox,
+                       FALSE, FALSE, 4);
+    hbox = gtk_hbox_new(FALSE, 0);
+    label = gtk_label_new(_("Port Number:"));
+    widgets->entry2 = gtk_entry_new();
+    gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 4);
+    gtk_box_pack_start(GTK_BOX(hbox), widgets->entry2,
+                       TRUE, TRUE, 4);
+    gtk_box_pack_start(GTK_BOX(widgets->widget), hbox,
+                       FALSE, FALSE, 4);
+}
+
+
 inline GtkWidget*
 dict_entry_widgets_setup (GtkBox *container,
                           GtkTreeView *view)
@@ -313,53 +391,19 @@ dict_entry_widgets_setup (GtkBox *container,
     gtk_box_pack_start(GTK_BOX(hbox), __combo_box_dict_types, FALSE, TRUE, 4);
     gtk_box_pack_start(container, hbox, FALSE, FALSE, 4);
 
-    __widgets_dict_file.widget = gtk_hbox_new(FALSE, 0);
-
     /* dictionary file widgets */
-    __widgets_dict_file.widget = gtk_hbox_new(FALSE, 0);
-    label  = gtk_label_new(_("System Dictionary Path:"));
-    __widgets_dict_file.title = N_("System Dictionary Path:");
-    __widgets_dict_file.entry = gtk_entry_new();
-    __widgets_dict_file.button = gtk_button_new_with_label ("...");
-    gtk_box_pack_start (GTK_BOX (__widgets_dict_file.widget),
-                        label, FALSE, FALSE, 4);
-    gtk_box_pack_start (GTK_BOX (__widgets_dict_file.widget),
-                        __widgets_dict_file.entry, TRUE, TRUE, 4);
-    gtk_box_pack_start (GTK_BOX (__widgets_dict_file.widget),
-                        __widgets_dict_file.button, FALSE, FALSE, 4);
-    gtk_widget_show_all (__widgets_dict_file.widget);
-    gtk_box_pack_start(container, __widgets_dict_file.widget,
+    dict_entry_widgets_dictfile_setup(&(__widgets_dicts[0]));
+    gtk_box_pack_start(container, __widgets_dicts[0].widget,
                        TRUE, FALSE, 4);
-    gtk_label_set_mnemonic_widget (GTK_LABEL (label),
-                                   __widgets_dict_file.entry);
-    gtk_label_set_mnemonic_widget (GTK_LABEL (label),
-                                   __widgets_dict_file.button);
-    g_signal_connect ((gpointer) __widgets_dict_file.button, "clicked",
-                      G_CALLBACK (file_selection_clicked_cb),
-                      &__widgets_dict_file);
-
 
     /* skkserv widgets */
-    __widgets_skkserv.widget = gtk_vbox_new(FALSE, 0);
-    hbox = gtk_hbox_new(FALSE, 0);
-    gtk_widget_hide(__widgets_skkserv.widget);
-    label = gtk_label_new(_("Server Name:"));
-    gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 4);
-    __widgets_skkserv.hostname_entry = gtk_entry_new();
-    gtk_box_pack_start(GTK_BOX(hbox), __widgets_skkserv.hostname_entry,
-                       TRUE, TRUE, 4);
-    gtk_box_pack_start(GTK_BOX(__widgets_skkserv.widget), hbox,
-                       FALSE, FALSE, 4);
-    hbox = gtk_hbox_new(FALSE, 0);
-    label = gtk_label_new(_("Port Number:"));
-    __widgets_skkserv.port_entry = gtk_entry_new();
-    gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 4);
-    gtk_box_pack_start(GTK_BOX(hbox), __widgets_skkserv.port_entry,
-                       TRUE, TRUE, 4);
-    gtk_box_pack_start(GTK_BOX(__widgets_skkserv.widget), hbox,
-                       FALSE, FALSE, 4);
+    dict_entry_widgets_skkserv_setup(&__widgets_dicts[1]);
+    gtk_box_pack_start(container, __widgets_dicts[1].widget,
+                       TRUE, FALSE, 4);
 
-    gtk_box_pack_start(container, __widgets_skkserv.widget,
+    /* dictionary file widgets */
+    dict_entry_widgets_dictfile_setup(&__widgets_dicts[2]);
+    gtk_box_pack_start(container, __widgets_dicts[2].widget,
                        TRUE, FALSE, 4);
 
     /* edit buttons */

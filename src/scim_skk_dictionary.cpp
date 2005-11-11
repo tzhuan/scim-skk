@@ -18,6 +18,7 @@
  */
 
 #include "scim_skk_dictionary.h"
+#include "cdb.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -151,6 +152,17 @@ class SKKServ : public DictBase
 public:
     SKKServ  (IConvert *conv, const String &addrstr);
     ~SKKServ (void);
+    void lookup (const WideString &key, const bool okuri,
+                 list<CandPair> &result);
+};
+
+class CDBFile : public DictBase
+{
+    CDB m_db;
+public:
+    CDBFile (IConvert *conv, const String &dictpath);
+    ~CDBFile (void);
+
     void lookup (const WideString &key, const bool okuri,
                  list<CandPair> &result);
 };
@@ -367,6 +379,42 @@ SKKServ::lookup (const WideString &key, const bool okuri,
 
 
 /*
+ * scim_skk::CDBFile
+ * connection to CDB(constant db) dictionary.
+ */
+
+CDBFile::CDBFile  (IConvert *conv,
+                   const String &dictpath)
+    : DictBase(conv, String("CDBFile:") + dictpath),
+      m_db(dictpath)
+{
+}
+
+CDBFile::~CDBFile (void)
+{
+    m_db.dbclose();
+}
+
+void
+CDBFile::lookup (const WideString &key, const bool okuri,
+                 list<CandPair> &result)
+{
+    static const int buflen = 4096;
+
+    /* reconnect if the connection is closed */
+    if (!m_db.is_opened()) return;
+
+    String skey, sval;
+    m_converter->convert(skey, key);
+    if (m_db.get(skey, sval)) {
+        sval.append(1, '\n');
+        parse_dictline(m_converter, sval.data(), result);
+    }
+}
+
+
+
+/*
  * scim_skk::UserDict
  * a dictionary object which access to user dictionary file directly.
  */
@@ -532,6 +580,9 @@ SKKDictionary::add_sysdict (const String &dicturi)
                                                          dictname));
         } else if (dicttype == "SKKServ") {
             m_sysdicts.push_back((DictBase*)new SKKServ(m_converter,
+                                                        dictname));
+        } else if (dicttype == "CDBFile") {
+            m_sysdicts.push_back((DictBase*)new CDBFile(m_converter,
                                                         dictname));
         }
     }
