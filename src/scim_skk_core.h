@@ -26,6 +26,7 @@
 #include "scim_skk_lookup_table.h"
 #include "scim_skk_config.h"
 #include "scim_skk_dictionary.h"
+#include "scim_skk_history.h"
 
 using namespace scim;
 
@@ -60,6 +61,9 @@ class SKKCore
 {
     KeyBind       *m_keybind;
 
+    History       &m_hist;
+    History::Manager m_histmgr;
+
     SKKDictionary *m_dict;
 
     SKKMode        m_skk_mode;
@@ -91,6 +95,7 @@ class SKKCore
     bool action_kakutei         (void);
     bool action_cancel          (void);
     bool action_convert         (void);
+    bool action_completion      (void);
     bool action_katakana        (bool half = false);
     bool action_start_preedit   (void);
     bool action_prevcand        (void);
@@ -114,7 +119,8 @@ class SKKCore
 
     void init_key2kana (void);
 public:
-    SKKCore  (KeyBind *keybind, SKKAutomaton *key2kana, SKKDictionary *dict);
+    SKKCore  (KeyBind *keybind, SKKAutomaton *key2kana,
+              SKKDictionary *dict, History &hist);
     ~SKKCore (void);
 
     void        get_preedit_string (WideString &result);

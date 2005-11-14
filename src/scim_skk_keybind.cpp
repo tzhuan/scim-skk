@@ -235,6 +235,11 @@ KeyBind::set_upcase_keys         (const String &str)
 {
     keybind_string_to_key_list(m_upcase_keys, str);
 }
+void
+KeyBind::set_completion_keys         (const String &str)
+{
+    keybind_string_to_key_list(m_completion_keys, str);
+}
 
 bool
 KeyBind::match_kakutei_keys       (const KeyEvent &key)
@@ -320,6 +325,12 @@ bool
 KeyBind::match_upcase_keys         (const KeyEvent &key)
 {
     return match_key_event(m_upcase_keys, key);
+}
+
+bool
+KeyBind::match_completion_keys         (const KeyEvent &key)
+{
+    return match_key_event(m_completion_keys, key);
 }
 
 void

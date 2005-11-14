@@ -37,9 +37,12 @@ static void convert_hiragana_to_katakana (const WideString &hira,
 static int skk_key_mask = SCIM_KEY_ControlMask | SCIM_KEY_AltMask;
 
 
+
 SKKCore::SKKCore      (KeyBind *keybind, SKKAutomaton *key2kana,
-                       SKKDictionary *dict)
+                       SKKDictionary *dict, History &hist)
     : m_keybind(keybind),
+      m_hist(hist),
+      m_histmgr(hist),
       m_dict(dict),
       m_skk_mode(SKK_MODE_HIRAGANA),
       m_input_mode(INPUT_MODE_DIRECT),
@@ -201,6 +204,7 @@ SKKCore::commit_or_preedit (const WideString &str)
             m_preeditstr += str;
         }
         m_preedit_pos += str.length();
+        m_histmgr.clear();
         break;
     case INPUT_MODE_OKURI:
         m_okuristr += str;
@@ -209,7 +213,8 @@ SKKCore::commit_or_preedit (const WideString &str)
             m_dict->lookup(m_preeditstr+m_okurihead, true, m_ltable);
             if (m_ltable.empty()) {
                 set_input_mode(INPUT_MODE_LEARNING);
-                m_learning = new SKKCore(m_keybind, m_key2kana, m_dict);
+                m_learning = new SKKCore(m_keybind, m_key2kana,
+                                         m_dict, m_hist);
             } else {
                 set_input_mode(INPUT_MODE_CONVERTING);
             }
@@ -410,6 +415,7 @@ SKKCore::clear_preedit (void)
     m_preedit_pos = 0;
     m_okuristr.clear();
     m_okurihead = 0;
+    m_histmgr.clear();
 }
 
 void
@@ -522,7 +528,7 @@ SKKCore::action_convert (void)
         retval = action_nextpage();
         if (!retval) {
             set_input_mode(INPUT_MODE_LEARNING);
-            m_learning = new SKKCore(m_keybind, m_key2kana, m_dict);
+            m_learning = new SKKCore(m_keybind, m_key2kana, m_dict, m_hist);
         }
         return true;
     case INPUT_MODE_PREEDIT:
@@ -530,7 +536,7 @@ SKKCore::action_convert (void)
         m_dict->lookup(m_preeditstr, false, m_ltable);
         if (m_ltable.empty()) {
             set_input_mode(INPUT_MODE_LEARNING);
-            m_learning = new SKKCore(m_keybind, m_key2kana, m_dict);
+            m_learning = new SKKCore(m_keybind, m_key2kana, m_dict, m_hist);
         } else {
             set_input_mode(INPUT_MODE_CONVERTING);
         }
@@ -644,6 +650,19 @@ SKKCore::action_start_preedit (void)
 }
 
 bool
+SKKCore::action_completion (void)
+{
+    if (m_input_mode == INPUT_MODE_PREEDIT) {
+        m_histmgr.action_completion(m_preeditstr);
+        m_histmgr.get_current_candidate(m_preeditstr);
+        m_preedit_pos = m_preeditstr.size();
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool
 SKKCore::action_prevcand (void)
 {
     if (m_input_mode == INPUT_MODE_CONVERTING) {
@@ -713,6 +732,7 @@ SKKCore::action_backspace (void)
                 action_cancel();
             } else {
                 m_preeditstr.erase(m_preedit_pos-1, 1);
+                m_histmgr.clear();
                 m_preedit_pos--;
             }
             break;
@@ -753,8 +773,10 @@ SKKCore::action_delete (void)
             m_ltable.clear();
             break;
         case INPUT_MODE_PREEDIT:
-            if (m_preedit_pos < m_preeditstr.length())
+            if (m_preedit_pos < m_preeditstr.length()) {
                 m_preeditstr.erase(m_preedit_pos, 1);
+                m_histmgr.clear();
+            }
             break;
         case INPUT_MODE_DIRECT:
             if (m_commitstr.empty()) {
@@ -782,7 +804,8 @@ SKKCore::action_forward (void)
         if (m_ltable.visible_table()) {
             if (!m_ltable.cursor_down()) {
                 set_input_mode(INPUT_MODE_LEARNING);
-                m_learning = new SKKCore(m_keybind, m_key2kana, m_dict);
+                m_learning = new SKKCore(m_keybind, m_key2kana,
+                                         m_dict, m_hist);
             }
             return true;
         } else {
@@ -798,6 +821,7 @@ SKKCore::action_forward (void)
         }
     case INPUT_MODE_PREEDIT:
         clear_pending();
+        m_histmgr.clear();
         if (m_preedit_pos < m_preeditstr.length()) {
             m_preedit_pos++;
         } else if (m_commit_pos < m_commitstr.length()) {
@@ -828,6 +852,7 @@ SKKCore::action_backward (void)
         }
     case INPUT_MODE_DIRECT:
         clear_pending();
+        m_histmgr.clear();
         if (m_commit_pos > 0) {
             m_commit_pos--;
             return true;
@@ -866,6 +891,7 @@ SKKCore::action_home (void)
         }
     case INPUT_MODE_PREEDIT:
         clear_pending();
+        m_histmgr.clear();
         if (m_preedit_pos > 0) {
             m_preedit_pos = 0;
         } else if (m_commit_pos > 0) {
@@ -895,6 +921,7 @@ SKKCore::action_end (void)
         }
     case INPUT_MODE_PREEDIT:
         clear_pending();
+        m_histmgr.clear();
         if (m_preedit_pos < m_preeditstr.length()) {
             m_preedit_pos = m_preeditstr.length();
         } else if (m_commit_pos < m_commitstr.length()) {
@@ -990,6 +1017,9 @@ SKKCore::process_remaining_keybinds (const KeyEvent &key)
 
     if (m_keybind->match_end_keys(key))
         return action_end();
+
+    if (m_keybind->match_completion_keys(key))
+        return action_completion();
 
     return false;
 }

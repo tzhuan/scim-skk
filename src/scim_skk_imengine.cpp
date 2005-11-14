@@ -37,6 +37,7 @@
 #include "conv_table.h"
 #include "scim_skk_intl.h"
 #include "scim_skk_config.h"
+#include "scim_skk_history.h"
 
 using namespace scim_skk;
 
@@ -62,7 +63,7 @@ using namespace scim_skk;
 
 static ConfigPointer  _scim_config (0);
 static SKKDictionary *scim_skkdict = 0;
-
+static History        scim_skkhistory;
 
 
 extern "C" {
@@ -206,7 +207,7 @@ SKKFactory::reload_config (const ConfigPointer &config)
         }
         m_userdictname = config->read(String(SCIM_SKK_CONFIG_USERDICT),
                                       String(SCIM_SKK_CONFIG_USERDICT_DEFAULT));
-        scim_skkdict->set_userdict(m_userdictname);
+        scim_skkdict->set_userdict(m_userdictname, scim_skkhistory);
         candvec_size =
             config->read(String(SCIM_SKK_CONFIG_CANDVEC_SIZE),
                          SCIM_SKK_CONFIG_CANDVEC_SIZE_DEFAULT);
@@ -282,6 +283,9 @@ SKKFactory::reload_config (const ConfigPointer &config)
         str = config->read(String(SCIM_SKK_CONFIG_UPCASE_KEY),
                            String(SCIM_SKK_CONFIG_UPCASE_KEY_DEFAULT));
         m_keybind.set_upcase_keys(str);
+        str = config->read(String(SCIM_SKK_CONFIG_COMPLETION_KEY),
+                           String(SCIM_SKK_CONFIG_COMPLETION_KEY_DEFAULT));
+        m_keybind.set_completion_keys(str);
         str = config->read(String(SCIM_SKK_CONFIG_SELECTION_STYLE),
                            String(SCIM_SKK_CONFIG_SELECTION_STYLE_DEFAULT));
         m_keybind.set_selection_style(str);
@@ -295,7 +299,8 @@ SKKInstance::SKKInstance (SKKFactory   *factory,
                           int           id)
     : IMEngineInstanceBase (factory, encoding, id),
       m_skk_mode (SKK_MODE_HIRAGANA),
-      m_skkcore (&(factory->m_keybind), &(m_key2kana), scim_skkdict)
+      m_skkcore (&(factory->m_keybind), &(m_key2kana),
+                 scim_skkdict, scim_skkhistory)
 {
     SCIM_DEBUG_IMENGINE(1) << "Create SKK Instance : ";
     init_key2kana();

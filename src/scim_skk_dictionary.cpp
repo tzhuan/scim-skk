@@ -178,7 +178,7 @@ public:
     UserDict  (IConvert *conv);
     ~UserDict (void);
 
-    void load_dict (const String &dictpath);
+    void load_dict (const String &dictpath, History &hist);
     void dump_dict (void);
     void lookup    (const WideString &key, const bool okuri,
                     list<CandPair> &result);
@@ -430,7 +430,7 @@ UserDict::~UserDict (void)
 }
 
 void
-UserDict::load_dict (const String &dictpath)
+UserDict::load_dict (const String &dictpath, History &hist)
 {
     //if (m_dictpath == dictpath) return;
 
@@ -451,6 +451,7 @@ UserDict::load_dict (const String &dictpath)
         WideString key;
         list<CandPair> cl;
         int len;
+        WideString alph = utf8_mbstowcs("abcdefghijklmnopqrstuvwxyz");
         for (int i = 0; i < length; i++) {
             switch(buf[i]) {
             case ';':
@@ -465,6 +466,8 @@ UserDict::load_dict (const String &dictpath)
                 i += len;
                 i += parse_dictline(m_converter, buf+i, cl);
                 m_dictdata.insert(make_pair(key, cl));
+                if (alph.find(key.at(key.size()-1)) == WideString::npos)
+                    hist.append_entry_to_tail(key);
                 break;
             }
         }
@@ -590,7 +593,7 @@ SKKDictionary::add_sysdict (const String &dicturi)
 }
 
 void
-SKKDictionary::set_userdict (const String &dictname)
+SKKDictionary::set_userdict (const String &dictname, History &hist)
 {
     struct stat statbuf;
     String userdictpath = scim_get_home_dir() +
@@ -598,9 +601,9 @@ SKKDictionary::set_userdict (const String &dictname)
     if (stat(userdictpath.c_str(), &statbuf) < 0) {
         String skkuserdict = scim_get_home_dir() +
                              String(SCIM_PATH_DELIM_STRING) + String(".skk-jisyo");
-        m_userdict->load_dict(skkuserdict);
+        m_userdict->load_dict(skkuserdict, hist);
     }
-    m_userdict->load_dict(userdictpath);
+    m_userdict->load_dict(userdictpath, hist);
 }
 
 

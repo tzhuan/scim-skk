@@ -12,6 +12,7 @@ noinst_HEADERS = \
 	scim_skk_config.h \
 	scim_skk_lookup_table.h \
 	scim_skk_automaton.h \
+	scim_skk_history.h \
 	scim_skk_imengine.h \
 	scim_skk_dictionary.h \
 	scim_skk_core.h \
@@ -25,6 +26,7 @@ skk_la_SOURCES = \
 	cdb.cpp \
 	scim_skk_config.cpp \
 	scim_skk_lookup_table.cpp \
+	scim_skk_history.cpp \
 	scim_skk_imengine.cpp \
 	scim_skk_automaton.cpp \
 	scim_skk_dictionary.cpp \

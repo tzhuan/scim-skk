@@ -1,3 +1,7 @@
+2005-11-14  Jun Mukai  <mukai@jmuk.org>
+
+	* src/scim_skk_history.cpp: TAB completion is now available.
+
 2005-11-11  Jun Mukai  <mukai@jmuk.org>
 
 	* src/cdb.cpp: CDB files are now available.

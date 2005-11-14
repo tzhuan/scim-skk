@@ -244,6 +244,15 @@ static KeyboardConfigData __config_keyboards_common [] =
         NULL,
     },
     {
+        SCIM_SKK_CONFIG_COMPLETION_KEY,
+        SCIM_SKK_CONFIG_COMPLETION_KEY_DEFAULT,
+        N_("Completion Keys:"),
+        N_("Select Completion Keys"),
+        N_("The key events to complete preedit string. "),
+        NULL,
+        NULL,
+    },
+    {
         NULL,
         "",
         NULL,

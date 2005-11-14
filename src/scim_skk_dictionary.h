@@ -27,6 +27,7 @@
 #include <scim.h>
 
 #include "scim_skk_lookup_table.h"
+#include "scim_skk_history.h"
 
 using namespace scim;
 
@@ -50,7 +51,7 @@ public:
     ~SKKDictionary (void);
 
     void add_sysdict  (const String &dicturi);
-    void set_userdict (const String &dictname);
+    void set_userdict (const String &dictname, History &hist);
 
     void dump_userdict (void);
 
