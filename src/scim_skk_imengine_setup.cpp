@@ -360,8 +360,8 @@ static KeyboardConfigData __config_keyboards_caret [] =
         NULL,
     },
     {
-        SCIM_SKK_CONFIG_BACKWARD_KEY,
-        SCIM_SKK_CONFIG_BACKWARD_KEY_DEFAULT,
+        SCIM_SKK_CONFIG_END_KEY,
+        SCIM_SKK_CONFIG_END_KEY_DEFAULT,
         N_("End Keys:"),
         N_("Select End Keys"),
         N_("The key events to move the caret to the end of preedit. "),

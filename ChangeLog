@@ -1,3 +1,7 @@
+2005-11-15  Jun Mukai  <mukai@localhost.localdomain>
+
+	* src/scim_skk_imengine_setup.cpp : Fix a typo. Thanks to Utsumi-san.
+
 2005-11-14  Jun Mukai  <mukai@jmuk.org>
 
 	* src/scim_skk_history.cpp: TAB completion is now available.
