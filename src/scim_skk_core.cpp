@@ -464,6 +464,9 @@ SKKCore::action_kakutei (void)
             } else {
                 commit_string(m_preeditstr);
             }
+            if (m_input_mode == INPUT_MODE_PREEDIT) {
+                m_hist.add_entry(m_preeditstr);
+            }
             clear_preedit();
         }
         clear_pending();
@@ -533,6 +536,7 @@ SKKCore::action_convert (void)
         return true;
     case INPUT_MODE_PREEDIT:
         clear_pending();
+        m_hist.add_entry(m_preeditstr);
         m_dict->lookup(m_preeditstr, false, m_ltable);
         if (m_ltable.empty()) {
             set_input_mode(INPUT_MODE_LEARNING);
@@ -578,6 +582,9 @@ SKKCore::action_katakana (bool half)
             } else {
                 commit_string(m_preeditstr);
             }
+            if (!m_preeditstr.empty() && m_input_mode == INPUT_MODE_PREEDIT) {
+                m_hist.add_entry(m_preeditstr);
+            }
             clear_preedit();
             clear_pending();
             set_input_mode(INPUT_MODE_DIRECT);
@@ -612,6 +619,9 @@ SKKCore::action_toggle_case (void)
             } else if (isupper(code)) {
                 *i = tolower(code);
             }
+        }
+        if (!m_preeditstr.empty()) {
+            m_hist.add_entry(m_preeditstr);
         }
         commit_string(m_preeditstr);
         clear_preedit();
@@ -653,13 +663,30 @@ bool
 SKKCore::action_completion (void)
 {
     if (m_input_mode == INPUT_MODE_PREEDIT) {
-        m_histmgr.action_completion(m_preeditstr);
+        if (m_histmgr.is_clear()) {
+            m_histmgr.setup_completion(m_preeditstr);
+        } else {
+            m_histmgr.next_cand();
+        }
         m_histmgr.get_current_candidate(m_preeditstr);
         m_preedit_pos = m_preeditstr.size();
         return true;
     } else {
         return false;
     }
+}
+
+bool
+SKKCore::action_completion_back (void)
+{
+    if (m_input_mode == INPUT_MODE_PREEDIT) {
+        if (m_histmgr.prev_cand()) {
+            m_histmgr.get_current_candidate(m_preeditstr);
+            m_preedit_pos = m_preeditstr.size();
+            return true;
+        }
+    } 
+    return false;
 }
 
 bool
@@ -1020,6 +1047,9 @@ SKKCore::process_remaining_keybinds (const KeyEvent &key)
 
     if (m_keybind->match_completion_keys(key))
         return action_completion();
+
+    if (m_keybind->match_completion_back_keys(key))
+        return action_completion_back();
 
     return false;
 }

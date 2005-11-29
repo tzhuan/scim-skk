@@ -96,6 +96,7 @@ class SKKCore
     bool action_cancel          (void);
     bool action_convert         (void);
     bool action_completion      (void);
+    bool action_completion_back (void);
     bool action_katakana        (bool half = false);
     bool action_start_preedit   (void);
     bool action_prevcand        (void);

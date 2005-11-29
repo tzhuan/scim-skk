@@ -38,6 +38,7 @@
 #define SCIM_SKK_CONFIG_END_KEY              "/IMEngine/SKK/End"
 #define SCIM_SKK_CONFIG_UPCASE_KEY           "/IMEngine/SKK/UPCASE"
 #define SCIM_SKK_CONFIG_COMPLETION_KEY       "/IMEngine/SKK/Completion"
+#define SCIM_SKK_CONFIG_COMPLETION_BACK_KEY  "/IMEngine/SKK/CompletionBack"
 #define SCIM_SKK_CONFIG_SELECTION_STYLE      "/IMEngine/SKK/SelectionStyle"
 
 #define SCIM_SKK_CONFIG_SYSDICT          "/IMEngine/SKK/SysDict"
@@ -67,12 +68,13 @@
 #define SCIM_SKK_CONFIG_PREVCAND_KEY_DEFAULT         "x"
 #define SCIM_SKK_CONFIG_BACKSPACE_KEY_DEFAULT        "BackSpace,Control+h"
 #define SCIM_SKK_CONFIG_DELETE_KEY_DEFAULT           "Delete,Control+d"
-#define SCIM_SKK_CONFIG_FORWARD_KEY_DEFAULT          "Right,Control+f"
-#define SCIM_SKK_CONFIG_BACKWARD_KEY_DEFAULT         "Left,Control+b"
+#define SCIM_SKK_CONFIG_FORWARD_KEY_DEFAULT          "Right,Control+f,Down"
+#define SCIM_SKK_CONFIG_BACKWARD_KEY_DEFAULT         "Left,Control+b,Up"
 #define SCIM_SKK_CONFIG_HOME_KEY_DEFAULT             "Home,Control+a"
 #define SCIM_SKK_CONFIG_END_KEY_DEFAULT              "End,Control+e"
 #define SCIM_SKK_CONFIG_UPCASE_KEY_DEFAULT           "Control+u"
 #define SCIM_SKK_CONFIG_COMPLETION_KEY_DEFAULT       "Tab"
+#define SCIM_SKK_CONFIG_COMPLETION_BACK_KEY_DEFAULT  "period"
 #define SCIM_SKK_CONFIG_SELECTION_STYLE_DEFAULT      "Qwerty"
 
 #define SCIM_SKK_CONFIG_SYSDICT_DEFAULT          "DictFile:/usr/share/skk/SKK-JISYO.L"

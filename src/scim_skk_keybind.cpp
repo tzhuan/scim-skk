@@ -95,9 +95,9 @@ KeyBind::match_selection_keys (const KeyEvent &key)
     int skk_key_mask = SCIM_KEY_ControlMask | SCIM_KEY_AltMask;
  
     if (key.mask & skk_key_mask)
-        return 0;
+        return -1;
     if (!isprint(key.code))
-        return 0;
+        return -1;
 
     switch (m_style) {
     case SSTYLE_QWERTY:
@@ -109,7 +109,7 @@ KeyBind::match_selection_keys (const KeyEvent &key)
     }
 
     // error
-    return 0;
+    return -1;
 }
 
 int
@@ -240,6 +240,11 @@ KeyBind::set_completion_keys         (const String &str)
 {
     keybind_string_to_key_list(m_completion_keys, str);
 }
+void
+KeyBind::set_completion_back_keys         (const String &str)
+{
+    keybind_string_to_key_list(m_completion_back_keys, str);
+}
 
 bool
 KeyBind::match_kakutei_keys       (const KeyEvent &key)
@@ -331,6 +336,12 @@ bool
 KeyBind::match_completion_keys         (const KeyEvent &key)
 {
     return match_key_event(m_completion_keys, key);
+}
+
+bool
+KeyBind::match_completion_back_keys         (const KeyEvent &key)
+{
+    return match_key_event(m_completion_back_keys, key);
 }
 
 void

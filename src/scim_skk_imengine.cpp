@@ -286,6 +286,9 @@ SKKFactory::reload_config (const ConfigPointer &config)
         str = config->read(String(SCIM_SKK_CONFIG_COMPLETION_KEY),
                            String(SCIM_SKK_CONFIG_COMPLETION_KEY_DEFAULT));
         m_keybind.set_completion_keys(str);
+        str = config->read(String(SCIM_SKK_CONFIG_COMPLETION_BACK_KEY),
+                           String(SCIM_SKK_CONFIG_COMPLETION_BACK_KEY_DEFAULT));
+        m_keybind.set_completion_back_keys(str);
         str = config->read(String(SCIM_SKK_CONFIG_SELECTION_STYLE),
                            String(SCIM_SKK_CONFIG_SELECTION_STYLE_DEFAULT));
         m_keybind.set_selection_style(str);

@@ -43,9 +43,11 @@ public:
     public:
         Manager(History &hist);
         ~Manager(void);
-        void action_completion (const WideString &str);
+        void setup_completion (const WideString &str);
         void clear (void);
-        void next_cand (void);
+        bool is_clear (void);
+        bool next_cand (void);
+        bool prev_cand (void);
         void get_current_candidate (WideString &result);
     };
 

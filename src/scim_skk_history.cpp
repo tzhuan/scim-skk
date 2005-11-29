@@ -92,12 +92,10 @@ History::Manager::~Manager(void) {}
 
 
 void
-History::Manager::action_completion (const WideString &str) {
+History::Manager::setup_completion (const WideString &str) {
     if (m_hist_cur.empty()) {
         m_hist.get_current_history(str, m_hist_cur);
         m_hist_it = m_hist_cur.begin();
-    } else {
-        next_cand();
     }
 }
 void
@@ -105,11 +103,26 @@ History::Manager::clear (void) {
     m_hist_cur.clear();
 }
 
-void
+bool
+History::Manager::is_clear (void) {
+    return m_hist_cur.empty();
+}
+
+bool
 History::Manager::next_cand (void) {
-    if (m_hist_cur.empty()) return;
+    if (m_hist_cur.empty()) return false;
     m_hist_it++;
     if (m_hist_it == m_hist_cur.end()) m_hist_it = m_hist_cur.begin();
+    return true;
+}
+
+bool
+History::Manager::prev_cand (void) {
+    if (m_hist_cur.empty()) return false;
+    if (m_hist_it == m_hist_cur.begin())
+        m_hist_it = m_hist_cur.end();
+    m_hist_it--;
+    return true;
 }
 
 void

@@ -1,6 +1,24 @@
-2005-11-15  Jun Mukai  <mukai@localhost.localdomain>
+2005-11-29  Jun Mukai  <mukai@localhost.localdomain>
 
-	* src/scim_skk_imengine_setup.cpp : Fix a typo. Thanks to Utsumi-san.
+2005-11-29  Jun Mukai  <mukai@jmuk.org>
+
+	* src/scim_skk_core.cpp (action_completion_back): new method
+	action_completion_back is introduced. This method turns candidate
+	of completion to the previous one.
+
+	* src/scim_skk_keybind.cpp (match_selection_keys): Bug fixes of
+	error out inputs. Thanks to Utsumi.
+
+	* src/scim_skk_prefs.h (SCIM_SKK_CONFIG_COMPLETION_BACK): new
+	settings for `completion_back'.
+
+	* src/scim_skk_prefs.h (SCIM_SKK_CONFIG_FORWARD_KEY_DEFAULT):
+	default settings for forward/backward key has now `Down' and `Up'
+	key.
+
+2005-11-15  Jun Mukai  <mukai@jmuk.org>
+
+	* src/scim_skk_imengine_setup.cpp: Fix a typo. Thanks to Utsumi-san.
 
 2005-11-14  Jun Mukai  <mukai@jmuk.org>
 

@@ -199,6 +199,46 @@ static KeyboardConfigData __config_keyboards_common [] =
         NULL,
     },
     {
+        SCIM_SKK_CONFIG_UPCASE_KEY,
+        SCIM_SKK_CONFIG_UPCASE_KEY_DEFAULT,
+        N_("Upcase Keys:"),
+        N_("Select Upcase Keys"),
+        N_("The key events to toggle case of characters in preedit string. "),
+        NULL,
+        NULL,
+    },
+    {
+        SCIM_SKK_CONFIG_COMPLETION_KEY,
+        SCIM_SKK_CONFIG_COMPLETION_KEY_DEFAULT,
+        N_("Completion Keys:"),
+        N_("Select Completion Keys"),
+        N_("The key events to complete preedit string. "),
+        NULL,
+        NULL,
+    },
+    {
+        SCIM_SKK_CONFIG_COMPLETION_BACK_KEY,
+        SCIM_SKK_CONFIG_COMPLETION_BACK_KEY_DEFAULT,
+        N_("Completion Backward Keys:"),
+        N_("Select Completion Backward Keys"),
+        N_("The key events to turn back completion candidates of preedit string. "),
+        NULL,
+        NULL,
+    },
+    {
+        NULL,
+        "",
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+    },
+};
+
+static KeyboardConfigData __config_keyboards_conversion [] =
+{
+    {
         SCIM_SKK_CONFIG_CONVERT_KEY,
         SCIM_SKK_CONFIG_CONVERT_KEY_DEFAULT,
         N_("Convert Keys:"),
@@ -231,24 +271,6 @@ static KeyboardConfigData __config_keyboards_common [] =
         N_("Previous Candidate Keys:"),
         N_("Select Previous Candidate Keys"),
         N_("The key events to turn back. "),
-        NULL,
-        NULL,
-    },
-    {
-        SCIM_SKK_CONFIG_UPCASE_KEY,
-        SCIM_SKK_CONFIG_UPCASE_KEY_DEFAULT,
-        N_("Upcase Keys:"),
-        N_("Select Upcase Keys"),
-        N_("The key events to toggle case of characters in preedit string. "),
-        NULL,
-        NULL,
-    },
-    {
-        SCIM_SKK_CONFIG_COMPLETION_KEY,
-        SCIM_SKK_CONFIG_COMPLETION_KEY_DEFAULT,
-        N_("Completion Keys:"),
-        N_("Select Completion Keys"),
-        N_("The key events to complete preedit string. "),
         NULL,
         NULL,
     },
@@ -420,6 +442,7 @@ static ColorConfigData annot_bgcolor =
 static struct KeyboardConfigPage __key_conf_pages[] =
 {
     {N_("Common keys"),     __config_keyboards_common},
+    {N_("Conversion keys"), __config_keyboards_conversion},
     {N_("Mode keys"),       __config_keyboards_mode},
     {N_("Caret keys"),      __config_keyboards_caret},
 };
@@ -627,7 +650,7 @@ create_dictionary_page ()
     __widget_sysdicts = gtk_entry_new();
     gtk_widget_show(__widget_sysdicts);
     gtk_box_pack_start(GTK_BOX(widget), __widget_sysdicts, TRUE, TRUE, 4);
-    button = gtk_button_new_with_label(_("setup"));
+    button = gtk_button_new_with_label(_("Configure Dictionaries"));
     gtk_widget_show(button);
     gtk_box_pack_start(GTK_BOX(widget), button, FALSE, FALSE, 4);
     g_signal_connect ((gpointer) button, "clicked",
