@@ -18,21 +18,23 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "scim_anthy_automaton.h"
+#include "scim_skk_automaton.h"
 
-Automaton::Automaton ()
+using namespace scim_skk;
+
+SKKAutomaton::SKKAutomaton ()
     : m_table (NULL),
       m_table_len (0),
       m_exact_match (NULL)
 {
 }
 
-Automaton::~Automaton ()
+SKKAutomaton::~SKKAutomaton ()
 {
 }
 
 bool
-Automaton::append (const String & str,
+SKKAutomaton::append (const String & str,
                    WideString & result, WideString & pending)
 {
     WideString widestr = utf8_mbstowcs (str);
@@ -77,7 +79,7 @@ Automaton::append (const String & str,
     } else {
         if (m_exact_match) {
             if (m_exact_match->result && *m_exact_match->result &&
-                    (!m_exact_match->cont || !*m_exact_match->cont))
+                (!m_exact_match->cont || !*m_exact_match->cont))
             {
                 result = utf8_mbstowcs (m_exact_match->result);
             } else {
@@ -94,10 +96,11 @@ Automaton::append (const String & str,
                 retval     = true; /* commit prev pending */
                 m_pending  = widestr;
                 pending    = m_pending;
+                result.clear();
             } else {
-                result     = widestr;
-                pending.clear();
-                m_pending.clear ();
+                result.clear();
+                pending = widestr;
+                m_pending = pending;
             }
         }
     }
@@ -106,14 +109,14 @@ Automaton::append (const String & str,
 }
 
 void
-Automaton::clear (void)
+SKKAutomaton::clear (void)
 {
     m_pending.clear ();
     m_exact_match = NULL;
 }
 
 bool
-Automaton::is_pending (void)
+SKKAutomaton::is_pending (void)
 {
     if (m_pending.length () > 0)
         return true;
@@ -122,19 +125,19 @@ Automaton::is_pending (void)
 }
 
 WideString
-Automaton::get_pending (void)
+SKKAutomaton::get_pending (void)
 {
     return m_pending;
 }
 
 void
-Automaton::set_pending (WideString &pending)
+SKKAutomaton::set_pending (WideString &pending)
 {
     m_pending = pending;
 }
 
 WideString
-Automaton::flush_pending (void)
+SKKAutomaton::flush_pending (void)
 {
     WideString result;
     if (m_exact_match) {
@@ -153,21 +156,21 @@ Automaton::flush_pending (void)
 }
 
 void
-Automaton::set_table (ConvRule *table)
+SKKAutomaton::set_table (ConvRule *table)
 {
     m_tables.clear ();
     m_tables.push_back (table);
 }
 
 void
-Automaton::append_table (ConvRule *table)
+SKKAutomaton::append_table (ConvRule *table)
 {
     if (table)
         m_tables.push_back(table);
 }
 
 void
-Automaton::remove_table (ConvRule *table)
+SKKAutomaton::remove_table (ConvRule *table)
 {
     for (unsigned int i = 0; i < m_tables.size (); i++) {
         if (m_tables[i] == table)

@@ -1,10 +1,11 @@
-/* -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 /* FIXME! this table should be separated as external file */
 
-#include "scim_anthy_automaton.h"
+#include "scim_skk_automaton.h"
+
+namespace scim_skk {
 
 /* from Suikyo but modified by mukai */
-ConvRule skk_romakana_table[] = {
+ConvRule romakana_table[] = {
 #if 0
     {"va",	"う゛ぁ",	""},
     {"vi",	"う゛ぃ",	""},
@@ -195,6 +196,11 @@ ConvRule skk_romakana_table[] = {
     {"tsu",	"つ",	""},
     {"te",	"て",	""},
     {"to",	"と",	""},
+    {"tsa",	"つぁ",	""},
+    {"tsi",	"つぃ",	""},
+    {"tsu",	"つ",	""},
+    {"tse",	"つぇ",	""},
+    {"tso",	"つぉ",	""},
     {"da",	"だ",	""},
     {"di",	"ぢ",	""},
     {"du",	"づ",	""},
@@ -310,7 +316,7 @@ ConvRule skk_romakana_table[] = {
     {NULL,	NULL,	NULL}
 };
 
-ConvRule ja_kana_table[] = {
+ConvRule kana_table[] = {
     {"#",	"ぁ",	""},
     {"E",	"ぃ",	""},
     {"$",	"ぅ",	""},
@@ -408,13 +414,13 @@ ConvRule romakana_ja_period_rule[] = {
     {NULL,	NULL,	NULL},
 };
 
-ConvRule romakana_wide_latin_period_rule[] = {
+ConvRule romakana_wide_ascii_period_rule[] = {
     {",",	"，",	""},
     {".",	"．",	""},
     {NULL,	NULL,	NULL},
 };
 
-ConvRule romakana_latin_period_rule[] = {
+ConvRule romakana_ascii_period_rule[] = {
     {",",	",",	""},
     {".",	".",	""},
     {NULL,	NULL,	NULL},
@@ -426,13 +432,13 @@ ConvRule kana_ja_period_rule[] = {
     {NULL,	NULL,	NULL},
 };
 
-ConvRule kana_wide_latin_period_rule[] = {
+ConvRule kana_wide_ascii_period_rule[] = {
     {">",	"．",	""},
     {"<",	"，",	""},
     {NULL,	NULL,	NULL},
 };
 
-ConvRule kana_latin_period_rule[] = {
+ConvRule kana_ascii_period_rule[] = {
     {">",	".",	""},
     {"<",	",",	""},
     {NULL,	NULL,	NULL},
@@ -448,7 +454,7 @@ ConvRule space_rule[] = {
     {NULL,	NULL,	NULL},
 };
 
-HiraganaKatakanaRule ja_hiragana_katakana_table[] = {
+HiraganaKatakanaRule hiragana_katakana_table[] = {
     {"あ", "ア", "ｱ"},
     {"い", "イ", "ｲ"},
     {"う", "ウ", "ｳ"},
@@ -521,7 +527,7 @@ HiraganaKatakanaRule ja_hiragana_katakana_table[] = {
     {"わ", "ワ", "ﾜ"},
     {"を", "ヲ", "ｦ"},
     {"ん", "ン", "ﾝ"},
-
+ 
     {"ぁ", "ァ", "ｧ"},
     {"ぃ", "ィ", "ｨ"},
     {"ぅ", "ゥ", "ｩ"},
@@ -584,7 +590,7 @@ HiraganaKatakanaRule ja_hiragana_katakana_table[] = {
 };
 
 /* from uim */
-WideRule ja_wide_table[] = {
+WideRule wide_table[] = {
     {"a", "ａ"},
     {"b", "ｂ"},
     {"c", "ｃ"},
@@ -680,3 +686,5 @@ WideRule ja_wide_table[] = {
     {"_",  "＿"},
     {NULL, NULL},
 };
+
+} /* namespace scim-skk */
