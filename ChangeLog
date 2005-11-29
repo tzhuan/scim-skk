@@ -1,5 +1,3 @@
-2005-11-29  Jun Mukai  <mukai@localhost.localdomain>
-
 2005-11-29  Jun Mukai  <mukai@jmuk.org>
 
 	* src/scim_skk_core.cpp (action_completion_back): new method
