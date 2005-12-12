@@ -99,7 +99,10 @@ SKKAutomaton::append (const String & str,
                 result.clear();
             } else {
                 result.clear();
-                pending = widestr;
+                for (int i = 0; i < str.size(); i++) {
+                    if (isalpha(str[i]))
+                        pending += widestr[i];
+                }
                 m_pending = pending;
             }
         }

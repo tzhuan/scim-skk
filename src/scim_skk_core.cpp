@@ -27,9 +27,7 @@
 
 using namespace scim_skk;
 
-static void convert_char_to_wide         (const int c,
-                                          WideString &result,
-                                          bool space = true);
+static void convert_char_to_wide         (const char c, WideString &result);
 static void convert_hiragana_to_katakana (const WideString &hira,
                                           WideString &kata,
                                           bool half = false);
@@ -1125,91 +1123,70 @@ SKKCore::process_romakana (const KeyEvent &key)
         if (m_keybind->match_convert_keys(key))
             return action_convert();
 
-    char code = key.get_ascii_code();
+    if (process_remaining_keybinds(key)) {
+        clear_pending();
+        return true;
+    }
+
+    unsigned char code = key.get_ascii_code();
 
     if (!(key.mask & skk_key_mask) && isprint(code)) {
-        if (isalpha(code)) {
-            bool f = false;
-            char str[2];
-            WideString result;
-            str[0] = tolower(code);
-            str[1] = '\0';
+        bool d2p = false;  /* direct to preedit flag */
+        bool p2o = false;  /* preedit to okuri flag */
+        char str[2];
+        WideString result;
+        str[0] = tolower(code);
+        str[1] = '\0';
 
-            if (key.is_shift_down() &&
-                ((m_input_mode == INPUT_MODE_PREEDIT &&
-                  !m_preeditstr.empty()) ||
-                 m_input_mode == INPUT_MODE_DIRECT))
-                f = true;
-
-            m_key2kana->append(String(str), result, m_pendingstr);
-
-            if (m_input_mode == INPUT_MODE_OKURI && !m_pendingstr.empty() &&
-                result.empty()) {
-                m_okurihead = m_pendingstr[0];
+        if (isalpha(code) && key.is_shift_down()) {
+            if (m_input_mode == INPUT_MODE_PREEDIT &&
+                !m_preeditstr.empty()) {
+                p2o = true;
+            } else if (m_input_mode == INPUT_MODE_DIRECT) {
+                d2p = true;
             }
+        }
 
-            if (f) {
-                if (m_input_mode == INPUT_MODE_PREEDIT) {
-                    utf8_mbtowc(&m_okurihead, (unsigned char*)str, 1);
-                    m_preeditstr.erase(m_preedit_pos);
-                    if (m_pendingstr.empty()) {
-                        set_input_mode(INPUT_MODE_OKURI);
-                        commit_or_preedit(result);
-                    } else{
-                        commit_or_preedit(result);
-                        set_input_mode(INPUT_MODE_OKURI);
-                    }
-                    return true;
-                } else {
-                    if (m_pendingstr.empty()) {
-                        set_input_mode(INPUT_MODE_PREEDIT);
-                        commit_or_preedit(result);
-                    } else {
-                        commit_or_preedit(result);
-                        set_input_mode(INPUT_MODE_PREEDIT);
-                    }
-                }
-            } else if (result.length() > 0) {
-                commit_or_preedit(result);
-            }
+        m_key2kana->append(String(str), result, m_pendingstr);
 
-            if (!m_pendingstr.empty()) {
-                if (process_remaining_keybinds(key)) {
-                    clear_pending();
-                }
-            }
-            return true;
-        } else {
-            char str[2];
-            WideString result;
-            str[0] = code;
-            str[1] = '\0';
+        if (m_input_mode == INPUT_MODE_OKURI && !m_pendingstr.empty() &&
+            result.empty()) {
+            m_okurihead = m_pendingstr[0];
+        }
 
-            if (m_pendingstr == utf8_mbstowcs("z")) {
-                m_key2kana->append(String(str), result, m_pendingstr);
-                if (result.length() > 0) {
-                    commit_or_preedit(result);
-                    return true;
-                }
-            }
-
-            if (process_remaining_keybinds(key)) {
-                return true;
-            }
-
-            clear_pending();
-            m_key2kana->append(String(str), result, m_pendingstr);
-            if (result.length() > 0) {
+        if (d2p) {
+            /* shift to preedit from direct */
+            if (m_pendingstr.empty()) {
+                set_input_mode(INPUT_MODE_PREEDIT);
                 commit_or_preedit(result);
             } else {
-                commit_or_preedit(utf8_mbstowcs(str));
-                clear_pending();
+                commit_or_preedit(result);
+                set_input_mode(INPUT_MODE_PREEDIT);
             }
+            return true;
+        } else if (p2o) {
+            /* shift to okuri from preedit */
+            //utf8_mbtowc(&m_okurihead, &code, 1);
+            m_okurihead = (ucs4_t) tolower(code);
+            m_preeditstr.erase(m_preedit_pos);
+            if (m_pendingstr.empty()) {
+                set_input_mode(INPUT_MODE_OKURI);
+                commit_or_preedit(result);
+            } else{
+                commit_or_preedit(result);
+                set_input_mode(INPUT_MODE_OKURI);
+            }
+            return true;
+        } else if (result.length() > 0) {
+            /* otherwise simply commit or add to preedit */
+            commit_or_preedit(result);
+            return true;
+        } else if (!m_pendingstr.empty()) {
             return true;
         }
     }
 
-    return process_remaining_keybinds(key);
+    return false;
 }
 
 bool
@@ -1349,29 +1326,27 @@ SKKCore::lookup_table_visible (void)
 }
 
 static void
-convert_char_to_wide (const int c, WideString & wide, bool space)
+convert_char_to_wide (const char c, WideString & wide)
 {
-    if (!isprint(c))
-        return;
-
-    char cc[2]; cc[0] = c; cc[1] = '\0';
     bool found = false;
 
     for (unsigned int i = 0; wide_table[i].code; i++) {
-        if (wide_table[i].code && *wide_table[i].code == c) {
+        if (wide_table[i].code[0] == c) {
             wide += utf8_mbstowcs (wide_table[i].wide);
             found = true;
             break;
         }
     }
 
+#if 0
     if (!found && space && c == ' ') {
         wide += utf8_mbstowcs ("\xE3\x80\x80");
         found = true;
     }
+#endif
 
     if (!found)
-        wide += utf8_mbstowcs (cc);
+        wide += utf8_mbstowcs (&c, 1);
 }
 
 static void

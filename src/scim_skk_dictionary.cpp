@@ -246,6 +246,13 @@ DictFile::load_dict (void)
         for (; pos < m_length && m_dictdata[pos] != '\n'; pos++);
         pos++;
     }
+    if (!okuri_flag) {
+        for (vector<int>::const_iterator it = m_okuri_indice.begin();
+             it != m_okuri_indice.end(); it++) {
+            m_normal_indice.push_back(*it);
+        }
+        m_okuri_indice.clear();
+    }
 }
 
 void

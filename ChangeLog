@@ -1,3 +1,11 @@
+2005-12-13  Jun Mukai  <mukai@jmuk.org>
+
+	* src/scim_skk_core.cpp (process_romakana): modify the behaviors
+	of process_romakana (to support spacebar problem).
+
+	* src/scim_skk_dictionary.cpp (load_dict): support jinmei
+	dictionary.
+
 2005-11-29  Jun Mukai  <mukai@jmuk.org>
 
 	* src/scim_skk_core.cpp (action_completion_back): new method
