@@ -1179,6 +1179,8 @@ SKKCore::process_romakana (const KeyEvent &key)
         } else if (!m_pendingstr.empty()) {
             return true;
         }
+    } else {
+        return process_remaining_keybinds(key);
     }
 
     return false;
