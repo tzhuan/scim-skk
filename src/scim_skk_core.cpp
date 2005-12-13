@@ -1123,8 +1123,7 @@ SKKCore::process_romakana (const KeyEvent &key)
         if (m_keybind->match_convert_keys(key))
             return action_convert();
 
-    if (process_remaining_keybinds(key)) {
-        clear_pending();
+    if (m_pendingstr.empty() && process_remaining_keybinds(key)) {
         return true;
     }
 
@@ -1133,10 +1132,7 @@ SKKCore::process_romakana (const KeyEvent &key)
     if (!(key.mask & skk_key_mask) && isprint(code)) {
         bool d2p = false;  /* direct to preedit flag */
         bool p2o = false;  /* preedit to okuri flag */
-        char str[2];
         WideString result;
-        str[0] = tolower(code);
-        str[1] = '\0';
 
         if (isalpha(code) && key.is_shift_down()) {
             if (m_input_mode == INPUT_MODE_PREEDIT &&
@@ -1147,7 +1143,7 @@ SKKCore::process_romakana (const KeyEvent &key)
             }
         }
 
-        m_key2kana->append(String(str), result, m_pendingstr);
+        m_key2kana->append(String(1, tolower(code)), result, m_pendingstr);
 
         if (m_input_mode == INPUT_MODE_OKURI && !m_pendingstr.empty() &&
             result.empty()) {
@@ -1166,7 +1162,6 @@ SKKCore::process_romakana (const KeyEvent &key)
             return true;
         } else if (p2o) {
             /* shift to okuri from preedit */
-            //utf8_mbtowc(&m_okurihead, &code, 1);
             m_okurihead = (ucs4_t) tolower(code);
             m_preeditstr.erase(m_preedit_pos);
             if (m_pendingstr.empty()) {

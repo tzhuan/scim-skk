@@ -35,7 +35,7 @@ SKKAutomaton::~SKKAutomaton ()
 
 bool
 SKKAutomaton::append (const String & str,
-                   WideString & result, WideString & pending)
+                      WideString & result, WideString & pending)
 {
     WideString widestr = utf8_mbstowcs (str);
     WideString newstr = m_pending + widestr;
@@ -79,8 +79,7 @@ SKKAutomaton::append (const String & str,
     } else {
         if (m_exact_match) {
             if (m_exact_match->result && *m_exact_match->result &&
-                (!m_exact_match->cont || !*m_exact_match->cont))
-            {
+                (!m_exact_match->cont || !*m_exact_match->cont)) {
                 result = utf8_mbstowcs (m_exact_match->result);
             } else {
                 retval = true; /* commit prev pending */
@@ -93,10 +92,9 @@ SKKAutomaton::append (const String & str,
             result += tmp_result;
         } else {
             if (m_pending.length () > 0) {
-                retval     = true; /* commit prev pending */
-                m_pending  = widestr;
-                pending    = m_pending;
-                result.clear();
+                m_pending.clear();
+                pending.clear();
+                return append(str, result, pending);
             } else {
                 result.clear();
                 for (int i = 0; i < str.size(); i++) {
