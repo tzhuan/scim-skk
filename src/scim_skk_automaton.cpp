@@ -77,24 +77,24 @@ SKKAutomaton::append (const String & str,
         result            = utf8_mbstowcs (exact_match->result);
         pending           = m_pending;
     } else {
+        retval = true; /* commit prev pending */
         if (m_exact_match) {
+            WideString tmp_result;
+
             if (m_exact_match->result && *m_exact_match->result &&
                 (!m_exact_match->cont || !*m_exact_match->cont)) {
                 result = utf8_mbstowcs (m_exact_match->result);
-            } else {
-                retval = true; /* commit prev pending */
             }
             m_pending.clear ();
             m_exact_match = NULL;
 
-            WideString tmp_result;
             append(str, tmp_result, pending);
             result += tmp_result;
         } else {
             if (m_pending.length () > 0) {
                 m_pending.clear();
                 pending.clear();
-                return append(str, result, pending);
+                append(str, result, pending);
             } else {
                 result.clear();
                 for (int i = 0; i < str.size(); i++) {

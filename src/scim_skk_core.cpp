@@ -1132,6 +1132,8 @@ SKKCore::process_romakana (const KeyEvent &key)
     if (!(key.mask & skk_key_mask) && isprint(code)) {
         bool d2p = false;  /* direct to preedit flag */
         bool p2o = false;  /* preedit to okuri flag */
+        bool is_pending_clear;
+        bool retval = false;
         WideString result;
 
         if (isalpha(code) && key.is_shift_down()) {
@@ -1143,7 +1145,8 @@ SKKCore::process_romakana (const KeyEvent &key)
             }
         }
 
-        m_key2kana->append(String(1, tolower(code)), result, m_pendingstr);
+        is_pending_clear =
+            m_key2kana->append(String(1, tolower(code)), result, m_pendingstr);
 
         if (m_input_mode == INPUT_MODE_OKURI && !m_pendingstr.empty() &&
             result.empty()) {
@@ -1159,7 +1162,7 @@ SKKCore::process_romakana (const KeyEvent &key)
                 commit_or_preedit(result);
                 set_input_mode(INPUT_MODE_PREEDIT);
             }
-            return true;
+            retval = true;
         } else if (p2o) {
             /* shift to okuri from preedit */
             m_okurihead = (ucs4_t) tolower(code);
@@ -1171,14 +1174,21 @@ SKKCore::process_romakana (const KeyEvent &key)
                 commit_or_preedit(result);
                 set_input_mode(INPUT_MODE_OKURI);
             }
-            return true;
+            retval = true;
         } else if (result.length() > 0) {
             /* otherwise simply commit or add to preedit */
             commit_or_preedit(result);
-            return true;
+            retval = true;
         } else if (!m_pendingstr.empty()) {
-            return true;
+            retval = true ;
         }
+
+        if ((is_pending_clear) && process_remaining_keybinds(key)) {
+            clear_pending();
+            retval = true;
+        }
+
+        return retval;
     } else {
         return process_remaining_keybinds(key);
     }
