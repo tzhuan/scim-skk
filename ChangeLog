@@ -1,3 +1,5 @@
+2005-12-13  Jun Mukai  <mukai@localhost.localdomain>
+
 2005-12-13  Jun Mukai  <mukai@jmuk.org>
 
 	* src/scim_skk_core.cpp (process_romakana): modify the behaviors
@@ -5,6 +7,9 @@
 
 	* src/scim_skk_dictionary.cpp (load_dict): support jinmei
 	dictionary.
+
+	* src/scim_skk_setup_dictionaries.cpp (dict_selection_widget_setup):
+	selection of system dictionary is now in setup window (not dialog).
 
 2005-11-29  Jun Mukai  <mukai@jmuk.org>
 

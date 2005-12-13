@@ -37,6 +37,7 @@
 #include <gtk/scimkeyselection.h>
 #include "scim_skk_prefs.h"
 #include "scim_skk_intl.h"
+#include "scim_skk_setup_dictionaries.h"
 
 using namespace scim;
 
@@ -152,7 +153,8 @@ struct ColorConfigData
 };
 
 // Internal data declaration.
-static std::vector<String> __config_sysdicts;
+std::vector<String> __config_sysdicts;
+
 static String __config_userdict     = SCIM_SKK_CONFIG_USERDICT_DEFAULT;
 static int    __config_listsize     = SCIM_SKK_CONFIG_CANDVEC_SIZE_DEFAULT;
 static bool   __config_annot_view   = SCIM_SKK_CONFIG_ANNOT_VIEW_DEFAULT;
@@ -460,13 +462,12 @@ static void on_default_color_button_set       (GtkColorButton  *button,
                                                gpointer         user_data);
 static void on_default_file_selection_clicked (GtkButton       *button,
                                                gpointer         user_data);
-void on_default_dict_selection_clicked (GtkButton       *button,
-                                        gpointer         user_data);
 static void on_default_key_selection_clicked  (GtkButton       *button,
                                                gpointer         user_data);
 static void on_default_combo_changed          (GtkEditable     *editable,
                                                gpointer         user_data);
 static void setup_widget_value ();
+
 
 
 static GtkWidget *
@@ -643,21 +644,11 @@ create_dictionary_page ()
     gtk_widget_show (vbox);
 
     /* system dictionaries */
-    widget = gtk_hbox_new(FALSE, 0);
-    label = gtk_label_new(_("Configure Dictionaries"));
-    gtk_widget_show(label);
-    gtk_box_pack_start(GTK_BOX(widget), label, FALSE, FALSE, 4);
-    __widget_sysdicts = gtk_entry_new();
-    gtk_widget_show(__widget_sysdicts);
-    gtk_box_pack_start(GTK_BOX(widget), __widget_sysdicts, TRUE, TRUE, 4);
-    button = gtk_button_new_with_label(_("Configure Dictionaries"));
-    gtk_widget_show(button);
-    gtk_box_pack_start(GTK_BOX(widget), button, FALSE, FALSE, 4);
-    g_signal_connect ((gpointer) button, "clicked",
-                      G_CALLBACK (on_default_dict_selection_clicked),
-                      &__config_sysdicts);
+    __widget_sysdicts = dict_selection_widget_setup();
+    gtk_box_pack_start (GTK_BOX (vbox), __widget_sysdicts, FALSE, FALSE, 4);
+    widget = gtk_hseparator_new();
     gtk_widget_show(widget);
-    gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, FALSE, 0);
 
     /* user dictionary */
     widget            = gtk_hbox_new(FALSE, 0);
@@ -825,13 +816,7 @@ setup_widget_value ()
     }
 
     if (__widget_sysdicts && __config_sysdicts.size() > 0) {
-        std::vector<String>::iterator it = __config_sysdicts.begin();
-        String s = *it;
-        for (it++; it != __config_sysdicts.end(); it++) {
-            s.append(1, ',');
-            s.append(*it);
-        }
-        gtk_entry_set_text(GTK_ENTRY(__widget_sysdicts), s.data());
+        dict_list_setup(__config_sysdicts);
     }
     
     if (__widget_annot_view) {
