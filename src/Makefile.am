@@ -10,6 +10,7 @@ noinst_HEADERS = \
 	conv_table.h \
 	$(HELP_FILE) \
 	cdb.h \
+	scim_skk_setup_dictionaries.h \
 	scim_skk_intl.h \
 	scim_skk_config.h \
 	scim_skk_lookup_table.h \

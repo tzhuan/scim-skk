@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(scim-skk, 0.5.0, mukai@jmuk.org)
+AC_INIT(scim-skk, 0.5.1, mukai@jmuk.org)
 AC_CONFIG_SRCDIR([configure.ac])
 
 # Save this value here, since automake will set cflags and cxxflags later
@@ -8,7 +8,7 @@ cppflags_set=${CPPFLAGS+set}
 
 SCIM_SKK_MAJOR_VERSION=0
 SCIM_SKK_MINOR_VERSION=5
-SCIM_SKK_MICRO_VERSION=0
+SCIM_SKK_MICRO_VERSION=1
 
 SCIM_SKK_VERSION=$SCIM_SKK_MAJOR_VERSION.$SCIM_SKK_MINOR_VERSION.$SCIM_SKK_MICRO_VERSION
 
@@ -18,7 +18,7 @@ AC_SUBST(SCIM_SKK_MICRO_VERSION)
 AC_SUBST(SCIM_SKK_VERSION)
 
 # Init automake stuff
-AM_INIT_AUTOMAKE(scim-skk, 0.5.0)
+AM_INIT_AUTOMAKE(scim-skk, 0.5.1)
 AM_CONFIG_HEADER(config.h)
 
 # Init gettext
