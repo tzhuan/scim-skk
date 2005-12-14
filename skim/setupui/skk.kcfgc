@@ -1,0 +1,4 @@
+File=skk.kcfg
+ClassName=SKKConfig
+Singleton=true
+Mutators=false

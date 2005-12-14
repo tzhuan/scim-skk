@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE kcfg SYSTEM "http://www.kde.org/standards/kcfg/1.0/kcfg.dtd">
+<kcfg>
+  <kcfgfile name="skimrc"/>
+  <group name="SCIM">
+    <entry name="_IMEngine_SKK_Kakutei" key="/IMEngine/SKK/Kakutei" type="String">
+      <label>Kakutei Keys</label>
+      <whatsthis>The key events to commit the preedit string.</whatsthis>
+      <default>Control+j</default>
+    </entry>
+    <entry name="_IMEngine_SKK_Katakana" key="/IMEngine/SKK/Katakana" type="String">
+      <label>Katakana Keys</label> 
+      <whatsthis>The key events to toggle the skkmode hiragana to katakana.</whatsthis>
+      <default>q</default>
+    </entry>
+    <entry name="_IMEngine_SKK_HalfKatakana" key="/IMEngine/SKK/HalfKatakana" type="String">
+      <label>Half-Katakana Keys</label>
+      <whatsthis>The key events to toggle the skkmode hiragana to half-katakana.</whatsthis>
+      <default></default>
+    </entry>
+    <entry name="_IMEngine_SKK_ASCII" key="/IMEngine/SKK/ASCII" type="String">
+      <label>ASCII Keys</label>
+      <whatsthis>The key events to enter ASII mode.</whatsthis>
+      <default>l</default>
+    </entry>
+    <entry name="_IMEngine_SKK_WideASCII" key="/IMEngine/SKK/WideASCII" type="String">
+      <label>Wide-ASCII Keys</label>
+      <whatsthis>The key events to enter Wide-ASCII mode.</whatsthis>
+      <default>Shift+L</default>
+    </entry>
+    <entry name="_IMEngine_SKK_Convert" key="/IMEngine/SKK/Convert" type="String">
+      <label>Convert Keys</label>
+      <whatsthis>The key events to start converting.</whatsthis>
+      <default>space</default>
+    </entry>
+    <entry name="_IMEngine_SKK_StartPreedit" key="/IMEngine/SKK/StartPreedit" type="String">
+      <label>Start-Preedit Keys</label>
+      <whatsthis>The key events to start preediting.</whatsthis>
+      <default>Shift+Q</default>
+    </entry>
+    <entry name="_IMEngine_SKK_Cancel" key="/IMEngine/SKK/Cancel" type="String">
+      <label>Cancel Keys</label>
+      <whatsthis>The key events to cancel the some skk states.</whatsthis>
+      <default>Control+g,Escape</default>
+    </entry>
+    <entry name="_IMEngine_SKK_ASCIIConvert" key="/IMEngine/SKK/ASCIIConvert" type="String">
+      <label>ASCII-Convert Keys</label>
+      <whatsthis>The key events to start ascii-converting mode.</whatsthis>
+      <default>slash</default>
+    </entry>
+    <entry name="_IMEngine_SKK_PrevCand" key="/IMEngine/SKK/PrevCand" type="String">
+      <label>Previous Candidate Keys</label>
+      <whatsthis>The key events to turn back.</whatsthis>
+      <default>x</default>
+    </entry>
+    <entry name="_IMEngine_SKK_BackSpace" key="/IMEngine/SKK/BackSpace" type="String">
+      <label>Backspace Keys</label>
+      <whatsthis>The key events to backspace.</whatsthis>
+      <default>BackSpace,Control+h</default>
+    </entry>
+    <entry name="_IMEngine_SKK_Delete" key="/IMEngine/SKK/Delete" type="String">
+      <label>Delete Keys</label>
+      <whatsthis>The key events to delete.</whatsthis>
+      <default>Delete,Control+d</default>
+    </entry>
+    <entry name="_IMEngine_SKK_Forward" key="/IMEngine/SKK/Forward" type="String">
+      <label>Forward Keys</label>
+      <whatsthis></whatsthis>
+      <default>Right,Control+f</default>
+    </entry>
+    <entry name="_IMEngine_SKK_Backward" key="/IMEngine/SKK/Backward" type="String">
+      <label>The key events to move the caret forward.</label>
+      <whatsthis></whatsthis>
+      <default>Left,Control+b</default>
+    </entry>
+    <entry name="_IMEngine_SKK_Home" key="/IMEngine/SKK/Home" type="String">
+      <label>Home Keys</label>
+      <whatsthis>The key events to move the caret to the start of preedit.</whatsthis>
+      <default>Home,Control+a</default>
+    </entry>
+    <entry name="_IMEngine_SKK_End" key="/IMEngine/SKK/End" type="String">
+      <label>End Keys</label>
+      <whatsthis>The key events to move the caret to the end of preedit.</whatsthis>
+      <default>End,Control+e</default>
+    </entry>
+    <entry name="_IMEngine_SKK_UPCASE" key="/IMEngine/SKK/UPCASE" type="String">
+      <label>Upcase Keys</label>
+      <whatsthis>The key events to toggle case of characters in preedit string.</whatsthis>
+      <default>Control+u</default>
+    </entry>
+
+    <entry name="_IMEngine_SKK_SelectionStyle" key="/IMEngine/SKK/SelectionStyle" type="String">
+      <label>Selection Style</label>
+      <default>Qwerty</default>
+      <choices>
+        <choice name="Qwerty">
+          <label>qwerty arrangement</label>
+        </choice>
+        <choice name="Dvorak">
+          <label>Dvorak arrangement</label>
+        </choice>
+        <choice name="Number">
+          <label>number selection</label>
+        </choice>
+      </choices>
+    </entry>
+
+    <entry name="_IMEngine_SKK_SysDict" key="/IMEngine/SKK/SysDict" type="String">
+      <label>System Dictionary Path</label>
+      <default>/usr/share/skk/SKK-JISYO.L</default>
+    </entry>
+    <entry name="_IMEngine_SKK_UserDict" key="/IMEngine/SKK/UserDict" type="String">
+      <label>User Dictionary Name</label>
+      <default>.skk-scim-jisyo</default>
+    </entry>
+
+    <entry name="_IMEngine_SKK_DictListSize" key="/IMEngine/SKK/DictListSize" type="Int">
+      <label>List Size</label>
+      <default>4</default>
+    </entry>
+
+    <entry name="_IMEngine_SKK_AnnotView" key="/IMEngine/SKK/AnnotView" type="Bool">
+      <label>View Annotation</label>
+      <default>true</default>
+    </entry>
+    <entry name="_IMEngine_SKK_AnnotPos" key="/IMEngine/SKK/AnnotPos" type="String">
+      <label>Position of Annotation</label>
+      <choices>
+        <choice name="AuxWindow">
+          <label>Aux Window</label>
+        </choice>
+        <choice name="Inline">
+          <label>Inline</label>
+        </choice>
+      </choices>
+      <default>AuxWindow</default>
+    </entry>
+    <entry name="_IMEngine_SKK_AnnotTarget" key="/IMEngine/SKK/AnnotTarget" type="String">
+      <label>Printed Annotation</label>
+      <choices>
+        <choice name="all">
+          <label>all</label>
+        </choice>
+        <choice name="cursor">
+          <label>cursor position only</label>
+        </choice>
+      </choices>
+      <default>all</default>
+    </entry>
+
+    <entry name="_IMEngine_SKK_AnnotHighlight" key="/IMEngine/SKK/AnnotHighlight" type="Bool">
+      <label>Highlight Annotation</label>
+      <default>true</default>
+    </entry>
+    <entry name="_IMEngine_SKK_AnnotBGColor" key="/IMEngine/SKK/AnnotBGColor" type="String">
+      <label>Color</label>
+      <whatsthis>The color of annotation text in the candidate text.</whatsthis>
+      <default>#a0ff80</default>
+    </entry>
+
+    <entry name="_IMEngine_SKK_IgnoreReturn" key="/IMEngine/SKK/IgnoreReturn" type="Bool">
+      <label>Ignore Return at the commiting time</label>
+      <default>false</default>
+    </entry>
+  </group>
+</kcfg>

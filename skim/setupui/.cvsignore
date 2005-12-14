@@ -1,0 +1,14 @@
+.deps
+.libs
+Makefile
+Makefile.in
+kcm_skimplugin_scim_skk.la
+scimskksettingplugin.lo
+scimskksettingplugin.moc
+skk.cpp
+skk.h
+skk.lo
+skkui.cpp
+skkui.h
+skkui.lo
+skkui.moc
