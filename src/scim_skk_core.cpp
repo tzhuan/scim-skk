@@ -32,7 +32,7 @@ static void convert_hiragana_to_katakana (const WideString &hira,
                                           WideString &kata,
                                           bool half = false);
 
-static int skk_key_mask = SCIM_KEY_ControlMask | SCIM_KEY_AltMask;
+static const int skk_key_mask = SCIM_KEY_ControlMask | SCIM_KEY_AltMask;
 
 
 
@@ -288,7 +288,7 @@ SKKCore::caret_pos (void)
             base_pos += m_ltable.get_candidate_from_vector().length() + 1;
         }
         if (!m_okuristr.empty())
-            base_pos += m_okuristr.length() + 1;
+            base_pos += m_okuristr.length();
         return base_pos;
     case INPUT_MODE_LEARNING:
         if (!m_okuristr.empty())
@@ -1282,13 +1282,9 @@ SKKCore::process_key_event (const KeyEvent key)
                 set_input_mode(INPUT_MODE_DIRECT);
             }
         } else if (retval == false &&
-                   m_learning->get_skk_mode() == SKK_MODE_ASCII &&
-                   m_learning->get_input_mode() == INPUT_MODE_DIRECT) {
+                   isprint(code) && !(key.mask & skk_key_mask)) {
             retval = true;
-            if (isprint(code)) {
-                char str[2] = { code, '\0' };
-                m_learning->commit_string(utf8_mbstowcs(str));
-            }
+            m_learning->commit_string(utf8_mbstowcs(&code, 1));
         } 
         return retval;
     }
