@@ -324,10 +324,12 @@ DictFile::lookup (const WideString &key, const bool okuri,
  * a client which connect to skkserv.
  */
 
+#include <ostream>
+#include <fstream>
 SKKServ::SKKServ  (IConvert *conv,
                    const String &addressstr)
     : DictBase(conv, String("SKKServ:") + addressstr),
-      m_addr(addressstr)
+      m_addr(String("inet:") + addressstr)
 {
 }
 
@@ -355,8 +357,7 @@ void
 SKKServ::lookup (const WideString &key, const bool okuri,
                  list<CandPair> &result)
 {
-    static const int buflen = 4096;
-
+    const int buflen = 4096;
     /* reconnect if the connection is closed */
     if (!m_socket.is_connected() && !m_socket.connect(m_addr)) return;
 
@@ -369,17 +370,21 @@ SKKServ::lookup (const WideString &key, const bool okuri,
     skey.copy(writebuf+1, skey.size());
     writebuf[skey.size()+1] = ' ';
     writebuf[skey.size()+2] = '\n';
+
     if (m_socket.write(writebuf, skey.size()+3) != skey.size() + 3) {
         close();
         return;
     }
     if (m_socket.wait_for_data(60 * 1000) > 0) {
         int len = m_socket.read(readbuf, buflen);
-        if (readbuf[0] == '1') {
-            if (readbuf[len-1] != '\n') {
-                readbuf[len-1] = '\n';
-            }
-            parse_dictline(m_converter, readbuf, result);
+        String readstr(readbuf, len);
+        while (readbuf[len-1] != '\n') {
+            len = m_socket.read(readbuf, buflen);
+            readstr.append(readbuf, len);
+        }
+        if (readstr[0] == '1') {
+            readstr.append(1, '\n');
+            parse_dictline(m_converter, readstr.data(), result);
         }
     }
 }
