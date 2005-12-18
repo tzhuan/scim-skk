@@ -3,6 +3,9 @@
 	* src/scim_skk_dictionary.cpp (SKKServ): fix invalid addresses for
 	SKKServ.
 
+	* src/scim_skk_setup_dictionaries.cpp: re-design of setup
+	dictionary. Thanks to bando-san.
+
 2005-12-13  Jun Mukai  <mukai@jmuk.org>
 
 	* src/scim_skk_core.cpp (process_romakana): modify the behaviors
