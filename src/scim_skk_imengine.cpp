@@ -216,7 +216,8 @@ SKKFactory::reload_config (const ConfigPointer &config)
                          SCIM_SKK_CONFIG_ANNOT_VIEW_DEFAULT);
         str = config->read(String(SCIM_SKK_CONFIG_ANNOT_POS),
                            String(SCIM_SKK_CONFIG_ANNOT_POS_DEFAULT));
-        annot_pos = (str == String("inline"));
+        if (islower(str[0])) str[0] = toupper(str[0]);
+        annot_pos = (str == String("Inline"));
         str = config->read(String(SCIM_SKK_CONFIG_ANNOT_TARGET),
                            String(SCIM_SKK_CONFIG_ANNOT_TARGET_DEFAULT));
         annot_target = (str == String("all"));

@@ -259,7 +259,7 @@ SKKCore::commit_converting (int index)
         commit_string(m_okuristr);
         if (m_okurihead != 0)
             m_preeditstr += m_okurihead;
-        m_dict->write(m_preeditstr, cand);
+        m_dict->write(m_preeditstr, CandEnt(cand, annot, cand_orig));
         m_ltable.clear();
         clear_preedit();
         if (m_skk_mode == SKK_MODE_ASCII)

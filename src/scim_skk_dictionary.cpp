@@ -546,7 +546,6 @@ UserDict::write (const WideString &key, const CandPair &data)
     for (list<CandPair>::iterator it = cl.begin(); it != cl.end(); it++) {
         if (it->first == data.first) {
             cl.erase(it);
-            break;
         }
     }
     cl.push_front(data);
@@ -1187,3 +1186,4 @@ inline unsigned long long wstoll(WideString ws)
     }
     return ret;
 }
+
