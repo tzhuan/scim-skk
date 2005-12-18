@@ -1,10 +1,15 @@
+2005-12-18  Jun Mukai  <mukai@localhost.localdomain>
+
 2005-12-18  Jun Mukai  <mukai@jmuk.org>
+
+	* src/scim_skk_imengine_setup.cpp (create_options_page): re-desgin
+	of scim-setup. Thanks to Bando-san.
+
+	* src/scim_skk_setup_dictionaries.cpp: re-design of setup
+	dictionary. Thanks to Bando-san.
 
 	* src/scim_skk_dictionary.cpp (SKKServ): fix invalid addresses for
 	SKKServ.
-
-	* src/scim_skk_setup_dictionaries.cpp: re-design of setup
-	dictionary. Thanks to bando-san.
 
 2005-12-13  Jun Mukai  <mukai@jmuk.org>
 

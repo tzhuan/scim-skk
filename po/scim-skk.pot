@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: mukai@jmuk.org\n"
-"POT-Creation-Date: 2005-12-13 14:05+0900\n"
+"POT-Creation-Date: 2005-12-18 21:16+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -280,7 +280,7 @@ msgstr ""
 msgid "The key events to move the caret to the end of preedit. "
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:407 src/scim_skk_setup_dictionaries.cpp:65
+#: src/scim_skk_imengine_setup.cpp:407 src/scim_skk_setup_dictionaries.cpp:78
 msgid "System Dictionary Path:"
 msgstr ""
 
@@ -340,74 +340,89 @@ msgstr ""
 msgid "Caret keys"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:550
+#: src/scim_skk_imengine_setup.cpp:564
+msgid "Candidate Selection"
+msgstr ""
+
+#: src/scim_skk_imengine_setup.cpp:568
 msgid "Selection Style:"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:559
+#: src/scim_skk_imengine_setup.cpp:577
 msgid "List Size:"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:571
+#: src/scim_skk_imengine_setup.cpp:589
 msgid "Ignore Return at the commiting time."
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:579
-msgid "Highlight Annotation."
+#: src/scim_skk_imengine_setup.cpp:594
+msgid "Annotation"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:591
+#: src/scim_skk_imengine_setup.cpp:598
 msgid "View Annotation."
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:604
+#: src/scim_skk_imengine_setup.cpp:606
 msgid "Position of Annotation:"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:610
+#: src/scim_skk_imengine_setup.cpp:613
 msgid "Printed Annotation:"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:655
+#: src/scim_skk_imengine_setup.cpp:624
+msgid "Highlight Annotation."
+msgstr ""
+
+#: src/scim_skk_imengine_setup.cpp:669
 msgid "User Dictionary Name:"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:752
+#: src/scim_skk_imengine_setup.cpp:766
 msgid "Options"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:758
+#: src/scim_skk_imengine_setup.cpp:772
 msgid "Dictionary"
 msgstr ""
 
-#: src/scim_skk_setup_dictionaries.cpp:79
+#: src/scim_skk_setup_dictionaries.cpp:92
 msgid "CDB Dictionary Path:"
 msgstr ""
 
-#: src/scim_skk_setup_dictionaries.cpp:333
+#: src/scim_skk_setup_dictionaries.cpp:150
 msgid "type"
 msgstr ""
 
-#: src/scim_skk_setup_dictionaries.cpp:339
+#: src/scim_skk_setup_dictionaries.cpp:156
 msgid "dict name"
 msgstr ""
 
-#: src/scim_skk_setup_dictionaries.cpp:387
+#: src/scim_skk_setup_dictionaries.cpp:201
 msgid "Server Name:"
 msgstr ""
 
-#: src/scim_skk_setup_dictionaries.cpp:395
+#: src/scim_skk_setup_dictionaries.cpp:209
 msgid "Port Number:"
 msgstr ""
 
-#: src/scim_skk_setup_dictionaries.cpp:415
-msgid "Dictionary Type: "
-msgstr ""
-
-#: src/scim_skk_setup_dictionaries.cpp:447
+#: src/scim_skk_setup_dictionaries.cpp:228
+#: src/scim_skk_setup_dictionaries.cpp:279
+#: src/scim_skk_setup_dictionaries.cpp:392
 msgid "Add"
 msgstr ""
 
-#: src/scim_skk_setup_dictionaries.cpp:452
+#: src/scim_skk_setup_dictionaries.cpp:233
+#: src/scim_skk_setup_dictionaries.cpp:274
 msgid "Delete"
+msgstr ""
+
+#: src/scim_skk_setup_dictionaries.cpp:352
+msgid "Add new dictionary"
+msgstr ""
+
+#: src/scim_skk_setup_dictionaries.cpp:356
+msgid "Dictionary Type: "
 msgstr ""

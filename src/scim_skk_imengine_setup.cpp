@@ -536,22 +536,40 @@ create_color_button (ColorConfigData *entry)
     return hbox;
 }
 
+inline GtkWidget *
+create_title_widget(gchar *str)
+{
+    GtkWidget *alignment = gtk_alignment_new(0, 0, 0, 0);
+    GtkWidget *label = gtk_label_new("");
+    gchar *markup = g_markup_printf_escaped("<b><big>%s</big></b>",
+                                            str);
+    gtk_label_set_markup(GTK_LABEL(label), markup);
+    gtk_container_add(GTK_CONTAINER(alignment), label);
+    gtk_widget_show(label);
+    gtk_widget_show(alignment);
+    return alignment;
+}
 
 static GtkWidget *
 create_options_page ()
 {
-    GtkWidget *vbox, *hbox, *widget, *label, *alignment;
+    GtkWidget *vbox, *hbox, *widget, *label;
     GtkWidget *annot_widgets, *bgcolor_widgets;
+    gchar *markup;
 
     vbox = gtk_vbox_new (FALSE, 0);
     gtk_widget_show (vbox);
+
+    /* title 1 */
+    widget = create_title_widget(_("Candidate Selection"));
+    gtk_box_pack_start(GTK_BOX(vbox), widget, FALSE, FALSE, 4);
 
     /* selection style */
     widget = create_combo_widget (_("Selection Style:"),
                                   &__widget_selection_style,
                                   (gpointer) &__config_selection_style,
                                   (gpointer) &selection_style);
-    gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, FALSE, 1);
 
 
     /* list size */
@@ -566,52 +584,48 @@ create_options_page ()
     gtk_box_pack_start (GTK_BOX (widget), label, FALSE, FALSE, 4);
     gtk_box_pack_start (GTK_BOX (widget), __widget_listsize, FALSE, FALSE, 4);
     gtk_widget_show(widget);
-    gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, FALSE, 1);
 
     __widget_ignore_return = gtk_check_button_new_with_mnemonic(_("Ignore Return at the commiting time."));
     gtk_widget_show(__widget_ignore_return);
-    gtk_box_pack_start(GTK_BOX(vbox), __widget_ignore_return, FALSE, FALSE, 4);
+    gtk_box_pack_start(GTK_BOX(vbox), __widget_ignore_return, FALSE, FALSE, 1);
 
-    /* annotation color */
-    hbox = gtk_hbox_new(FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 4);
-    gtk_widget_show(hbox);
-    __widget_annot_highlight = gtk_check_button_new_with_mnemonic(_("Highlight Annotation."));
-    gtk_widget_show(__widget_annot_highlight);
-    gtk_box_pack_start(GTK_BOX(hbox), __widget_annot_highlight, FALSE, FALSE, 0);
-
-    alignment = gtk_alignment_new (0.5, 0.5, 1.0, 1.0);
-    gtk_alignment_set_padding (GTK_ALIGNMENT (alignment), 0, 0, 20, 0);
-    gtk_box_pack_start(GTK_BOX(hbox), alignment, FALSE, FALSE, 0);
-    gtk_widget_show(alignment);
-    bgcolor_widgets = create_color_button(&annot_bgcolor);
-    gtk_container_add (GTK_CONTAINER (alignment), bgcolor_widgets);
+    /* title 2 */
+    widget = create_title_widget(_("Annotation"));
+    gtk_box_pack_start(GTK_BOX(vbox), widget, FALSE, FALSE, 4);
 
     /* view annot */
     __widget_annot_view = gtk_check_button_new_with_mnemonic (_("View Annotation."));
     gtk_widget_show (__widget_annot_view);
-    gtk_box_pack_start (GTK_BOX (vbox), __widget_annot_view, FALSE, FALSE, 4);
+    gtk_box_pack_start (GTK_BOX (vbox), __widget_annot_view, FALSE, FALSE, 1);
     gtk_container_set_border_width (GTK_CONTAINER (__widget_annot_view), 0);
 
-    alignment = gtk_alignment_new(0, 0, 1, 1);
-    gtk_box_pack_start (GTK_BOX(vbox), alignment, FALSE, FALSE, 4);
-    gtk_alignment_set_padding(GTK_ALIGNMENT(alignment), 0, 0, 20, 0);
-    gtk_widget_show(alignment);
-
     annot_widgets = gtk_vbox_new(FALSE, 0);
-    gtk_container_add(GTK_CONTAINER(alignment), annot_widgets);
+    gtk_box_pack_start (GTK_BOX(vbox), annot_widgets, FALSE, FALSE, 1);
     gtk_widget_show(annot_widgets);
     widget = create_combo_widget (_("Position of Annotation:"),
                                   &__widget_annot_pos,
                                   (gpointer) &__config_annot_pos,
                                   (gpointer) &annot_position);
-    gtk_box_pack_start (GTK_BOX (annot_widgets), widget, FALSE, FALSE, 4);
+    gtk_widget_show(widget);
+    gtk_box_pack_start (GTK_BOX (annot_widgets), widget, FALSE, FALSE, 1);
 
     widget = create_combo_widget (_("Printed Annotation:"),
                                   &__widget_annot_target,
                                   (gpointer) &__config_annot_target,
                                   (gpointer) &annot_target);
-    gtk_box_pack_start (GTK_BOX (annot_widgets), widget, FALSE, FALSE, 4);
+    gtk_widget_show(widget);
+    gtk_box_pack_start (GTK_BOX (annot_widgets), widget, FALSE, FALSE, 1);
+
+    /* annotation color */
+    hbox = gtk_hbox_new(FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 1);
+    gtk_widget_show(hbox);
+    __widget_annot_highlight = gtk_check_button_new_with_mnemonic(_("Highlight Annotation."));
+    gtk_widget_show(__widget_annot_highlight);
+    gtk_box_pack_start(GTK_BOX(hbox), __widget_annot_highlight, FALSE, FALSE, 0);
+    bgcolor_widgets = create_color_button(&annot_bgcolor);
+    gtk_box_pack_start(GTK_BOX(hbox), bgcolor_widgets, FALSE, FALSE, 20);
 
     // Connect all signals.
     g_signal_connect ((gpointer) __widget_listsize, "value-changed",
