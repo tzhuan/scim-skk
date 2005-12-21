@@ -18,7 +18,7 @@ AC_SUBST(SCIM_SKK_MICRO_VERSION)
 AC_SUBST(SCIM_SKK_VERSION)
 
 # Init automake stuff
-AM_INIT_AUTOMAKE(scim-skk, 0.5.1)
+AM_INIT_AUTOMAKE(scim-skk, 0.5.2)
 AM_CONFIG_HEADER(config.h)
 
 # Init gettext
