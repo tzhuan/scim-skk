@@ -1,3 +1,7 @@
+2005-12-21  Jun Mukai  <mukai@jmuk.org>
+
+	* README.ja: update. Thanks to Utumi-san.
+
 2005-12-18  Jun Mukai  <mukai@jmuk.org>
 
 	* src/scim_skk_imengine_setup.cpp (create_options_page): re-desgin
