@@ -1,3 +1,7 @@
+2005-12-23  Jun Mukai  <mukai@jmuk.org>
+
+	* src/cdb.cpp (get): add error check.
+
 2005-12-21  Jun Mukai  <mukai@jmuk.org>
 
 	* README.ja: update. Thanks to Utumi-san.

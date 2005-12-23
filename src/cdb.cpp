@@ -70,14 +70,21 @@ CDB::get (const string &key, string &val)
 {
     if (!m_open_flag) return false;
 
-    bool retval = false;
-    unsigned int hash_val = calc_hash(key);
-    unsigned int hashtbl_pos = get_value((hash_val % 256) * 2 * 4);
-    unsigned int hashtbl_len = get_value((hash_val % 256) * 2 * 4 + 4);
-    unsigned int entry_point =
-        hashtbl_pos + ((hash_val / 256) % hashtbl_len) * 2 * 4;
-    unsigned int entry_hashval = get_value(entry_point);
-    unsigned int entry_pos = get_value(entry_point + 4);
+    unsigned int hash_val;                 /* hash value of key */
+    unsigned int hashtbl_pos, hashtbl_len; /* position and length of
+                                              the hash table */
+    unsigned int entry_point;              /* position of the entry */
+    unsigned int entry_hashval, entry_pos; /* hash value and position of
+                                              the entry */
+    hash_val = calc_hash(key);
+    hashtbl_pos = get_value((hash_val % 256) * 2 * 4);
+    hashtbl_len = get_value((hash_val % 256) * 2 * 4 + 4);
+    if (hashtbl_len == 0) { /* there are no entries for the hash table */
+        return false;
+    }
+    entry_point = hashtbl_pos + ((hash_val / 256) % hashtbl_len) * 2 * 4;
+    entry_hashval = get_value(entry_point);
+    entry_pos = get_value(entry_point + 4);
     while (entry_pos != 0) {
         if (entry_hashval == hash_val) {
             int entry_keylen = get_value(entry_pos);
@@ -89,6 +96,7 @@ CDB::get (const string &key, string &val)
             }
         }
         entry_point += 8;
+        if (entry_point > m_size - 8) break;
         entry_hashval = get_value(entry_point);
         entry_pos = get_value(entry_point+4);
     }
