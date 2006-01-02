@@ -1,3 +1,8 @@
+2006-01-03 Takuro Ashie <ashie@homa.ne.jp>
+
+	* setupui/scimskksettingplugin.{cpp,h}: Override some KCModule and
+	KAutoCModule's functions.
+
 2006-01-02 Takuro Ashie <ashie@homa.ne.jp>
 
 	* setupui/skkui.ui: Add dictionary list view.

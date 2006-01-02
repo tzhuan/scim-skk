@@ -20,7 +20,9 @@
 #include "skk.h"
 #include "skkui.h"
 
-#include <qcheckbox.h>
+#include <iostream>
+
+#include <qlistview.h>
 
 #include <kgenericfactory.h>
 #include <klocale.h>
@@ -33,6 +35,51 @@ K_EXPORT_COMPONENT_FACTORY(kcm_skimplugin_scim_skk,
 class ScimSKKSettingPlugin::ScimSKKSettingPluginPrivate {
 public:
     SKKSettingUI * ui;
+public:
+    void setup_sysdict_view ()
+    {
+        ui->SystemDictionaryListView->clear ();
+        ui->SystemDictionaryListView->setSorting (-1);
+
+        QStringList dict_list = QStringList::split (",", SKKConfig::_IMEngine_SKK_SysDict());
+        QStringList::iterator it;
+        QListViewItem *item = NULL;
+
+        for (it = dict_list.begin (); it != dict_list.end (); it++) {
+            int p = (*it).find(':');
+            QString type = p <= 0 ?
+                "DictFile" : (*it).left (p);
+            QString dict = p < 0 ?
+                *it : (*it).right ((*it).length () - p - 1);
+
+            item = new QListViewItem (
+                ui->SystemDictionaryListView, item, type, dict);
+        }
+    }
+
+    QString sysdict_list ()
+    {
+        QString str;
+        QListViewItem *item = ui->SystemDictionaryListView->firstChild ();
+
+        for (; item; item = item->nextSibling ()) {
+            if (item != ui->SystemDictionaryListView->firstChild ())
+                str += ",";
+            str += item->text (0);
+            str += ":";
+            str += item->text (1);
+        }
+
+        return str;
+    }
+
+    bool is_changed ()
+    {
+        if (sysdict_list() == SKKConfig::_IMEngine_SKK_SysDict())
+            return false;
+        else
+            return true;
+    }
 };
 
 ScimSKKSettingPlugin::ScimSKKSettingPlugin(QWidget *parent, 
@@ -45,6 +92,7 @@ ScimSKKSettingPlugin::ScimSKKSettingPlugin(QWidget *parent,
     KGlobal::locale()->insertCatalogue("skim-scim-skk");
     d->ui = new SKKSettingUI(this);
     setMainWidget(d->ui);
+    d->setup_sysdict_view ();
 }
 
 ScimSKKSettingPlugin::~ScimSKKSettingPlugin() 
@@ -56,10 +104,21 @@ ScimSKKSettingPlugin::~ScimSKKSettingPlugin()
 void ScimSKKSettingPlugin::load ()
 {
     KAutoCModule::load ();
+
+    d->setup_sysdict_view ();
 }
 
 void ScimSKKSettingPlugin::save ()
 {
+    KConfigSkeletonItem *tmp_item;
+    tmp_item = SKKConfig::self()->findItem("_IMEngine_SKK_SysDict");
+    if (tmp_item) {
+        KConfigSkeletonGenericItem<QString> *item;
+        item = dynamic_cast<KConfigSkeletonGenericItem<QString>*> (tmp_item);
+        if (item)
+            item->setValue (d->sysdict_list ());
+    }
+
     KAutoCModule::save ();
 }
 
@@ -70,8 +129,10 @@ void ScimSKKSettingPlugin::defaults ()
 
 void ScimSKKSettingPlugin::slotWidgetModified ()
 {
-    KAutoCModule::slotWidgetModified();
+    if (d->is_changed ())
+        emit changed (true);
+    else
+        KAutoCModule::slotWidgetModified();
 }
-
 
 #include "scimskksettingplugin.moc"
