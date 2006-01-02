@@ -1,3 +1,4 @@
+// -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
 /***************************************************************************
  *   Copyright (C) 2003-2005 by liuspider                                  *
  *   liuspider@users.sourceforge.net                                       *
@@ -23,11 +24,19 @@ class ScimSKKSettingPlugin : public KAutoCModule
 {
 Q_OBJECT
 public:
-    ScimSKKSettingPlugin(QWidget *parent, 
-			 const char */*name*/,
+    ScimSKKSettingPlugin(QWidget *parent,
+			 const char *name,
 			 const QStringList &args);
 
     ~ScimSKKSettingPlugin();
+
+    void load     ();
+    void save     ();
+    void defaults ();
+
+protected slots:
+    void slotWidgetModified  ();
+
 private:
     class ScimSKKSettingPluginPrivate;
     ScimSKKSettingPluginPrivate * d;

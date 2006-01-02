@@ -1,3 +1,4 @@
+// -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
 /***************************************************************************
  *   Copyright (C) 2003-2005 by liuspider                                  *
  *   liuspider@users.sourceforge.net                                       *
@@ -26,8 +27,8 @@
 
 typedef KGenericFactory<ScimSKKSettingPlugin> ScimSKKSettingLoaderFactory;
 
-K_EXPORT_COMPONENT_FACTORY( kcm_skimplugin_scim_skk, 
-    ScimSKKSettingLoaderFactory( "kcm_skimplugin_scim_skk" ) )
+K_EXPORT_COMPONENT_FACTORY(kcm_skimplugin_scim_skk, 
+			   ScimSKKSettingLoaderFactory("kcm_skimplugin_scim_skk"))
 
 class ScimSKKSettingPlugin::ScimSKKSettingPluginPrivate {
 public:
@@ -37,9 +38,9 @@ public:
 ScimSKKSettingPlugin::ScimSKKSettingPlugin(QWidget *parent, 
 					   const char */*name*/,
 					   const QStringList &args)
- : KAutoCModule( ScimSKKSettingLoaderFactory::instance(), 
-     parent, args, SKKConfig::self() ),
-   d(new ScimSKKSettingPluginPrivate)
+ : KAutoCModule (ScimSKKSettingLoaderFactory::instance(), 
+		 parent, args, SKKConfig::self()),
+   d (new ScimSKKSettingPluginPrivate)
 {
     KGlobal::locale()->insertCatalogue("skim-scim-skk");
     d->ui = new SKKSettingUI(this);
@@ -49,6 +50,27 @@ ScimSKKSettingPlugin::ScimSKKSettingPlugin(QWidget *parent,
 ScimSKKSettingPlugin::~ScimSKKSettingPlugin() 
 {
     KGlobal::locale()->removeCatalogue("skim-scim-skk");
+    delete d;
+}
+
+void ScimSKKSettingPlugin::load ()
+{
+    KAutoCModule::load ();
+}
+
+void ScimSKKSettingPlugin::save ()
+{
+    KAutoCModule::save ();
+}
+
+void ScimSKKSettingPlugin::defaults ()
+{
+    KAutoCModule::defaults ();
+}
+
+void ScimSKKSettingPlugin::slotWidgetModified ()
+{
+    KAutoCModule::slotWidgetModified();
 }
 
 
