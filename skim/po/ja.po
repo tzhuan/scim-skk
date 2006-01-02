@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: skim-scim-skk\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-11-08 00:12+0900\n"
+"POT-Creation-Date: 2006-01-02 22:43+0900\n"
 "PO-Revision-Date: 2005-10-21 22:35+0900\n"
 "Last-Translator: Takuro Ashie <ashie@homa.ne.jp>\n"
 "Language-Team: Japanese <LL@li.org>\n"
@@ -15,178 +15,218 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../setupui/skkui.cpp:482
+#: ../setupui/skkui.cpp:177 ../setupui/skkui.cpp:578
+msgid "Type"
+msgstr "タイプ"
+
+#: ../setupui/skkui.cpp:178 ../setupui/skkui.cpp:579
+msgid "Dictionary name"
+msgstr "辞書名"
+
+#: ../setupui/skkui.cpp:544
 msgid "SKK"
 msgstr "SKK"
 
-#: ../setupui/skkui.cpp:483
-msgid "Selection Style:"
-msgstr "候補選択スタイル:"
+#: ../setupui/skkui.cpp:545
+msgid "Annotation"
+msgstr "アノテーション"
 
-#: ../setupui/skkui.cpp:485
-msgid "qwerty arrangement"
-msgstr "qwerty配列"
-
-#: ../setupui/skkui.cpp:486
-msgid "Dvorak arrangement"
-msgstr "Dvorak配列"
-
-#: ../setupui/skkui.cpp:487
-msgid "number selection"
-msgstr "数値選択"
-
-#: ../setupui/skkui.cpp:488
-msgid "List Size:"
-msgstr "候補リスト長:"
-
-#: ../setupui/skkui.cpp:489
-msgid "Printed Annotation:"
-msgstr "アノテーションの表示:"
-
-#: ../setupui/skkui.cpp:490
-msgid "Position of Annotation:"
-msgstr "アノテーションの位置:"
-
-#: ../setupui/skkui.cpp:492
+#: ../setupui/skkui.cpp:548
 msgid "all"
 msgstr "全て"
 
-#: ../setupui/skkui.cpp:493
+#: ../setupui/skkui.cpp:549
 msgid "cursor position only"
 msgstr "カーソルの位置のみ"
 
-#: ../setupui/skkui.cpp:495
+#: ../setupui/skkui.cpp:551
 msgid "Aux Window"
 msgstr "補助ウィンドウ"
 
-#: ../setupui/skkui.cpp:496
+#: ../setupui/skkui.cpp:552
 msgid "Inline"
 msgstr "インライン"
 
-#: ../setupui/skkui.cpp:497
-msgid "&View Annotation"
-msgstr "アノテーションを見る(&V)"
+#: ../setupui/skkui.cpp:553
+msgid "Position of Annotation:"
+msgstr "アノテーションの位置:"
 
-#: ../setupui/skkui.cpp:498
-msgid "Alt+V"
-msgstr "Alt+V"
+#: ../setupui/skkui.cpp:554
+msgid "Printed Annotation:"
+msgstr "アノテーションの表示:"
 
-#: ../setupui/skkui.cpp:499
-msgid "Highlight A&nnotation"
-msgstr "アノテーションの色を設定する(&N)"
-
-#: ../setupui/skkui.cpp:500
-msgid "Alt+N"
-msgstr "Alt+N"
-
-#: ../setupui/skkui.cpp:501
-msgid "Ignore Return &at the commiting time"
-msgstr "確定時のReturnキーを無視する(&A)"
-
-#: ../setupui/skkui.cpp:502
-msgid "Alt+A"
-msgstr "Alt+A"
-
-#: ../setupui/skkui.cpp:503
+#: ../setupui/skkui.cpp:555
 msgid "Color:"
 msgstr "色:"
 
-#: ../setupui/skkui.cpp:505
+#: ../setupui/skkui.cpp:556
+msgid "Highlight A&nnotation"
+msgstr "アノテーションの色を設定する(&N)"
+
+#: ../setupui/skkui.cpp:557 ../setupui/skkui.cpp:577
+msgid "Alt+N"
+msgstr "Alt+N"
+
+#: ../setupui/skkui.cpp:558
+msgid "&View Annotation"
+msgstr "アノテーションを見る(&V)"
+
+#: ../setupui/skkui.cpp:559
+msgid "Alt+V"
+msgstr "Alt+V"
+
+#: ../setupui/skkui.cpp:560
+msgid "Candidate Selection"
+msgstr "候補選択"
+
+#: ../setupui/skkui.cpp:562
+msgid "qwerty arrangement"
+msgstr "qwerty配列"
+
+#: ../setupui/skkui.cpp:563
+msgid "Dvorak arrangement"
+msgstr "Dvorak配列"
+
+#: ../setupui/skkui.cpp:564
+msgid "number selection"
+msgstr "数値選択"
+
+#: ../setupui/skkui.cpp:565
+msgid "Selection Style:"
+msgstr "候補選択スタイル:"
+
+#: ../setupui/skkui.cpp:566
+msgid "List Size:"
+msgstr "候補リスト長:"
+
+#: ../setupui/skkui.cpp:567
+msgid "Ignore Return &at the commiting time"
+msgstr "確定時のReturnキーを無視する(&A)"
+
+#: ../setupui/skkui.cpp:568 ../setupui/skkui.cpp:575
+msgid "Alt+A"
+msgstr "Alt+A"
+
+#: ../setupui/skkui.cpp:569
 msgid "&General"
 msgstr "一般(&G):"
 
-#: ../setupui/skkui.cpp:506
-msgid "System Dictionary Path:"
-msgstr "システム辞書のパス:"
+#: ../setupui/skkui.cpp:570
+msgid "System Dictionary"
+msgstr "システム辞書"
 
-#: ../setupui/skkui.cpp:507
+#: ../setupui/skkui.cpp:571
+msgid "&Up"
+msgstr "上(&U)"
+
+#: ../setupui/skkui.cpp:572
+msgid "Alt+U"
+msgstr "Alt+U"
+
+#: ../setupui/skkui.cpp:573
+msgid "Delete"
+msgstr "削除"
+
+#: ../setupui/skkui.cpp:574
+msgid "&Add"
+msgstr "追加(&A)"
+
+#: ../setupui/skkui.cpp:576
+msgid "Dow&n"
+msgstr "下(&N)"
+
+#: ../setupui/skkui.cpp:580
+msgid "User Dictionary"
+msgstr "ユーザー辞書"
+
+#: ../setupui/skkui.cpp:581
 msgid "User Dictionary Name:"
 msgstr "ユーザー辞書の名前:"
 
-#: ../setupui/skkui.cpp:508
+#: ../setupui/skkui.cpp:582
 msgid "&Dictionary"
 msgstr "辞書(&D)"
 
-#: ../setupui/skkui.cpp:509
+#: ../setupui/skkui.cpp:583
 msgid "Kakutei:"
 msgstr "確定:"
 
-#: ../setupui/skkui.cpp:510
+#: ../setupui/skkui.cpp:584
 msgid "Cancel:"
 msgstr "キャンセル:"
 
-#: ../setupui/skkui.cpp:511
-msgid "Convert"
+#: ../setupui/skkui.cpp:585
+msgid "Convert:"
 msgstr "変換:"
 
-#: ../setupui/skkui.cpp:512
+#: ../setupui/skkui.cpp:586
 msgid "Start-Preedit:"
-msgstr "変換開始"
+msgstr "変換開始:"
 
-#: ../setupui/skkui.cpp:513
+#: ../setupui/skkui.cpp:587
 msgid "ASCII-Convert:"
-msgstr "英数変換"
+msgstr "英数変換:"
 
-#: ../setupui/skkui.cpp:514
+#: ../setupui/skkui.cpp:588
 msgid "Previous Candidate:"
-msgstr "前の候補"
+msgstr "前の候補:"
 
-#: ../setupui/skkui.cpp:515
+#: ../setupui/skkui.cpp:589
 msgid "Upcase:"
-msgstr "大文字切替"
+msgstr "大文字切替:"
 
-#: ../setupui/skkui.cpp:516
+#: ../setupui/skkui.cpp:590
 msgid "&Common"
 msgstr "一般(&C)"
 
-#: ../setupui/skkui.cpp:517
+#: ../setupui/skkui.cpp:591
 msgid "Katakana:"
 msgstr "カタカナ:"
 
-#: ../setupui/skkui.cpp:518
+#: ../setupui/skkui.cpp:592
 msgid "Half-Katakana:"
 msgstr "半角カタカナ:"
 
-#: ../setupui/skkui.cpp:519
+#: ../setupui/skkui.cpp:593
 msgid "ASCII:"
 msgstr "英数:"
 
-#: ../setupui/skkui.cpp:520
+#: ../setupui/skkui.cpp:594
 msgid "Wide-ASCII:"
 msgstr "全角英数:"
 
-#: ../setupui/skkui.cpp:521
+#: ../setupui/skkui.cpp:595
 msgid "Mode"
 msgstr "モード"
 
-#: ../setupui/skkui.cpp:522
+#: ../setupui/skkui.cpp:596
 msgid "Backspace:"
 msgstr "バックスペース:"
 
-#: ../setupui/skkui.cpp:523
+#: ../setupui/skkui.cpp:597
 msgid "Delete:"
 msgstr "削除:"
 
-#: ../setupui/skkui.cpp:524
+#: ../setupui/skkui.cpp:598
 msgid "Forward:"
 msgstr "前方へ移動:"
 
-#: ../setupui/skkui.cpp:525
+#: ../setupui/skkui.cpp:599
 msgid "Backward:"
-msgstr "後方へ移動"
+msgstr "後方へ移動:"
 
-#: ../setupui/skkui.cpp:526
+#: ../setupui/skkui.cpp:600
 msgid "Home:"
 msgstr "先頭:"
 
-#: ../setupui/skkui.cpp:527
+#: ../setupui/skkui.cpp:601
 msgid "End:"
 msgstr "終端:"
 
-#: ../setupui/skkui.cpp:528
+#: ../setupui/skkui.cpp:602
 msgid "C&aret"
 msgstr "カーソル(&A)"
 
-#: ../setupui/skkui.cpp:529
+#: ../setupui/skkui.cpp:603
 msgid "&Key bindings"
 msgstr "キーバインド(&K)"

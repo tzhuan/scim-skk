@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>542</width>
-            <height>412</height>
+            <width>465</width>
+            <height>372</height>
         </rect>
     </property>
     <property name="caption">
@@ -31,7 +31,7 @@
             </property>
             <widget class="QWidget">
                 <property name="name">
-                    <cstring>tab</cstring>
+                    <cstring>TabPage</cstring>
                 </property>
                 <attribute name="title">
                     <string>&amp;General</string>
@@ -40,291 +40,256 @@
                     <property name="name">
                         <cstring>unnamed</cstring>
                     </property>
-                    <widget class="QLabel" row="0" column="0" rowspan="1" colspan="2">
+                    <widget class="QGroupBox" row="2" column="0">
                         <property name="name">
-                            <cstring>textLabel1</cstring>
+                            <cstring>groupBox11</cstring>
                         </property>
-                        <property name="sizePolicy">
-                            <sizepolicy>
-                                <hsizetype>1</hsizetype>
-                                <vsizetype>1</vsizetype>
-                                <horstretch>0</horstretch>
-                                <verstretch>0</verstretch>
-                            </sizepolicy>
+                        <property name="title">
+                            <string>Annotation</string>
                         </property>
-                        <property name="text">
-                            <string>Selection Style:</string>
-                        </property>
-                    </widget>
-                    <widget class="QComboBox" row="0" column="2" rowspan="1" colspan="4">
-                        <item>
-                            <property name="text">
-                                <string>qwerty arrangement</string>
+                        <grid>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
                             </property>
-                        </item>
-                        <item>
-                            <property name="text">
-                                <string>Dvorak arrangement</string>
-                            </property>
-                        </item>
-                        <item>
-                            <property name="text">
-                                <string>number selection</string>
-                            </property>
-                        </item>
-                        <property name="name">
-                            <cstring>kcfg__IMEngine_SKK_SelectionStyle</cstring>
-                        </property>
+                            <spacer row="1" column="0">
+                                <property name="name">
+                                    <cstring>spacer2_3</cstring>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Horizontal</enum>
+                                </property>
+                                <property name="sizeType">
+                                    <enum>Fixed</enum>
+                                </property>
+                                <property name="sizeHint">
+                                    <size>
+                                        <width>20</width>
+                                        <height>20</height>
+                                    </size>
+                                </property>
+                            </spacer>
+                            <spacer row="2" column="0">
+                                <property name="name">
+                                    <cstring>spacer2_2</cstring>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Horizontal</enum>
+                                </property>
+                                <property name="sizeType">
+                                    <enum>Fixed</enum>
+                                </property>
+                                <property name="sizeHint">
+                                    <size>
+                                        <width>20</width>
+                                        <height>20</height>
+                                    </size>
+                                </property>
+                            </spacer>
+                            <spacer row="4" column="0">
+                                <property name="name">
+                                    <cstring>spacer2_2_2</cstring>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Horizontal</enum>
+                                </property>
+                                <property name="sizeType">
+                                    <enum>Fixed</enum>
+                                </property>
+                                <property name="sizeHint">
+                                    <size>
+                                        <width>20</width>
+                                        <height>20</height>
+                                    </size>
+                                </property>
+                            </spacer>
+                            <spacer row="2" column="5">
+                                <property name="name">
+                                    <cstring>spacer9</cstring>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Horizontal</enum>
+                                </property>
+                                <property name="sizeType">
+                                    <enum>Expanding</enum>
+                                </property>
+                                <property name="sizeHint">
+                                    <size>
+                                        <width>170</width>
+                                        <height>20</height>
+                                    </size>
+                                </property>
+                            </spacer>
+                            <widget class="KColorButton" row="4" column="2">
+                                <property name="name">
+                                    <cstring>kcfg__IMEngine_SKK_AnnotBGColor</cstring>
+                                </property>
+                                <property name="text">
+                                    <string></string>
+                                </property>
+                            </widget>
+                            <widget class="QComboBox" row="2" column="4">
+                                <item>
+                                    <property name="text">
+                                        <string>all</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property name="text">
+                                        <string>cursor position only</string>
+                                    </property>
+                                </item>
+                                <property name="name">
+                                    <cstring>kcfg__IMEngine_SKK_AnnotTarget</cstring>
+                                </property>
+                            </widget>
+                            <widget class="QComboBox" row="1" column="4">
+                                <item>
+                                    <property name="text">
+                                        <string>Aux Window</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property name="text">
+                                        <string>Inline</string>
+                                    </property>
+                                </item>
+                                <property name="name">
+                                    <cstring>kcfg__IMEngine_SKK_AnnotPos</cstring>
+                                </property>
+                                <property name="sizePolicy">
+                                    <sizepolicy>
+                                        <hsizetype>1</hsizetype>
+                                        <vsizetype>0</vsizetype>
+                                        <horstretch>0</horstretch>
+                                        <verstretch>0</verstretch>
+                                    </sizepolicy>
+                                </property>
+                            </widget>
+                            <spacer row="1" column="5">
+                                <property name="name">
+                                    <cstring>spacer8</cstring>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Horizontal</enum>
+                                </property>
+                                <property name="sizeType">
+                                    <enum>Expanding</enum>
+                                </property>
+                                <property name="sizeHint">
+                                    <size>
+                                        <width>170</width>
+                                        <height>20</height>
+                                    </size>
+                                </property>
+                            </spacer>
+                            <widget class="QLabel" row="1" column="1" rowspan="1" colspan="3">
+                                <property name="name">
+                                    <cstring>textLabel4</cstring>
+                                </property>
+                                <property name="sizePolicy">
+                                    <sizepolicy>
+                                        <hsizetype>1</hsizetype>
+                                        <vsizetype>1</vsizetype>
+                                        <horstretch>0</horstretch>
+                                        <verstretch>0</verstretch>
+                                    </sizepolicy>
+                                </property>
+                                <property name="text">
+                                    <string>Position of Annotation:</string>
+                                </property>
+                            </widget>
+                            <widget class="QLabel" row="2" column="1" rowspan="1" colspan="3">
+                                <property name="name">
+                                    <cstring>textLabel5</cstring>
+                                </property>
+                                <property name="sizePolicy">
+                                    <sizepolicy>
+                                        <hsizetype>1</hsizetype>
+                                        <vsizetype>1</vsizetype>
+                                        <horstretch>0</horstretch>
+                                        <verstretch>0</verstretch>
+                                    </sizepolicy>
+                                </property>
+                                <property name="text">
+                                    <string>Printed Annotation:</string>
+                                </property>
+                            </widget>
+                            <spacer row="4" column="3" rowspan="1" colspan="3">
+                                <property name="name">
+                                    <cstring>spacer5</cstring>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Horizontal</enum>
+                                </property>
+                                <property name="sizeType">
+                                    <enum>Expanding</enum>
+                                </property>
+                                <property name="sizeHint">
+                                    <size>
+                                        <width>330</width>
+                                        <height>20</height>
+                                    </size>
+                                </property>
+                            </spacer>
+                            <widget class="QLabel" row="4" column="1">
+                                <property name="name">
+                                    <cstring>textLabel3</cstring>
+                                </property>
+                                <property name="sizePolicy">
+                                    <sizepolicy>
+                                        <hsizetype>1</hsizetype>
+                                        <vsizetype>1</vsizetype>
+                                        <horstretch>0</horstretch>
+                                        <verstretch>0</verstretch>
+                                    </sizepolicy>
+                                </property>
+                                <property name="text">
+                                    <string>Color:</string>
+                                </property>
+                            </widget>
+                            <widget class="QCheckBox" row="3" column="0" rowspan="1" colspan="6">
+                                <property name="name">
+                                    <cstring>kcfg__IMEngine_SKK_AnnotHighlight</cstring>
+                                </property>
+                                <property name="sizePolicy">
+                                    <sizepolicy>
+                                        <hsizetype>7</hsizetype>
+                                        <vsizetype>0</vsizetype>
+                                        <horstretch>0</horstretch>
+                                        <verstretch>0</verstretch>
+                                    </sizepolicy>
+                                </property>
+                                <property name="text">
+                                    <string>Highlight A&amp;nnotation</string>
+                                </property>
+                                <property name="accel">
+                                    <string>Alt+N</string>
+                                </property>
+                            </widget>
+                            <widget class="QCheckBox" row="0" column="0" rowspan="1" colspan="6">
+                                <property name="name">
+                                    <cstring>kcfg__IMEngine_SKK_AnnotView</cstring>
+                                </property>
+                                <property name="sizePolicy">
+                                    <sizepolicy>
+                                        <hsizetype>7</hsizetype>
+                                        <vsizetype>0</vsizetype>
+                                        <horstretch>0</horstretch>
+                                        <verstretch>0</verstretch>
+                                    </sizepolicy>
+                                </property>
+                                <property name="text">
+                                    <string>&amp;View Annotation</string>
+                                </property>
+                                <property name="accel">
+                                    <string>Alt+V</string>
+                                </property>
+                            </widget>
+                        </grid>
                     </widget>
-                    <widget class="QSpinBox" row="1" column="2" rowspan="1" colspan="2">
+                    <spacer row="3" column="0">
                         <property name="name">
-                            <cstring>kcfg__IMEngine_SKK_DictListSize</cstring>
-                        </property>
-                        <property name="maxValue">
-                            <number>100</number>
-                        </property>
-                    </widget>
-                    <widget class="QLabel" row="1" column="0" rowspan="1" colspan="2">
-                        <property name="name">
-                            <cstring>textLabel2</cstring>
-                        </property>
-                        <property name="sizePolicy">
-                            <sizepolicy>
-                                <hsizetype>1</hsizetype>
-                                <vsizetype>1</vsizetype>
-                                <horstretch>0</horstretch>
-                                <verstretch>0</verstretch>
-                            </sizepolicy>
-                        </property>
-                        <property name="text">
-                            <string>List Size:</string>
-                        </property>
-                    </widget>
-                    <widget class="QLabel" row="6" column="1" rowspan="1" colspan="3">
-                        <property name="name">
-                            <cstring>textLabel5</cstring>
-                        </property>
-                        <property name="sizePolicy">
-                            <sizepolicy>
-                                <hsizetype>1</hsizetype>
-                                <vsizetype>1</vsizetype>
-                                <horstretch>0</horstretch>
-                                <verstretch>0</verstretch>
-                            </sizepolicy>
-                        </property>
-                        <property name="text">
-                            <string>Printed Annotation:</string>
-                        </property>
-                    </widget>
-                    <spacer row="6" column="0">
-                        <property name="name">
-                            <cstring>spacer2_2</cstring>
-                        </property>
-                        <property name="orientation">
-                            <enum>Horizontal</enum>
-                        </property>
-                        <property name="sizeType">
-                            <enum>Fixed</enum>
-                        </property>
-                        <property name="sizeHint">
-                            <size>
-                                <width>20</width>
-                                <height>20</height>
-                            </size>
-                        </property>
-                    </spacer>
-                    <widget class="QLabel" row="5" column="1" rowspan="1" colspan="3">
-                        <property name="name">
-                            <cstring>textLabel4</cstring>
-                        </property>
-                        <property name="sizePolicy">
-                            <sizepolicy>
-                                <hsizetype>1</hsizetype>
-                                <vsizetype>1</vsizetype>
-                                <horstretch>0</horstretch>
-                                <verstretch>0</verstretch>
-                            </sizepolicy>
-                        </property>
-                        <property name="text">
-                            <string>Position of Annotation:</string>
-                        </property>
-                    </widget>
-                    <widget class="QComboBox" row="6" column="4" rowspan="1" colspan="4">
-                        <item>
-                            <property name="text">
-                                <string>all</string>
-                            </property>
-                        </item>
-                        <item>
-                            <property name="text">
-                                <string>cursor position only</string>
-                            </property>
-                        </item>
-                        <property name="name">
-                            <cstring>kcfg__IMEngine_SKK_AnnotTarget</cstring>
-                        </property>
-                    </widget>
-                    <spacer row="6" column="8">
-                        <property name="name">
-                            <cstring>spacer9</cstring>
-                        </property>
-                        <property name="orientation">
-                            <enum>Horizontal</enum>
-                        </property>
-                        <property name="sizeType">
-                            <enum>Expanding</enum>
-                        </property>
-                        <property name="sizeHint">
-                            <size>
-                                <width>20</width>
-                                <height>20</height>
-                            </size>
-                        </property>
-                    </spacer>
-                    <widget class="QComboBox" row="5" column="4" rowspan="1" colspan="4">
-                        <item>
-                            <property name="text">
-                                <string>Aux Window</string>
-                            </property>
-                        </item>
-                        <item>
-                            <property name="text">
-                                <string>Inline</string>
-                            </property>
-                        </item>
-                        <property name="name">
-                            <cstring>kcfg__IMEngine_SKK_AnnotPos</cstring>
-                        </property>
-                        <property name="sizePolicy">
-                            <sizepolicy>
-                                <hsizetype>1</hsizetype>
-                                <vsizetype>0</vsizetype>
-                                <horstretch>0</horstretch>
-                                <verstretch>0</verstretch>
-                            </sizepolicy>
-                        </property>
-                    </widget>
-                    <spacer row="5" column="8">
-                        <property name="name">
-                            <cstring>spacer8</cstring>
-                        </property>
-                        <property name="orientation">
-                            <enum>Horizontal</enum>
-                        </property>
-                        <property name="sizeType">
-                            <enum>Expanding</enum>
-                        </property>
-                        <property name="sizeHint">
-                            <size>
-                                <width>20</width>
-                                <height>20</height>
-                            </size>
-                        </property>
-                    </spacer>
-                    <spacer row="5" column="0">
-                        <property name="name">
-                            <cstring>spacer2</cstring>
-                        </property>
-                        <property name="orientation">
-                            <enum>Horizontal</enum>
-                        </property>
-                        <property name="sizeType">
-                            <enum>Fixed</enum>
-                        </property>
-                        <property name="sizeHint">
-                            <size>
-                                <width>20</width>
-                                <height>20</height>
-                            </size>
-                        </property>
-                    </spacer>
-                    <widget class="QCheckBox" row="4" column="0" rowspan="1" colspan="3">
-                        <property name="name">
-                            <cstring>kcfg__IMEngine_SKK_AnnotView</cstring>
-                        </property>
-                        <property name="text">
-                            <string>&amp;View Annotation</string>
-                        </property>
-                        <property name="accel">
-                            <string>Alt+V</string>
-                        </property>
-                    </widget>
-                    <widget class="QCheckBox" row="3" column="0" rowspan="1" colspan="3">
-                        <property name="name">
-                            <cstring>kcfg__IMEngine_SKK_AnnotHighlight</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Highlight A&amp;nnotation</string>
-                        </property>
-                        <property name="accel">
-                            <string>Alt+N</string>
-                        </property>
-                    </widget>
-                    <spacer row="3" column="3">
-                        <property name="name">
-                            <cstring>spacer1</cstring>
-                        </property>
-                        <property name="orientation">
-                            <enum>Horizontal</enum>
-                        </property>
-                        <property name="sizeType">
-                            <enum>Fixed</enum>
-                        </property>
-                        <property name="sizeHint">
-                            <size>
-                                <width>21</width>
-                                <height>20</height>
-                            </size>
-                        </property>
-                    </spacer>
-                    <widget class="QCheckBox" row="2" column="0" rowspan="1" colspan="8">
-                        <property name="name">
-                            <cstring>kcfg__IMEngine_SKK_IgnoreReturn</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Ignore Return &amp;at the commiting time</string>
-                        </property>
-                        <property name="accel">
-                            <string>Alt+A</string>
-                        </property>
-                    </widget>
-                    <spacer row="0" column="6" rowspan="1" colspan="3">
-                        <property name="name">
-                            <cstring>spacer6</cstring>
-                        </property>
-                        <property name="orientation">
-                            <enum>Horizontal</enum>
-                        </property>
-                        <property name="sizeType">
-                            <enum>Expanding</enum>
-                        </property>
-                        <property name="sizeHint">
-                            <size>
-                                <width>20</width>
-                                <height>20</height>
-                            </size>
-                        </property>
-                    </spacer>
-                    <spacer row="1" column="4" rowspan="1" colspan="4">
-                        <property name="name">
-                            <cstring>spacer7</cstring>
-                        </property>
-                        <property name="orientation">
-                            <enum>Horizontal</enum>
-                        </property>
-                        <property name="sizeType">
-                            <enum>Expanding</enum>
-                        </property>
-                        <property name="sizeHint">
-                            <size>
-                                <width>20</width>
-                                <height>20</height>
-                            </size>
-                        </property>
-                    </spacer>
-                    <spacer row="7" column="5">
-                        <property name="name">
-                            <cstring>spacer4</cstring>
+                            <cstring>spacer9_2</cstring>
                         </property>
                         <property name="orientation">
                             <enum>Vertical</enum>
@@ -339,44 +304,138 @@
                             </size>
                         </property>
                     </spacer>
-                    <widget class="QLabel" row="3" column="4">
+                    <widget class="QGroupBox" row="0" column="0">
                         <property name="name">
-                            <cstring>textLabel3</cstring>
+                            <cstring>groupBox1</cstring>
                         </property>
-                        <property name="sizePolicy">
-                            <sizepolicy>
-                                <hsizetype>1</hsizetype>
-                                <vsizetype>1</vsizetype>
-                                <horstretch>0</horstretch>
-                                <verstretch>0</verstretch>
-                            </sizepolicy>
+                        <property name="title">
+                            <string>Candidate Selection</string>
                         </property>
-                        <property name="text">
-                            <string>Color:</string>
-                        </property>
+                        <grid>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QComboBox" row="0" column="1" rowspan="1" colspan="2">
+                                <item>
+                                    <property name="text">
+                                        <string>qwerty arrangement</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property name="text">
+                                        <string>Dvorak arrangement</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property name="text">
+                                        <string>number selection</string>
+                                    </property>
+                                </item>
+                                <property name="name">
+                                    <cstring>kcfg__IMEngine_SKK_SelectionStyle</cstring>
+                                </property>
+                            </widget>
+                            <widget class="QLabel" row="0" column="0">
+                                <property name="name">
+                                    <cstring>textLabel1</cstring>
+                                </property>
+                                <property name="sizePolicy">
+                                    <sizepolicy>
+                                        <hsizetype>1</hsizetype>
+                                        <vsizetype>1</vsizetype>
+                                        <horstretch>0</horstretch>
+                                        <verstretch>0</verstretch>
+                                    </sizepolicy>
+                                </property>
+                                <property name="text">
+                                    <string>Selection Style:</string>
+                                </property>
+                            </widget>
+                            <spacer row="0" column="3">
+                                <property name="name">
+                                    <cstring>spacer6</cstring>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Horizontal</enum>
+                                </property>
+                                <property name="sizeType">
+                                    <enum>Expanding</enum>
+                                </property>
+                                <property name="sizeHint">
+                                    <size>
+                                        <width>200</width>
+                                        <height>20</height>
+                                    </size>
+                                </property>
+                            </spacer>
+                            <widget class="QLabel" row="1" column="0">
+                                <property name="name">
+                                    <cstring>textLabel2</cstring>
+                                </property>
+                                <property name="sizePolicy">
+                                    <sizepolicy>
+                                        <hsizetype>1</hsizetype>
+                                        <vsizetype>1</vsizetype>
+                                        <horstretch>0</horstretch>
+                                        <verstretch>0</verstretch>
+                                    </sizepolicy>
+                                </property>
+                                <property name="text">
+                                    <string>List Size:</string>
+                                </property>
+                            </widget>
+                            <widget class="QSpinBox" row="1" column="1">
+                                <property name="name">
+                                    <cstring>kcfg__IMEngine_SKK_DictListSize</cstring>
+                                </property>
+                                <property name="maxValue">
+                                    <number>100</number>
+                                </property>
+                            </widget>
+                            <spacer row="1" column="2" rowspan="1" colspan="2">
+                                <property name="name">
+                                    <cstring>spacer7</cstring>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Horizontal</enum>
+                                </property>
+                                <property name="sizeType">
+                                    <enum>Expanding</enum>
+                                </property>
+                                <property name="sizeHint">
+                                    <size>
+                                        <width>147</width>
+                                        <height>20</height>
+                                    </size>
+                                </property>
+                            </spacer>
+                            <widget class="QCheckBox" row="2" column="0" rowspan="1" colspan="4">
+                                <property name="name">
+                                    <cstring>kcfg__IMEngine_SKK_IgnoreReturn</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Ignore Return &amp;at the commiting time</string>
+                                </property>
+                                <property name="accel">
+                                    <string>Alt+A</string>
+                                </property>
+                            </widget>
+                        </grid>
                     </widget>
-                    <widget class="KColorButton" row="3" column="5" rowspan="1" colspan="2">
+                    <spacer row="1" column="0">
                         <property name="name">
-                            <cstring>kcfg__IMEngine_SKK_AnnotBGColor</cstring>
-                        </property>
-                        <property name="text">
-                            <string></string>
-                        </property>
-                    </widget>
-                    <spacer row="3" column="7" rowspan="1" colspan="2">
-                        <property name="name">
-                            <cstring>spacer5</cstring>
+                            <cstring>spacer8_2</cstring>
                         </property>
                         <property name="orientation">
-                            <enum>Horizontal</enum>
+                            <enum>Vertical</enum>
                         </property>
                         <property name="sizeType">
-                            <enum>Expanding</enum>
+                            <enum>Fixed</enum>
                         </property>
                         <property name="sizeHint">
                             <size>
-                                <width>190</width>
-                                <height>20</height>
+                                <width>16</width>
+                                <height>16</height>
                             </size>
                         </property>
                     </spacer>
@@ -393,48 +452,165 @@
                     <property name="name">
                         <cstring>unnamed</cstring>
                     </property>
-                    <widget class="QLabel" row="0" column="0">
+                    <spacer row="1" column="0">
                         <property name="name">
-                            <cstring>textLabel6</cstring>
-                        </property>
-                        <property name="text">
-                            <string>System Dictionary Path:</string>
-                        </property>
-                    </widget>
-                    <widget class="QLabel" row="1" column="0">
-                        <property name="name">
-                            <cstring>textLabel7</cstring>
-                        </property>
-                        <property name="text">
-                            <string>User Dictionary Name:</string>
-                        </property>
-                    </widget>
-                    <spacer row="2" column="1">
-                        <property name="name">
-                            <cstring>spacer10</cstring>
+                            <cstring>spacer8_2_2</cstring>
                         </property>
                         <property name="orientation">
                             <enum>Vertical</enum>
                         </property>
                         <property name="sizeType">
-                            <enum>Expanding</enum>
+                            <enum>Fixed</enum>
                         </property>
                         <property name="sizeHint">
                             <size>
-                                <width>20</width>
-                                <height>320</height>
+                                <width>16</width>
+                                <height>16</height>
                             </size>
                         </property>
                     </spacer>
-                    <widget class="QLineEdit" row="0" column="1">
+                    <widget class="QGroupBox" row="0" column="0">
                         <property name="name">
-                            <cstring>kcfg__IMEngine_SKK_SysDict</cstring>
+                            <cstring>groupBox12</cstring>
                         </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>7</hsizetype>
+                                <vsizetype>7</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <property name="title">
+                            <string>System Dictionary</string>
+                        </property>
+                        <grid>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QPushButton" row="2" column="1">
+                                <property name="name">
+                                    <cstring>SystemDictionaryUpButton</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>&amp;Up</string>
+                                </property>
+                                <property name="accel">
+                                    <string>Alt+U</string>
+                                </property>
+                            </widget>
+                            <widget class="QPushButton" row="1" column="1">
+                                <property name="name">
+                                    <cstring>SystemDictionaryDeleteButton</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Delete</string>
+                                </property>
+                            </widget>
+                            <widget class="QPushButton" row="0" column="1">
+                                <property name="name">
+                                    <cstring>SystemDictionaryAddButton</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>&amp;Add</string>
+                                </property>
+                                <property name="accel">
+                                    <string>Alt+A</string>
+                                </property>
+                            </widget>
+                            <widget class="QPushButton" row="3" column="1">
+                                <property name="name">
+                                    <cstring>SystemDictionaryDownButton</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Dow&amp;n</string>
+                                </property>
+                                <property name="accel">
+                                    <string>Alt+N</string>
+                                </property>
+                            </widget>
+                            <widget class="QListView" row="0" column="0" rowspan="5" colspan="1">
+                                <column>
+                                    <property name="text">
+                                        <string>Type</string>
+                                    </property>
+                                    <property name="clickable">
+                                        <bool>true</bool>
+                                    </property>
+                                    <property name="resizable">
+                                        <bool>true</bool>
+                                    </property>
+                                </column>
+                                <column>
+                                    <property name="text">
+                                        <string>Dictionary name</string>
+                                    </property>
+                                    <property name="clickable">
+                                        <bool>true</bool>
+                                    </property>
+                                    <property name="resizable">
+                                        <bool>true</bool>
+                                    </property>
+                                </column>
+                                <property name="name">
+                                    <cstring>SystemDictionaryListView</cstring>
+                                </property>
+                                <property name="sizePolicy">
+                                    <sizepolicy>
+                                        <hsizetype>7</hsizetype>
+                                        <vsizetype>7</vsizetype>
+                                        <horstretch>0</horstretch>
+                                        <verstretch>0</verstretch>
+                                    </sizepolicy>
+                                </property>
+                                <property name="resizePolicy">
+                                    <enum>AutoOne</enum>
+                                </property>
+                            </widget>
+                            <spacer row="4" column="1">
+                                <property name="name">
+                                    <cstring>spacer8_2_2_2</cstring>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Vertical</enum>
+                                </property>
+                                <property name="sizeType">
+                                    <enum>Expanding</enum>
+                                </property>
+                                <property name="sizeHint">
+                                    <size>
+                                        <width>16</width>
+                                        <height>110</height>
+                                    </size>
+                                </property>
+                            </spacer>
+                        </grid>
                     </widget>
-                    <widget class="QLineEdit" row="1" column="1">
+                    <widget class="QGroupBox" row="2" column="0">
                         <property name="name">
-                            <cstring>kcfg__IMEngine_SKK_UserDict</cstring>
+                            <cstring>groupBox13</cstring>
                         </property>
+                        <property name="title">
+                            <string>User Dictionary</string>
+                        </property>
+                        <grid>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QLineEdit" row="0" column="1">
+                                <property name="name">
+                                    <cstring>kcfg__IMEngine_SKK_UserDict</cstring>
+                                </property>
+                            </widget>
+                            <widget class="QLabel" row="0" column="0">
+                                <property name="name">
+                                    <cstring>textLabel7</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>User Dictionary Name:</string>
+                                </property>
+                            </widget>
+                        </grid>
                     </widget>
                 </grid>
             </widget>
@@ -485,7 +661,7 @@
                                         <cstring>textLabel3_2</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>Convert</string>
+                                        <string>Convert:</string>
                                     </property>
                                 </widget>
                                 <widget class="QLabel" row="3" column="0">
@@ -1070,273 +1246,21 @@
 </images>
 <connections>
     <connection>
-        <sender>Kakutei_Button</sender>
+        <sender>End_Button</sender>
         <signal>setEditorText(const QString&amp;)</signal>
-        <receiver>kcfg__IMEngine_SKK_Kakutei</receiver>
+        <receiver>kcfg__IMEngine_SKK_End</receiver>
         <slot>setText(const QString&amp;)</slot>
     </connection>
     <connection>
-        <sender>kcfg__IMEngine_SKK_Kakutei</sender>
+        <sender>kcfg__IMEngine_SKK_End</sender>
         <signal>textChanged(const QString&amp;)</signal>
-        <receiver>Kakutei_Button</receiver>
+        <receiver>End_Button</receiver>
         <slot>setShortcuts(const QString&amp;)</slot>
     </connection>
     <connection>
-        <sender>Kakutei_Button</sender>
+        <sender>End_Button</sender>
         <signal>setEditorText(const QString&amp;)</signal>
-        <receiver>kcfg__IMEngine_SKK_Kakutei</receiver>
-        <slot>setFocus()</slot>
-    </connection>
-    <connection>
-        <sender>Cancel_Button</sender>
-        <signal>setEditorText(const QString&amp;)</signal>
-        <receiver>kcfg__IMEngine_SKK_Cancel</receiver>
-        <slot>setText(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>kcfg__IMEngine_SKK_Cancel</sender>
-        <signal>textChanged(const QString&amp;)</signal>
-        <receiver>Cancel_Button</receiver>
-        <slot>setShortcuts(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>Cancel_Button</sender>
-        <signal>setEditorText(const QString&amp;)</signal>
-        <receiver>kcfg__IMEngine_SKK_Cancel</receiver>
-        <slot>setFocus()</slot>
-    </connection>
-    <connection>
-        <sender>Convert_Button</sender>
-        <signal>setEditorText(const QString&amp;)</signal>
-        <receiver>kcfg__IMEngine_SKK_Convert</receiver>
-        <slot>setText(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>kcfg__IMEngine_SKK_Convert</sender>
-        <signal>textChanged(const QString&amp;)</signal>
-        <receiver>Convert_Button</receiver>
-        <slot>setShortcuts(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>Convert_Button</sender>
-        <signal>setEditorText(const QString&amp;)</signal>
-        <receiver>kcfg__IMEngine_SKK_Convert</receiver>
-        <slot>setFocus()</slot>
-    </connection>
-    <connection>
-        <sender>StartPreedit_Button</sender>
-        <signal>setEditorText(const QString&amp;)</signal>
-        <receiver>kcfg__IMEngine_SKK_StartPreedit</receiver>
-        <slot>setText(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>kcfg__IMEngine_SKK_StartPreedit</sender>
-        <signal>textChanged(const QString&amp;)</signal>
-        <receiver>StartPreedit_Button</receiver>
-        <slot>setShortcuts(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>StartPreedit_Button</sender>
-        <signal>setEditorText(const QString&amp;)</signal>
-        <receiver>kcfg__IMEngine_SKK_StartPreedit</receiver>
-        <slot>setFocus()</slot>
-    </connection>
-    <connection>
-        <sender>ASCIIConvert_Button</sender>
-        <signal>setEditorText(const QString&amp;)</signal>
-        <receiver>kcfg__IMEngine_SKK_ASCIIConvert</receiver>
-        <slot>setText(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>kcfg__IMEngine_SKK_ASCIIConvert</sender>
-        <signal>textChanged(const QString&amp;)</signal>
-        <receiver>ASCIIConvert_Button</receiver>
-        <slot>setShortcuts(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>ASCIIConvert_Button</sender>
-        <signal>setEditorText(const QString&amp;)</signal>
-        <receiver>kcfg__IMEngine_SKK_ASCIIConvert</receiver>
-        <slot>setFocus()</slot>
-    </connection>
-    <connection>
-        <sender>PrevCand_Button</sender>
-        <signal>setEditorText(const QString&amp;)</signal>
-        <receiver>kcfg__IMEngine_SKK_PrevCand</receiver>
-        <slot>setText(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>kcfg__IMEngine_SKK_PrevCand</sender>
-        <signal>textChanged(const QString&amp;)</signal>
-        <receiver>PrevCand_Button</receiver>
-        <slot>setShortcuts(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>PrevCand_Button</sender>
-        <signal>setEditorText(const QString&amp;)</signal>
-        <receiver>kcfg__IMEngine_SKK_PrevCand</receiver>
-        <slot>setFocus()</slot>
-    </connection>
-    <connection>
-        <sender>UPCASE_Button</sender>
-        <signal>setEditorText(const QString&amp;)</signal>
-        <receiver>kcfg__IMEngine_SKK_UPCASE</receiver>
-        <slot>setText(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>kcfg__IMEngine_SKK_UPCASE</sender>
-        <signal>textChanged(const QString&amp;)</signal>
-        <receiver>UPCASE_Button</receiver>
-        <slot>setShortcuts(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>UPCASE_Button</sender>
-        <signal>setEditorText(const QString&amp;)</signal>
-        <receiver>kcfg__IMEngine_SKK_UPCASE</receiver>
-        <slot>setFocus()</slot>
-    </connection>
-    <connection>
-        <sender>Katakana_Button</sender>
-        <signal>setEditorText(const QString&amp;)</signal>
-        <receiver>kcfg__IMEngine_SKK_Katakana</receiver>
-        <slot>setText(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>kcfg__IMEngine_SKK_Katakana</sender>
-        <signal>textChanged(const QString&amp;)</signal>
-        <receiver>Katakana_Button</receiver>
-        <slot>setShortcuts(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>Katakana_Button</sender>
-        <signal>setEditorText(const QString&amp;)</signal>
-        <receiver>kcfg__IMEngine_SKK_Katakana</receiver>
-        <slot>setFocus()</slot>
-    </connection>
-    <connection>
-        <sender>HalfKatakana_Button</sender>
-        <signal>setEditorText(const QString&amp;)</signal>
-        <receiver>kcfg__IMEngine_SKK_HalfKatakana</receiver>
-        <slot>setText(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>kcfg__IMEngine_SKK_HalfKatakana</sender>
-        <signal>textChanged(const QString&amp;)</signal>
-        <receiver>HalfKatakana_Button</receiver>
-        <slot>setShortcuts(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>HalfKatakana_Button</sender>
-        <signal>setEditorText(const QString&amp;)</signal>
-        <receiver>kcfg__IMEngine_SKK_HalfKatakana</receiver>
-        <slot>setFocus()</slot>
-    </connection>
-    <connection>
-        <sender>ASCII_Button</sender>
-        <signal>setEditorText(const QString&amp;)</signal>
-        <receiver>kcfg__IMEngine_SKK_ASCII</receiver>
-        <slot>setText(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>kcfg__IMEngine_SKK_ASCII</sender>
-        <signal>textChanged(const QString&amp;)</signal>
-        <receiver>ASCII_Button</receiver>
-        <slot>setShortcuts(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>ASCII_Button</sender>
-        <signal>setEditorText(const QString&amp;)</signal>
-        <receiver>kcfg__IMEngine_SKK_ASCII</receiver>
-        <slot>setFocus()</slot>
-    </connection>
-    <connection>
-        <sender>WideASCII_Button</sender>
-        <signal>setEditorText(const QString&amp;)</signal>
-        <receiver>kcfg__IMEngine_SKK_WideASCII</receiver>
-        <slot>setText(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>kcfg__IMEngine_SKK_WideASCII</sender>
-        <signal>textChanged(const QString&amp;)</signal>
-        <receiver>WideASCII_Button</receiver>
-        <slot>setShortcuts(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>WideASCII_Button</sender>
-        <signal>setEditorText(const QString&amp;)</signal>
-        <receiver>kcfg__IMEngine_SKK_WideASCII</receiver>
-        <slot>setFocus()</slot>
-    </connection>
-    <connection>
-        <sender>BackSpace_Button</sender>
-        <signal>setEditorText(const QString&amp;)</signal>
-        <receiver>kcfg__IMEngine_SKK_BackSpace</receiver>
-        <slot>setText(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>kcfg__IMEngine_SKK_BackSpace</sender>
-        <signal>textChanged(const QString&amp;)</signal>
-        <receiver>BackSpace_Button</receiver>
-        <slot>setShortcuts(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>BackSpace_Button</sender>
-        <signal>setEditorText(const QString&amp;)</signal>
-        <receiver>kcfg__IMEngine_SKK_BackSpace</receiver>
-        <slot>setFocus()</slot>
-    </connection>
-    <connection>
-        <sender>Delete_Button</sender>
-        <signal>setEditorText(const QString&amp;)</signal>
-        <receiver>kcfg__IMEngine_SKK_Delete</receiver>
-        <slot>setText(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>kcfg__IMEngine_SKK_Delete</sender>
-        <signal>textChanged(const QString&amp;)</signal>
-        <receiver>Delete_Button</receiver>
-        <slot>setShortcuts(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>Delete_Button</sender>
-        <signal>setEditorText(const QString&amp;)</signal>
-        <receiver>kcfg__IMEngine_SKK_Delete</receiver>
-        <slot>setFocus()</slot>
-    </connection>
-    <connection>
-        <sender>Forward_Button</sender>
-        <signal>setEditorText(const QString&amp;)</signal>
-        <receiver>kcfg__IMEngine_SKK_Forward</receiver>
-        <slot>setText(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>kcfg__IMEngine_SKK_Forward</sender>
-        <signal>textChanged(const QString&amp;)</signal>
-        <receiver>Forward_Button</receiver>
-        <slot>setShortcuts(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>Forward_Button</sender>
-        <signal>setEditorText(const QString&amp;)</signal>
-        <receiver>kcfg__IMEngine_SKK_Forward</receiver>
-        <slot>setFocus()</slot>
-    </connection>
-    <connection>
-        <sender>Backward_Button</sender>
-        <signal>setEditorText(const QString&amp;)</signal>
-        <receiver>kcfg__IMEngine_SKK_Backward</receiver>
-        <slot>setText(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>kcfg__IMEngine_SKK_Backward</sender>
-        <signal>textChanged(const QString&amp;)</signal>
-        <receiver>Backward_Button</receiver>
-        <slot>setShortcuts(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>Backward_Button</sender>
-        <signal>setEditorText(const QString&amp;)</signal>
-        <receiver>kcfg__IMEngine_SKK_Backward</receiver>
+        <receiver>kcfg__IMEngine_SKK_End</receiver>
         <slot>setFocus()</slot>
     </connection>
     <connection>
@@ -1358,21 +1282,273 @@
         <slot>setFocus()</slot>
     </connection>
     <connection>
-        <sender>End_Button</sender>
+        <sender>Backward_Button</sender>
         <signal>setEditorText(const QString&amp;)</signal>
-        <receiver>kcfg__IMEngine_SKK_End</receiver>
+        <receiver>kcfg__IMEngine_SKK_Backward</receiver>
         <slot>setText(const QString&amp;)</slot>
     </connection>
     <connection>
-        <sender>kcfg__IMEngine_SKK_End</sender>
+        <sender>kcfg__IMEngine_SKK_Backward</sender>
         <signal>textChanged(const QString&amp;)</signal>
-        <receiver>End_Button</receiver>
+        <receiver>Backward_Button</receiver>
         <slot>setShortcuts(const QString&amp;)</slot>
     </connection>
     <connection>
-        <sender>End_Button</sender>
+        <sender>Backward_Button</sender>
         <signal>setEditorText(const QString&amp;)</signal>
-        <receiver>kcfg__IMEngine_SKK_End</receiver>
+        <receiver>kcfg__IMEngine_SKK_Backward</receiver>
+        <slot>setFocus()</slot>
+    </connection>
+    <connection>
+        <sender>Forward_Button</sender>
+        <signal>setEditorText(const QString&amp;)</signal>
+        <receiver>kcfg__IMEngine_SKK_Forward</receiver>
+        <slot>setText(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>kcfg__IMEngine_SKK_Forward</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>Forward_Button</receiver>
+        <slot>setShortcuts(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>Forward_Button</sender>
+        <signal>setEditorText(const QString&amp;)</signal>
+        <receiver>kcfg__IMEngine_SKK_Forward</receiver>
+        <slot>setFocus()</slot>
+    </connection>
+    <connection>
+        <sender>Delete_Button</sender>
+        <signal>setEditorText(const QString&amp;)</signal>
+        <receiver>kcfg__IMEngine_SKK_Delete</receiver>
+        <slot>setText(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>kcfg__IMEngine_SKK_Delete</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>Delete_Button</receiver>
+        <slot>setShortcuts(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>Delete_Button</sender>
+        <signal>setEditorText(const QString&amp;)</signal>
+        <receiver>kcfg__IMEngine_SKK_Delete</receiver>
+        <slot>setFocus()</slot>
+    </connection>
+    <connection>
+        <sender>BackSpace_Button</sender>
+        <signal>setEditorText(const QString&amp;)</signal>
+        <receiver>kcfg__IMEngine_SKK_BackSpace</receiver>
+        <slot>setText(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>kcfg__IMEngine_SKK_BackSpace</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>BackSpace_Button</receiver>
+        <slot>setShortcuts(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>BackSpace_Button</sender>
+        <signal>setEditorText(const QString&amp;)</signal>
+        <receiver>kcfg__IMEngine_SKK_BackSpace</receiver>
+        <slot>setFocus()</slot>
+    </connection>
+    <connection>
+        <sender>WideASCII_Button</sender>
+        <signal>setEditorText(const QString&amp;)</signal>
+        <receiver>kcfg__IMEngine_SKK_WideASCII</receiver>
+        <slot>setText(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>kcfg__IMEngine_SKK_WideASCII</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>WideASCII_Button</receiver>
+        <slot>setShortcuts(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>WideASCII_Button</sender>
+        <signal>setEditorText(const QString&amp;)</signal>
+        <receiver>kcfg__IMEngine_SKK_WideASCII</receiver>
+        <slot>setFocus()</slot>
+    </connection>
+    <connection>
+        <sender>ASCII_Button</sender>
+        <signal>setEditorText(const QString&amp;)</signal>
+        <receiver>kcfg__IMEngine_SKK_ASCII</receiver>
+        <slot>setText(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>kcfg__IMEngine_SKK_ASCII</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>ASCII_Button</receiver>
+        <slot>setShortcuts(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>ASCII_Button</sender>
+        <signal>setEditorText(const QString&amp;)</signal>
+        <receiver>kcfg__IMEngine_SKK_ASCII</receiver>
+        <slot>setFocus()</slot>
+    </connection>
+    <connection>
+        <sender>HalfKatakana_Button</sender>
+        <signal>setEditorText(const QString&amp;)</signal>
+        <receiver>kcfg__IMEngine_SKK_HalfKatakana</receiver>
+        <slot>setText(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>kcfg__IMEngine_SKK_HalfKatakana</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>HalfKatakana_Button</receiver>
+        <slot>setShortcuts(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>HalfKatakana_Button</sender>
+        <signal>setEditorText(const QString&amp;)</signal>
+        <receiver>kcfg__IMEngine_SKK_HalfKatakana</receiver>
+        <slot>setFocus()</slot>
+    </connection>
+    <connection>
+        <sender>Katakana_Button</sender>
+        <signal>setEditorText(const QString&amp;)</signal>
+        <receiver>kcfg__IMEngine_SKK_Katakana</receiver>
+        <slot>setText(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>kcfg__IMEngine_SKK_Katakana</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>Katakana_Button</receiver>
+        <slot>setShortcuts(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>Katakana_Button</sender>
+        <signal>setEditorText(const QString&amp;)</signal>
+        <receiver>kcfg__IMEngine_SKK_Katakana</receiver>
+        <slot>setFocus()</slot>
+    </connection>
+    <connection>
+        <sender>UPCASE_Button</sender>
+        <signal>setEditorText(const QString&amp;)</signal>
+        <receiver>kcfg__IMEngine_SKK_UPCASE</receiver>
+        <slot>setText(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>kcfg__IMEngine_SKK_UPCASE</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>UPCASE_Button</receiver>
+        <slot>setShortcuts(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>UPCASE_Button</sender>
+        <signal>setEditorText(const QString&amp;)</signal>
+        <receiver>kcfg__IMEngine_SKK_UPCASE</receiver>
+        <slot>setFocus()</slot>
+    </connection>
+    <connection>
+        <sender>PrevCand_Button</sender>
+        <signal>setEditorText(const QString&amp;)</signal>
+        <receiver>kcfg__IMEngine_SKK_PrevCand</receiver>
+        <slot>setText(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>kcfg__IMEngine_SKK_PrevCand</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>PrevCand_Button</receiver>
+        <slot>setShortcuts(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>PrevCand_Button</sender>
+        <signal>setEditorText(const QString&amp;)</signal>
+        <receiver>kcfg__IMEngine_SKK_PrevCand</receiver>
+        <slot>setFocus()</slot>
+    </connection>
+    <connection>
+        <sender>ASCIIConvert_Button</sender>
+        <signal>setEditorText(const QString&amp;)</signal>
+        <receiver>kcfg__IMEngine_SKK_ASCIIConvert</receiver>
+        <slot>setText(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>kcfg__IMEngine_SKK_ASCIIConvert</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>ASCIIConvert_Button</receiver>
+        <slot>setShortcuts(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>ASCIIConvert_Button</sender>
+        <signal>setEditorText(const QString&amp;)</signal>
+        <receiver>kcfg__IMEngine_SKK_ASCIIConvert</receiver>
+        <slot>setFocus()</slot>
+    </connection>
+    <connection>
+        <sender>StartPreedit_Button</sender>
+        <signal>setEditorText(const QString&amp;)</signal>
+        <receiver>kcfg__IMEngine_SKK_StartPreedit</receiver>
+        <slot>setText(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>kcfg__IMEngine_SKK_StartPreedit</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>StartPreedit_Button</receiver>
+        <slot>setShortcuts(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>StartPreedit_Button</sender>
+        <signal>setEditorText(const QString&amp;)</signal>
+        <receiver>kcfg__IMEngine_SKK_StartPreedit</receiver>
+        <slot>setFocus()</slot>
+    </connection>
+    <connection>
+        <sender>Convert_Button</sender>
+        <signal>setEditorText(const QString&amp;)</signal>
+        <receiver>kcfg__IMEngine_SKK_Convert</receiver>
+        <slot>setText(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>kcfg__IMEngine_SKK_Convert</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>Convert_Button</receiver>
+        <slot>setShortcuts(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>Convert_Button</sender>
+        <signal>setEditorText(const QString&amp;)</signal>
+        <receiver>kcfg__IMEngine_SKK_Convert</receiver>
+        <slot>setFocus()</slot>
+    </connection>
+    <connection>
+        <sender>Cancel_Button</sender>
+        <signal>setEditorText(const QString&amp;)</signal>
+        <receiver>kcfg__IMEngine_SKK_Cancel</receiver>
+        <slot>setText(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>kcfg__IMEngine_SKK_Cancel</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>Cancel_Button</receiver>
+        <slot>setShortcuts(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>Cancel_Button</sender>
+        <signal>setEditorText(const QString&amp;)</signal>
+        <receiver>kcfg__IMEngine_SKK_Cancel</receiver>
+        <slot>setFocus()</slot>
+    </connection>
+    <connection>
+        <sender>Kakutei_Button</sender>
+        <signal>setEditorText(const QString&amp;)</signal>
+        <receiver>kcfg__IMEngine_SKK_Kakutei</receiver>
+        <slot>setText(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>kcfg__IMEngine_SKK_Kakutei</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>Kakutei_Button</receiver>
+        <slot>setShortcuts(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>Kakutei_Button</sender>
+        <signal>setEditorText(const QString&amp;)</signal>
+        <receiver>kcfg__IMEngine_SKK_Kakutei</receiver>
         <slot>setFocus()</slot>
     </connection>
 </connections>
