@@ -22,6 +22,8 @@
 
 class ScimSKKAddDictDialog::ScimSKKAddDictDialogPrivate {
 public:
+    QFrame        *m_dict_file_frame;
+    QFrame        *m_skk_serv_frame;
     KComboBox     *m_dict_type_combo;
     KURLRequester *m_dict_file_path;
 };
@@ -37,8 +39,8 @@ ScimSKKAddDictDialog::ScimSKKAddDictDialog (QWidget *parent, const char *name)
 
     QVBoxLayout *main_vbox   = new QVBoxLayout (plainPage (),6);
     QHBoxLayout *dict_type_hbox  = new QHBoxLayout (main_vbox, 6);
-    QHBoxLayout *editor_hbox = new QHBoxLayout (main_vbox, 6);
 
+    // types combo box
     QStringList types;
     types << "DictFile";
     types << "SKKServ";
@@ -51,11 +53,33 @@ ScimSKKAddDictDialog::ScimSKKAddDictDialog (QWidget *parent, const char *name)
     dict_type_hbox->addWidget (d->m_dict_type_combo);
     dict_type_hbox->addStretch (20);
 
-    label = new QLabel (i18n ("Path:"), plainPage ());
-    d->m_dict_file_path = new KURLRequester (plainPage ());
+    // DictFile frame
+    d->m_dict_file_frame = new QFrame (plainPage ());
+    d->m_dict_file_frame->setFrameStyle (QFrame::NoFrame);
+    main_vbox->addWidget (d->m_dict_file_frame);
+
+    QHBoxLayout *hbox = new QHBoxLayout (d->m_dict_file_frame, 6);
+
+    label = new QLabel (i18n ("Path:"), d->m_dict_file_frame);
+    d->m_dict_file_path = new KURLRequester (d->m_dict_file_frame);
     d->m_dict_file_path->setMode (KFile::File | KFile::LocalOnly);
-    editor_hbox->addWidget (label);
-    editor_hbox->addWidget (d->m_dict_file_path);
+    hbox->addWidget (label);
+    hbox->addWidget (d->m_dict_file_path);
+
+    // SKKServ frame
+    d->m_skk_serv_frame = new QFrame (plainPage ());
+    d->m_skk_serv_frame->setFrameStyle (QFrame::Box);
+    d->m_skk_serv_frame->hide ();
+    main_vbox->addWidget (d->m_skk_serv_frame);
+
+    hbox = new QHBoxLayout (d->m_skk_serv_frame, 6);
+
+    label = new QLabel (i18n ("hoge:"), d->m_skk_serv_frame);
+    hbox->addWidget (label);
+
+    // connect to signals
+    connect (d->m_dict_type_combo, SIGNAL (activated (const QString &)),
+             this , SLOT (set_dict_type (const QString &)));
 }
 
 ScimSKKAddDictDialog::~ScimSKKAddDictDialog ()
@@ -65,9 +89,11 @@ ScimSKKAddDictDialog::~ScimSKKAddDictDialog ()
 
 void ScimSKKAddDictDialog::set_dict (QString &type, QString &name)
 {
-    if (type == "SKKServe") {
-    } else if (type == "CDBFile") {
+    set_dict_type (type);
+
+    if (type == "SKKServ") {
     } else {
+        d->m_dict_file_path->lineEdit()->setText (name);
     }
 }
 
@@ -78,5 +104,22 @@ QString ScimSKKAddDictDialog::get_dict_type ()
 
 QString ScimSKKAddDictDialog::get_dict_name ()
 {
-    return d->m_dict_file_path->url ();
+    if (d->m_dict_type_combo->currentText () == "SKKServe") {
+        return "localhost";
+    } else {
+        return d->m_dict_file_path->url ();
+    }
+}
+
+void ScimSKKAddDictDialog::set_dict_type (const QString & type)
+{
+    if (type == "SKKServ") {
+        d->m_dict_file_frame->hide ();
+        d->m_skk_serv_frame->show ();
+        std::cout << "SKKServ" << std::endl;
+    } else {
+        d->m_dict_file_frame->show ();
+        d->m_skk_serv_frame->hide ();
+        std::cout << "hoge" << std::endl;
+   }
 }

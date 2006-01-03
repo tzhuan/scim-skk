@@ -27,7 +27,8 @@ public:
     QString get_dict_type ();
     QString get_dict_name ();
 
-public slots:
+protected slots:
+    void set_dict_type (const QString & type);
 
 private:
     class ScimSKKAddDictDialogPrivate;
