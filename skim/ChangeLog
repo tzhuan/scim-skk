@@ -1,5 +1,10 @@
 2006-01-03 Takuro Ashie <ashie@homa.ne.jp>
 
+	* setupui/scimskkadddic.cpp: Add widgets for SKKServ preference.
+	* po/ja.po: Update.
+
+2006-01-03 Takuro Ashie <ashie@homa.ne.jp>
+
 	* setupui/scimskkadddic.cpp: Switch widget type according to dictionary
 	type value, but widget for SKKServ is not yet prepared.
 

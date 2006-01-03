@@ -26,11 +26,13 @@ public:
     QFrame        *m_skk_serv_frame;
     KComboBox     *m_dict_type_combo;
     KURLRequester *m_dict_file_path;
+    KLineEdit     *m_server_name;
+    KLineEdit     *m_port_number;
 };
 
 ScimSKKAddDictDialog::ScimSKKAddDictDialog (QWidget *parent, const char *name)
     : KDialogBase (KDialogBase::Plain, 0, parent, name, true,
-                   i18n ("Add new dictionary"),
+                   i18n ("Add a new dictionary"),
                    KDialogBase::Ok | KDialogBase::Cancel),
       d (new ScimSKKAddDictDialogPrivate)
 {
@@ -46,7 +48,7 @@ ScimSKKAddDictDialog::ScimSKKAddDictDialog (QWidget *parent, const char *name)
     types << "SKKServ";
     types << "CDBFile";
 
-    QLabel *label = new QLabel (i18n ("Type:"), plainPage ());
+    QLabel *label = new QLabel (i18n ("Dictionary Type:"), plainPage ());
     d->m_dict_type_combo = new KComboBox (plainPage ());
     d->m_dict_type_combo->insertStringList (types);
     dict_type_hbox->addWidget (label);
@@ -58,7 +60,7 @@ ScimSKKAddDictDialog::ScimSKKAddDictDialog (QWidget *parent, const char *name)
     d->m_dict_file_frame->setFrameStyle (QFrame::NoFrame);
     main_vbox->addWidget (d->m_dict_file_frame);
 
-    QHBoxLayout *hbox = new QHBoxLayout (d->m_dict_file_frame, 6);
+    QHBoxLayout *hbox = new QHBoxLayout (d->m_dict_file_frame, 0);
 
     label = new QLabel (i18n ("Path:"), d->m_dict_file_frame);
     d->m_dict_file_path = new KURLRequester (d->m_dict_file_frame);
@@ -72,10 +74,21 @@ ScimSKKAddDictDialog::ScimSKKAddDictDialog (QWidget *parent, const char *name)
     d->m_skk_serv_frame->hide ();
     main_vbox->addWidget (d->m_skk_serv_frame);
 
-    hbox = new QHBoxLayout (d->m_skk_serv_frame, 6);
+    QVBoxLayout *vbox = new QVBoxLayout (d->m_skk_serv_frame, 6);
+    QHBoxLayout *hbox1 = new QHBoxLayout (vbox, 0);
+    QHBoxLayout *hbox2 = new QHBoxLayout (vbox, 0);
 
-    label = new QLabel (i18n ("hoge:"), d->m_skk_serv_frame);
-    hbox->addWidget (label);
+    label = new QLabel (i18n ("Server Name:"), d->m_skk_serv_frame);
+    hbox1->addWidget (label);
+    d->m_server_name = new KLineEdit (d->m_skk_serv_frame);
+    d->m_server_name->setText ("localhost");
+    hbox1->addWidget (d->m_server_name);
+
+    label = new QLabel (i18n ("Port Number:"), d->m_skk_serv_frame);
+    hbox2->addWidget (label);
+    d->m_port_number = new KLineEdit (d->m_skk_serv_frame);
+    d->m_port_number->setText ("1178");
+    hbox2->addWidget (d->m_port_number);
 
     // connect to signals
     connect (d->m_dict_type_combo, SIGNAL (activated (const QString &)),
@@ -104,8 +117,8 @@ QString ScimSKKAddDictDialog::get_dict_type ()
 
 QString ScimSKKAddDictDialog::get_dict_name ()
 {
-    if (d->m_dict_type_combo->currentText () == "SKKServe") {
-        return "localhost";
+    if (d->m_dict_type_combo->currentText () == "SKKServ") {
+        return d->m_server_name->text () + ":" + d->m_port_number->text ();
     } else {
         return d->m_dict_file_path->url ();
     }
