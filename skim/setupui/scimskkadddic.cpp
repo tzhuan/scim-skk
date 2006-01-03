@@ -116,10 +116,8 @@ void ScimSKKAddDictDialog::set_dict_type (const QString & type)
     if (type == "SKKServ") {
         d->m_dict_file_frame->hide ();
         d->m_skk_serv_frame->show ();
-        std::cout << "SKKServ" << std::endl;
     } else {
         d->m_dict_file_frame->show ();
         d->m_skk_serv_frame->hide ();
-        std::cout << "hoge" << std::endl;
    }
 }
