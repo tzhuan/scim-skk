@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-03 16:13+0900\n"
+"POT-Creation-Date: 2006-01-03 17:29+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -28,226 +28,238 @@ msgstr ""
 msgid "Path:"
 msgstr ""
 
-#: ../setupui/scimskkadddic.cpp:81
+#: ../setupui/scimskkadddic.cpp:79
 msgid "Server Name:"
 msgstr ""
 
-#: ../setupui/scimskkadddic.cpp:87
+#: ../setupui/scimskkadddic.cpp:86
 msgid "Port Number:"
 msgstr ""
 
-#: ../setupui/skkui.cpp:177 ../setupui/skkui.cpp:578
+#: ../setupui/skkui.cpp:177 ../setupui/skkui.cpp:606
 msgid "Type"
 msgstr ""
 
-#: ../setupui/skkui.cpp:178 ../setupui/skkui.cpp:579
+#: ../setupui/skkui.cpp:178 ../setupui/skkui.cpp:607
 msgid "Dictionary name"
 msgstr ""
 
-#: ../setupui/skkui.cpp:544
+#: ../setupui/skkui.cpp:572
 msgid "SKK"
 msgstr ""
 
-#: ../setupui/skkui.cpp:545
+#: ../setupui/skkui.cpp:573
 msgid "Annotation"
 msgstr ""
 
-#: ../setupui/skkui.cpp:548
+#: ../setupui/skkui.cpp:576
 msgid "all"
 msgstr ""
 
-#: ../setupui/skkui.cpp:549
+#: ../setupui/skkui.cpp:577
 msgid "cursor position only"
 msgstr ""
 
-#: ../setupui/skkui.cpp:551
+#: ../setupui/skkui.cpp:579
 msgid "Aux Window"
 msgstr ""
 
-#: ../setupui/skkui.cpp:552
+#: ../setupui/skkui.cpp:580
 msgid "Inline"
 msgstr ""
 
-#: ../setupui/skkui.cpp:553
+#: ../setupui/skkui.cpp:581
 msgid "Position of Annotation:"
 msgstr ""
 
-#: ../setupui/skkui.cpp:554
+#: ../setupui/skkui.cpp:582
 msgid "Printed Annotation:"
 msgstr ""
 
-#: ../setupui/skkui.cpp:555
+#: ../setupui/skkui.cpp:583
 msgid "Color:"
 msgstr ""
 
-#: ../setupui/skkui.cpp:556
+#: ../setupui/skkui.cpp:584
 msgid "Highlight A&nnotation"
 msgstr ""
 
-#: ../setupui/skkui.cpp:557 ../setupui/skkui.cpp:577
+#: ../setupui/skkui.cpp:585 ../setupui/skkui.cpp:605
 msgid "Alt+N"
 msgstr ""
 
-#: ../setupui/skkui.cpp:558
+#: ../setupui/skkui.cpp:586
 msgid "&View Annotation"
 msgstr ""
 
-#: ../setupui/skkui.cpp:559
+#: ../setupui/skkui.cpp:587
 msgid "Alt+V"
 msgstr ""
 
-#: ../setupui/skkui.cpp:560
+#: ../setupui/skkui.cpp:588
 msgid "Candidate Selection"
 msgstr ""
 
-#: ../setupui/skkui.cpp:562
+#: ../setupui/skkui.cpp:590
 msgid "qwerty arrangement"
 msgstr ""
 
-#: ../setupui/skkui.cpp:563
+#: ../setupui/skkui.cpp:591
 msgid "Dvorak arrangement"
 msgstr ""
 
-#: ../setupui/skkui.cpp:564
+#: ../setupui/skkui.cpp:592
 msgid "number selection"
 msgstr ""
 
-#: ../setupui/skkui.cpp:565
+#: ../setupui/skkui.cpp:593
 msgid "Selection Style:"
 msgstr ""
 
-#: ../setupui/skkui.cpp:566
+#: ../setupui/skkui.cpp:594
 msgid "List Size:"
 msgstr ""
 
-#: ../setupui/skkui.cpp:567
+#: ../setupui/skkui.cpp:595
 msgid "Ignore Return &at the commiting time"
 msgstr ""
 
-#: ../setupui/skkui.cpp:568 ../setupui/skkui.cpp:575
+#: ../setupui/skkui.cpp:596 ../setupui/skkui.cpp:603
 msgid "Alt+A"
 msgstr ""
 
-#: ../setupui/skkui.cpp:569
+#: ../setupui/skkui.cpp:597
 msgid "&General"
 msgstr ""
 
-#: ../setupui/skkui.cpp:570
+#: ../setupui/skkui.cpp:598
 msgid "System Dictionary"
 msgstr ""
 
-#: ../setupui/skkui.cpp:571
+#: ../setupui/skkui.cpp:599
 msgid "&Up"
 msgstr ""
 
-#: ../setupui/skkui.cpp:572
+#: ../setupui/skkui.cpp:600
 msgid "Alt+U"
 msgstr ""
 
-#: ../setupui/skkui.cpp:573
+#: ../setupui/skkui.cpp:601
 msgid "Delete"
 msgstr ""
 
-#: ../setupui/skkui.cpp:574
+#: ../setupui/skkui.cpp:602
 msgid "&Add"
 msgstr ""
 
-#: ../setupui/skkui.cpp:576
+#: ../setupui/skkui.cpp:604
 msgid "Dow&n"
 msgstr ""
 
-#: ../setupui/skkui.cpp:580
+#: ../setupui/skkui.cpp:608
 msgid "User Dictionary"
 msgstr ""
 
-#: ../setupui/skkui.cpp:581
+#: ../setupui/skkui.cpp:609
 msgid "User Dictionary Name:"
 msgstr ""
 
-#: ../setupui/skkui.cpp:582
+#: ../setupui/skkui.cpp:610
 msgid "&Dictionary"
 msgstr ""
 
-#: ../setupui/skkui.cpp:583
+#: ../setupui/skkui.cpp:611
 msgid "Kakutei:"
 msgstr ""
 
-#: ../setupui/skkui.cpp:584
+#: ../setupui/skkui.cpp:612
 msgid "Cancel:"
 msgstr ""
 
-#: ../setupui/skkui.cpp:585
-msgid "Convert:"
-msgstr ""
-
-#: ../setupui/skkui.cpp:586
-msgid "Start-Preedit:"
-msgstr ""
-
-#: ../setupui/skkui.cpp:587
-msgid "ASCII-Convert:"
-msgstr ""
-
-#: ../setupui/skkui.cpp:588
-msgid "Previous Candidate:"
-msgstr ""
-
-#: ../setupui/skkui.cpp:589
+#: ../setupui/skkui.cpp:613
 msgid "Upcase:"
 msgstr ""
 
-#: ../setupui/skkui.cpp:590
+#: ../setupui/skkui.cpp:614
+msgid "Completion:"
+msgstr ""
+
+#: ../setupui/skkui.cpp:615
+msgid "Completion Back:"
+msgstr ""
+
+#: ../setupui/skkui.cpp:616
 msgid "&Common"
 msgstr ""
 
-#: ../setupui/skkui.cpp:591
+#: ../setupui/skkui.cpp:617
+msgid "Convert:"
+msgstr ""
+
+#: ../setupui/skkui.cpp:618
+msgid "Start-Preedit:"
+msgstr ""
+
+#: ../setupui/skkui.cpp:619
+msgid "ASCII-Convert:"
+msgstr ""
+
+#: ../setupui/skkui.cpp:620
+msgid "Previous Candidate:"
+msgstr ""
+
+#: ../setupui/skkui.cpp:621
+msgid "Co&nversion keys"
+msgstr ""
+
+#: ../setupui/skkui.cpp:622
 msgid "Katakana:"
 msgstr ""
 
-#: ../setupui/skkui.cpp:592
+#: ../setupui/skkui.cpp:623
 msgid "Half-Katakana:"
 msgstr ""
 
-#: ../setupui/skkui.cpp:593
+#: ../setupui/skkui.cpp:624
 msgid "ASCII:"
 msgstr ""
 
-#: ../setupui/skkui.cpp:594
+#: ../setupui/skkui.cpp:625
 msgid "Wide-ASCII:"
 msgstr ""
 
-#: ../setupui/skkui.cpp:595
+#: ../setupui/skkui.cpp:626
 msgid "Mode"
 msgstr ""
 
-#: ../setupui/skkui.cpp:596
+#: ../setupui/skkui.cpp:627
 msgid "Backspace:"
 msgstr ""
 
-#: ../setupui/skkui.cpp:597
+#: ../setupui/skkui.cpp:628
 msgid "Delete:"
 msgstr ""
 
-#: ../setupui/skkui.cpp:598
+#: ../setupui/skkui.cpp:629
 msgid "Forward:"
 msgstr ""
 
-#: ../setupui/skkui.cpp:599
+#: ../setupui/skkui.cpp:630
 msgid "Backward:"
 msgstr ""
 
-#: ../setupui/skkui.cpp:600
+#: ../setupui/skkui.cpp:631
 msgid "Home:"
 msgstr ""
 
-#: ../setupui/skkui.cpp:601
+#: ../setupui/skkui.cpp:632
 msgid "End:"
 msgstr ""
 
-#: ../setupui/skkui.cpp:602
+#: ../setupui/skkui.cpp:633
 msgid "C&aret"
 msgstr ""
 
-#: ../setupui/skkui.cpp:603
+#: ../setupui/skkui.cpp:634
 msgid "&Key bindings"
 msgstr ""

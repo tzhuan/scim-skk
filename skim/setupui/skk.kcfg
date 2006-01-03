@@ -66,12 +66,12 @@
     <entry name="_IMEngine_SKK_Forward" key="/IMEngine/SKK/Forward" type="String">
       <label>Forward Keys</label>
       <whatsthis></whatsthis>
-      <default>Right,Control+f</default>
+      <default>Right,Control+f,Down</default>
     </entry>
     <entry name="_IMEngine_SKK_Backward" key="/IMEngine/SKK/Backward" type="String">
       <label>The key events to move the caret forward.</label>
       <whatsthis></whatsthis>
-      <default>Left,Control+b</default>
+      <default>Left,Control+b,Up</default>
     </entry>
     <entry name="_IMEngine_SKK_Home" key="/IMEngine/SKK/Home" type="String">
       <label>Home Keys</label>
@@ -87,6 +87,16 @@
       <label>Upcase Keys</label>
       <whatsthis>The key events to toggle case of characters in preedit string.</whatsthis>
       <default>Control+u</default>
+    </entry>
+    <entry name="_IMEngine_SKK_Completion" key="/IMEngine/SKK/Completion" type="String">
+      <label>Completion Keys</label>
+      <whatsthis>The key events to complete preedit string.</whatsthis>
+      <default>Tab</default>
+    </entry>
+    <entry name="_IMEngine_SKK_CompletionBack" key="/IMEngine/SKK/CompletionBack" type="String">
+      <label>Completion Backward Keys</label>
+      <whatsthis>The key events to turn back completion candidates of preedit string.</whatsthis>
+      <default>period</default>
     </entry>
 
     <entry name="_IMEngine_SKK_SelectionStyle" key="/IMEngine/SKK/SelectionStyle" type="String">

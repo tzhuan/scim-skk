@@ -656,126 +656,6 @@
                                         <string>Cancel:</string>
                                     </property>
                                 </widget>
-                                <widget class="QLabel" row="2" column="0">
-                                    <property name="name">
-                                        <cstring>textLabel3_2</cstring>
-                                    </property>
-                                    <property name="text">
-                                        <string>Convert:</string>
-                                    </property>
-                                </widget>
-                                <widget class="QLabel" row="3" column="0">
-                                    <property name="name">
-                                        <cstring>textLabel4_2</cstring>
-                                    </property>
-                                    <property name="text">
-                                        <string>Start-Preedit:</string>
-                                    </property>
-                                </widget>
-                                <widget class="QLabel" row="4" column="0">
-                                    <property name="name">
-                                        <cstring>textLabel5_2</cstring>
-                                    </property>
-                                    <property name="text">
-                                        <string>ASCII-Convert:</string>
-                                    </property>
-                                </widget>
-                                <widget class="QLabel" row="5" column="0">
-                                    <property name="name">
-                                        <cstring>textLabel6_2</cstring>
-                                    </property>
-                                    <property name="text">
-                                        <string>Previous Candidate:</string>
-                                    </property>
-                                </widget>
-                                <widget class="QLabel" row="6" column="0">
-                                    <property name="name">
-                                        <cstring>textLabel7_2</cstring>
-                                    </property>
-                                    <property name="text">
-                                        <string>Upcase:</string>
-                                    </property>
-                                </widget>
-                                <widget class="SkimEditShortcutButton" row="2" column="2">
-                                    <property name="name">
-                                        <cstring>Convert_Button</cstring>
-                                    </property>
-                                    <property name="enabled">
-                                        <bool>true</bool>
-                                    </property>
-                                    <property name="sizePolicy">
-                                        <sizepolicy>
-                                            <hsizetype>0</hsizetype>
-                                            <vsizetype>1</vsizetype>
-                                            <horstretch>0</horstretch>
-                                            <verstretch>0</verstretch>
-                                        </sizepolicy>
-                                    </property>
-                                </widget>
-                                <widget class="SkimEditShortcutButton" row="3" column="2">
-                                    <property name="name">
-                                        <cstring>StartPreedit_Button</cstring>
-                                    </property>
-                                    <property name="enabled">
-                                        <bool>true</bool>
-                                    </property>
-                                    <property name="sizePolicy">
-                                        <sizepolicy>
-                                            <hsizetype>0</hsizetype>
-                                            <vsizetype>1</vsizetype>
-                                            <horstretch>0</horstretch>
-                                            <verstretch>0</verstretch>
-                                        </sizepolicy>
-                                    </property>
-                                </widget>
-                                <widget class="SkimEditShortcutButton" row="4" column="2">
-                                    <property name="name">
-                                        <cstring>ASCIIConvert_Button</cstring>
-                                    </property>
-                                    <property name="enabled">
-                                        <bool>true</bool>
-                                    </property>
-                                    <property name="sizePolicy">
-                                        <sizepolicy>
-                                            <hsizetype>0</hsizetype>
-                                            <vsizetype>1</vsizetype>
-                                            <horstretch>0</horstretch>
-                                            <verstretch>0</verstretch>
-                                        </sizepolicy>
-                                    </property>
-                                </widget>
-                                <widget class="SkimEditShortcutButton" row="5" column="2">
-                                    <property name="name">
-                                        <cstring>PrevCand_Button</cstring>
-                                    </property>
-                                    <property name="enabled">
-                                        <bool>true</bool>
-                                    </property>
-                                    <property name="sizePolicy">
-                                        <sizepolicy>
-                                            <hsizetype>0</hsizetype>
-                                            <vsizetype>1</vsizetype>
-                                            <horstretch>0</horstretch>
-                                            <verstretch>0</verstretch>
-                                        </sizepolicy>
-                                    </property>
-                                </widget>
-                                <widget class="SkimEditShortcutButton" row="6" column="2">
-                                    <property name="name">
-                                        <cstring>UPCASE_Button</cstring>
-                                    </property>
-                                    <property name="enabled">
-                                        <bool>true</bool>
-                                    </property>
-                                    <property name="sizePolicy">
-                                        <sizepolicy>
-                                            <hsizetype>0</hsizetype>
-                                            <vsizetype>1</vsizetype>
-                                            <horstretch>0</horstretch>
-                                            <verstretch>0</verstretch>
-                                        </sizepolicy>
-                                    </property>
-                                </widget>
                                 <widget class="SkimEditShortcutButton" row="1" column="2">
                                     <property name="name">
                                         <cstring>Cancel_Button</cstring>
@@ -808,42 +688,31 @@
                                         </sizepolicy>
                                     </property>
                                 </widget>
-                                <widget class="QLineEdit" row="0" column="1">
+                                <widget class="QLabel" row="2" column="0">
                                     <property name="name">
-                                        <cstring>kcfg__IMEngine_SKK_Kakutei</cstring>
+                                        <cstring>textLabel7_2</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Upcase:</string>
                                     </property>
                                 </widget>
-                                <widget class="QLineEdit" row="1" column="1">
+                                <widget class="QLabel" row="3" column="0">
                                     <property name="name">
-                                        <cstring>kcfg__IMEngine_SKK_Cancel</cstring>
+                                        <cstring>textLabel7_2_2</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Completion:</string>
                                     </property>
                                 </widget>
-                                <widget class="QLineEdit" row="2" column="1">
+                                <widget class="QLabel" row="4" column="0">
                                     <property name="name">
-                                        <cstring>kcfg__IMEngine_SKK_Convert</cstring>
+                                        <cstring>textLabel7_2_3</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Completion Back:</string>
                                     </property>
                                 </widget>
-                                <widget class="QLineEdit" row="3" column="1">
-                                    <property name="name">
-                                        <cstring>kcfg__IMEngine_SKK_StartPreedit</cstring>
-                                    </property>
-                                </widget>
-                                <widget class="QLineEdit" row="4" column="1">
-                                    <property name="name">
-                                        <cstring>kcfg__IMEngine_SKK_ASCIIConvert</cstring>
-                                    </property>
-                                </widget>
-                                <widget class="QLineEdit" row="5" column="1">
-                                    <property name="name">
-                                        <cstring>kcfg__IMEngine_SKK_PrevCand</cstring>
-                                    </property>
-                                </widget>
-                                <widget class="QLineEdit" row="6" column="1">
-                                    <property name="name">
-                                        <cstring>kcfg__IMEngine_SKK_UPCASE</cstring>
-                                    </property>
-                                </widget>
-                                <spacer row="7" column="1">
+                                <spacer row="5" column="1">
                                     <property name="name">
                                         <cstring>spacer42</cstring>
                                     </property>
@@ -856,7 +725,226 @@
                                     <property name="sizeHint">
                                         <size>
                                             <width>20</width>
-                                            <height>20</height>
+                                            <height>60</height>
+                                        </size>
+                                    </property>
+                                </spacer>
+                                <widget class="QLineEdit" row="3" column="1">
+                                    <property name="name">
+                                        <cstring>kcfg__IMEngine_SKK_Completion</cstring>
+                                    </property>
+                                </widget>
+                                <widget class="QLineEdit" row="4" column="1">
+                                    <property name="name">
+                                        <cstring>kcfg__IMEngine_SKK_CompletionBack</cstring>
+                                    </property>
+                                </widget>
+                                <widget class="SkimEditShortcutButton" row="3" column="2">
+                                    <property name="name">
+                                        <cstring>Completion_Button</cstring>
+                                    </property>
+                                    <property name="enabled">
+                                        <bool>true</bool>
+                                    </property>
+                                    <property name="sizePolicy">
+                                        <sizepolicy>
+                                            <hsizetype>0</hsizetype>
+                                            <vsizetype>1</vsizetype>
+                                            <horstretch>0</horstretch>
+                                            <verstretch>0</verstretch>
+                                        </sizepolicy>
+                                    </property>
+                                </widget>
+                                <widget class="SkimEditShortcutButton" row="4" column="2">
+                                    <property name="name">
+                                        <cstring>CompletionBack_Button</cstring>
+                                    </property>
+                                    <property name="enabled">
+                                        <bool>true</bool>
+                                    </property>
+                                    <property name="sizePolicy">
+                                        <sizepolicy>
+                                            <hsizetype>0</hsizetype>
+                                            <vsizetype>1</vsizetype>
+                                            <horstretch>0</horstretch>
+                                            <verstretch>0</verstretch>
+                                        </sizepolicy>
+                                    </property>
+                                </widget>
+                                <widget class="SkimEditShortcutButton" row="2" column="2">
+                                    <property name="name">
+                                        <cstring>UPCASE_Button</cstring>
+                                    </property>
+                                    <property name="enabled">
+                                        <bool>true</bool>
+                                    </property>
+                                    <property name="sizePolicy">
+                                        <sizepolicy>
+                                            <hsizetype>0</hsizetype>
+                                            <vsizetype>1</vsizetype>
+                                            <horstretch>0</horstretch>
+                                            <verstretch>0</verstretch>
+                                        </sizepolicy>
+                                    </property>
+                                </widget>
+                                <widget class="QLineEdit" row="2" column="1">
+                                    <property name="name">
+                                        <cstring>kcfg__IMEngine_SKK_UPCASE</cstring>
+                                    </property>
+                                </widget>
+                                <widget class="QLineEdit" row="1" column="1">
+                                    <property name="name">
+                                        <cstring>kcfg__IMEngine_SKK_Cancel</cstring>
+                                    </property>
+                                </widget>
+                                <widget class="QLineEdit" row="0" column="1">
+                                    <property name="name">
+                                        <cstring>kcfg__IMEngine_SKK_Kakutei</cstring>
+                                    </property>
+                                </widget>
+                            </grid>
+                        </widget>
+                        <widget class="QWidget">
+                            <property name="name">
+                                <cstring>TabPage</cstring>
+                            </property>
+                            <attribute name="title">
+                                <string>Co&amp;nversion</string>
+                            </attribute>
+                            <grid>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QLabel" row="0" column="0">
+                                    <property name="name">
+                                        <cstring>textLabel3_2</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Convert:</string>
+                                    </property>
+                                </widget>
+                                <widget class="QLineEdit" row="0" column="1">
+                                    <property name="name">
+                                        <cstring>kcfg__IMEngine_SKK_Convert</cstring>
+                                    </property>
+                                </widget>
+                                <widget class="QLabel" row="1" column="0">
+                                    <property name="name">
+                                        <cstring>textLabel4_2</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Start-Preedit:</string>
+                                    </property>
+                                </widget>
+                                <widget class="SkimEditShortcutButton" row="0" column="2">
+                                    <property name="name">
+                                        <cstring>Convert_Button</cstring>
+                                    </property>
+                                    <property name="enabled">
+                                        <bool>true</bool>
+                                    </property>
+                                    <property name="sizePolicy">
+                                        <sizepolicy>
+                                            <hsizetype>0</hsizetype>
+                                            <vsizetype>1</vsizetype>
+                                            <horstretch>0</horstretch>
+                                            <verstretch>0</verstretch>
+                                        </sizepolicy>
+                                    </property>
+                                </widget>
+                                <widget class="QLineEdit" row="1" column="1">
+                                    <property name="name">
+                                        <cstring>kcfg__IMEngine_SKK_StartPreedit</cstring>
+                                    </property>
+                                </widget>
+                                <widget class="SkimEditShortcutButton" row="1" column="2">
+                                    <property name="name">
+                                        <cstring>StartPreedit_Button</cstring>
+                                    </property>
+                                    <property name="enabled">
+                                        <bool>true</bool>
+                                    </property>
+                                    <property name="sizePolicy">
+                                        <sizepolicy>
+                                            <hsizetype>0</hsizetype>
+                                            <vsizetype>1</vsizetype>
+                                            <horstretch>0</horstretch>
+                                            <verstretch>0</verstretch>
+                                        </sizepolicy>
+                                    </property>
+                                </widget>
+                                <widget class="QLineEdit" row="2" column="1">
+                                    <property name="name">
+                                        <cstring>kcfg__IMEngine_SKK_ASCIIConvert</cstring>
+                                    </property>
+                                </widget>
+                                <widget class="QLabel" row="2" column="0">
+                                    <property name="name">
+                                        <cstring>textLabel5_2</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>ASCII-Convert:</string>
+                                    </property>
+                                </widget>
+                                <widget class="SkimEditShortcutButton" row="2" column="2">
+                                    <property name="name">
+                                        <cstring>ASCIIConvert_Button</cstring>
+                                    </property>
+                                    <property name="enabled">
+                                        <bool>true</bool>
+                                    </property>
+                                    <property name="sizePolicy">
+                                        <sizepolicy>
+                                            <hsizetype>0</hsizetype>
+                                            <vsizetype>1</vsizetype>
+                                            <horstretch>0</horstretch>
+                                            <verstretch>0</verstretch>
+                                        </sizepolicy>
+                                    </property>
+                                </widget>
+                                <widget class="QLabel" row="3" column="0">
+                                    <property name="name">
+                                        <cstring>textLabel6_2</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Previous Candidate:</string>
+                                    </property>
+                                </widget>
+                                <widget class="QLineEdit" row="3" column="1">
+                                    <property name="name">
+                                        <cstring>kcfg__IMEngine_SKK_PrevCand</cstring>
+                                    </property>
+                                </widget>
+                                <widget class="SkimEditShortcutButton" row="3" column="2">
+                                    <property name="name">
+                                        <cstring>PrevCand_Button</cstring>
+                                    </property>
+                                    <property name="enabled">
+                                        <bool>true</bool>
+                                    </property>
+                                    <property name="sizePolicy">
+                                        <sizepolicy>
+                                            <hsizetype>0</hsizetype>
+                                            <vsizetype>1</vsizetype>
+                                            <horstretch>0</horstretch>
+                                            <verstretch>0</verstretch>
+                                        </sizepolicy>
+                                    </property>
+                                </widget>
+                                <spacer row="4" column="1">
+                                    <property name="name">
+                                        <cstring>spacer42_2</cstring>
+                                    </property>
+                                    <property name="orientation">
+                                        <enum>Vertical</enum>
+                                    </property>
+                                    <property name="sizeType">
+                                        <enum>Expanding</enum>
+                                    </property>
+                                    <property name="sizeHint">
+                                        <size>
+                                            <width>20</width>
+                                            <height>120</height>
                                         </size>
                                     </property>
                                 </spacer>
@@ -1444,78 +1532,6 @@
         <slot>setFocus()</slot>
     </connection>
     <connection>
-        <sender>PrevCand_Button</sender>
-        <signal>setEditorText(const QString&amp;)</signal>
-        <receiver>kcfg__IMEngine_SKK_PrevCand</receiver>
-        <slot>setText(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>kcfg__IMEngine_SKK_PrevCand</sender>
-        <signal>textChanged(const QString&amp;)</signal>
-        <receiver>PrevCand_Button</receiver>
-        <slot>setShortcuts(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>PrevCand_Button</sender>
-        <signal>setEditorText(const QString&amp;)</signal>
-        <receiver>kcfg__IMEngine_SKK_PrevCand</receiver>
-        <slot>setFocus()</slot>
-    </connection>
-    <connection>
-        <sender>ASCIIConvert_Button</sender>
-        <signal>setEditorText(const QString&amp;)</signal>
-        <receiver>kcfg__IMEngine_SKK_ASCIIConvert</receiver>
-        <slot>setText(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>kcfg__IMEngine_SKK_ASCIIConvert</sender>
-        <signal>textChanged(const QString&amp;)</signal>
-        <receiver>ASCIIConvert_Button</receiver>
-        <slot>setShortcuts(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>ASCIIConvert_Button</sender>
-        <signal>setEditorText(const QString&amp;)</signal>
-        <receiver>kcfg__IMEngine_SKK_ASCIIConvert</receiver>
-        <slot>setFocus()</slot>
-    </connection>
-    <connection>
-        <sender>StartPreedit_Button</sender>
-        <signal>setEditorText(const QString&amp;)</signal>
-        <receiver>kcfg__IMEngine_SKK_StartPreedit</receiver>
-        <slot>setText(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>kcfg__IMEngine_SKK_StartPreedit</sender>
-        <signal>textChanged(const QString&amp;)</signal>
-        <receiver>StartPreedit_Button</receiver>
-        <slot>setShortcuts(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>StartPreedit_Button</sender>
-        <signal>setEditorText(const QString&amp;)</signal>
-        <receiver>kcfg__IMEngine_SKK_StartPreedit</receiver>
-        <slot>setFocus()</slot>
-    </connection>
-    <connection>
-        <sender>Convert_Button</sender>
-        <signal>setEditorText(const QString&amp;)</signal>
-        <receiver>kcfg__IMEngine_SKK_Convert</receiver>
-        <slot>setText(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>kcfg__IMEngine_SKK_Convert</sender>
-        <signal>textChanged(const QString&amp;)</signal>
-        <receiver>Convert_Button</receiver>
-        <slot>setShortcuts(const QString&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>Convert_Button</sender>
-        <signal>setEditorText(const QString&amp;)</signal>
-        <receiver>kcfg__IMEngine_SKK_Convert</receiver>
-        <slot>setFocus()</slot>
-    </connection>
-    <connection>
         <sender>Cancel_Button</sender>
         <signal>setEditorText(const QString&amp;)</signal>
         <receiver>kcfg__IMEngine_SKK_Cancel</receiver>
@@ -1558,6 +1574,8 @@
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
     <includehint>kcolorbutton.h</includehint>
+    <includehint>skimeditshortcutbutton.h</includehint>
+    <includehint>skimeditshortcutbutton.h</includehint>
     <includehint>skimeditshortcutbutton.h</includehint>
     <includehint>skimeditshortcutbutton.h</includehint>
     <includehint>skimeditshortcutbutton.h</includehint>
