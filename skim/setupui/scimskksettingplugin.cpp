@@ -120,6 +120,7 @@ void ScimSKKSettingPlugin::load ()
     KAutoCModule::load ();
 
     d->setup_sysdict_view ();
+    slotWidgetModified ();
 }
 
 void ScimSKKSettingPlugin::save ()
@@ -129,8 +130,10 @@ void ScimSKKSettingPlugin::save ()
     if (tmp_item) {
         KConfigSkeletonGenericItem<QString> *item;
         item = dynamic_cast<KConfigSkeletonGenericItem<QString>*> (tmp_item);
-        if (item)
+        if (item) {
             item->setValue (d->sysdict_list ());
+            item->writeConfig (SKKConfig::self()->config());
+        }
     }
 
     KAutoCModule::save ();
@@ -139,6 +142,20 @@ void ScimSKKSettingPlugin::save ()
 void ScimSKKSettingPlugin::defaults ()
 {
     KAutoCModule::defaults ();
+
+    KConfigSkeletonItem *tmp_item;
+    tmp_item = SKKConfig::self()->findItem("_IMEngine_SKK_SysDict");
+    if (tmp_item) {
+        KConfigSkeletonGenericItem<QString> *item;
+        item = dynamic_cast<KConfigSkeletonGenericItem<QString>*> (tmp_item);
+        if (item) {
+            item->swapDefault ();
+            d->setup_sysdict_view ();
+            item->swapDefault ();
+        }
+    }
+
+    slotWidgetModified ();
 }
 
 void ScimSKKSettingPlugin::slotWidgetModified ()
@@ -151,7 +168,7 @@ void ScimSKKSettingPlugin::slotWidgetModified ()
 
 void ScimSKKSettingPlugin::sysdict_add ()
 {
-    ScimSKKAddDictDialog dialog;
+    ScimSKKAddDictDialog dialog (d->ui);
 
     if (dialog.exec () == QDialog::Accepted) {
         new QListViewItem (
