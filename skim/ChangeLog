@@ -1,5 +1,9 @@
 2006-01-03 Takuro Ashie <ashie@homa.ne.jp>
 
+	* setupui/scimskkadddic.cpp: Implement set_dict().
+
+2006-01-03 Takuro Ashie <ashie@homa.ne.jp>
+
 	* setupui/skk.kcfg, setupui/skkui.ui: Add missing key preferences.
 	* po/ja.po: Update.
 

@@ -127,6 +127,9 @@ void ScimSKKSettingPlugin::save ()
 {
     KAutoCModule::save ();
 
+    if (!d->is_changed ())
+        return;
+
     // save system dictionary list
     KConfigSkeletonItem *tmp_item;
     tmp_item = SKKConfig::self()->findItem("_IMEngine_SKK_SysDict");
