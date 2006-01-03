@@ -13,7 +13,7 @@ kcm_skimplugin_scim_skk_la_SOURCES = \
 	skkui.ui \
 	scimskksettingplugin.cpp \
 	scimskkadddic.cpp
-kcm_skimplugin_scim_skk_la_LIBADD = $(LIB_QT) $(LIB_KDEUI) $(LIB_KDECORE) @SCIM_KDEUTILS_LIBS@
+kcm_skimplugin_scim_skk_la_LIBADD = $(LIB_QT) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_KIO) @SCIM_KDEUTILS_LIBS@
 
 kde_kcfg_DATA = skk.kcfg
 

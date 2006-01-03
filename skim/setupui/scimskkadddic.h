@@ -22,10 +22,16 @@ public:
                            const char *name = 0);
     ~ScimSKKAddDictDialog ();
 
+    void    set_dict      (QString &type,
+			   QString &name);
     QString get_dict_type ();
     QString get_dict_name ();
 
 public slots:
+
+private:
+    class ScimSKKAddDictDialogPrivate;
+    ScimSKKAddDictDialogPrivate *d;
 };
 
 #endif // SCIMSKKADDDICT_H

@@ -1,5 +1,10 @@
 2006-01-03 Takuro Ashie <ashie@homa.ne.jp>
 
+	* setupui/Makefile.am: Link libkio.so to use KURLRequester.
+	* setupui/scimskkadddic.{cpp,h}: Add some contents, but not completed yet.
+
+2006-01-03 Takuro Ashie <ashie@homa.ne.jp>
+
 	* setupui/scimskksettingplugin.cpp: Implement defaults().
 	Write the sysdict value to config file on save().
 
