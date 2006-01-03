@@ -125,6 +125,9 @@ void ScimSKKSettingPlugin::load ()
 
 void ScimSKKSettingPlugin::save ()
 {
+    KAutoCModule::save ();
+
+    // save system dictionary list
     KConfigSkeletonItem *tmp_item;
     tmp_item = SKKConfig::self()->findItem("_IMEngine_SKK_SysDict");
     if (tmp_item) {
@@ -135,14 +138,13 @@ void ScimSKKSettingPlugin::save ()
             item->writeConfig (SKKConfig::self()->config());
         }
     }
-
-    KAutoCModule::save ();
 }
 
 void ScimSKKSettingPlugin::defaults ()
 {
     KAutoCModule::defaults ();
 
+    // set default value of system dictionary
     KConfigSkeletonItem *tmp_item;
     tmp_item = SKKConfig::self()->findItem("_IMEngine_SKK_SysDict");
     if (tmp_item) {
