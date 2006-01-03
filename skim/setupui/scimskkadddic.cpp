@@ -74,21 +74,20 @@ ScimSKKAddDictDialog::ScimSKKAddDictDialog (QWidget *parent, const char *name)
     d->m_skk_serv_frame->hide ();
     main_vbox->addWidget (d->m_skk_serv_frame);
 
-    QVBoxLayout *vbox = new QVBoxLayout (d->m_skk_serv_frame, 6);
-    QHBoxLayout *hbox1 = new QHBoxLayout (vbox, 0);
-    QHBoxLayout *hbox2 = new QHBoxLayout (vbox, 0);
+    QGridLayout *grid = new QGridLayout (d->m_skk_serv_frame, 2, 2, 0, 4);
 
     label = new QLabel (i18n ("Server Name:"), d->m_skk_serv_frame);
-    hbox1->addWidget (label);
+    //hbox1->addWidget (label);
+    grid->addWidget (label, 0, 0);
     d->m_server_name = new KLineEdit (d->m_skk_serv_frame);
     d->m_server_name->setText ("localhost");
-    hbox1->addWidget (d->m_server_name);
+    grid->addWidget (d->m_server_name, 0, 1);
 
     label = new QLabel (i18n ("Port Number:"), d->m_skk_serv_frame);
-    hbox2->addWidget (label);
+    grid->addWidget (label, 1, 0);
     d->m_port_number = new KLineEdit (d->m_skk_serv_frame);
     d->m_port_number->setText ("1178");
-    hbox2->addWidget (d->m_port_number);
+    grid->addWidget (d->m_port_number, 1, 1);
 
     // connect to signals
     connect (d->m_dict_type_combo, SIGNAL (activated (const QString &)),
