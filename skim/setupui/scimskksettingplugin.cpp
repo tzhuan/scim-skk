@@ -22,10 +22,13 @@
 
 #include <iostream>
 
+#include <qpushbutton.h>
 #include <qlistview.h>
 
 #include <kgenericfactory.h>
 #include <klocale.h>
+
+#include "scimskkadddic.h"
 
 typedef KGenericFactory<ScimSKKSettingPlugin> ScimSKKSettingLoaderFactory;
 
@@ -35,6 +38,7 @@ K_EXPORT_COMPONENT_FACTORY(kcm_skimplugin_scim_skk,
 class ScimSKKSettingPlugin::ScimSKKSettingPluginPrivate {
 public:
     SKKSettingUI * ui;
+
 public:
     void setup_sysdict_view ()
     {
@@ -82,20 +86,30 @@ public:
     }
 };
 
-ScimSKKSettingPlugin::ScimSKKSettingPlugin(QWidget *parent, 
-					   const char */*name*/,
-					   const QStringList &args)
- : KAutoCModule (ScimSKKSettingLoaderFactory::instance(), 
+ScimSKKSettingPlugin::ScimSKKSettingPlugin (QWidget *parent, 
+                                            const char */*name*/,
+                                            const QStringList &args)
+    : KAutoCModule (ScimSKKSettingLoaderFactory::instance(), 
 		 parent, args, SKKConfig::self()),
-   d (new ScimSKKSettingPluginPrivate)
+      d (new ScimSKKSettingPluginPrivate)
 {
-    KGlobal::locale()->insertCatalogue("skim-scim-skk");
-    d->ui = new SKKSettingUI(this);
-    setMainWidget(d->ui);
+    KGlobal::locale()->insertCatalogue ("skim-scim-skk");
+    d->ui = new SKKSettingUI (this);
+    setMainWidget (d->ui);
+
     d->setup_sysdict_view ();
+
+    connect (d->ui->SystemDictionaryAddButton, SIGNAL (clicked ()),
+             this, SLOT (sysdict_add ()));
+    connect (d->ui->SystemDictionaryDeleteButton, SIGNAL (clicked ()),
+             this, SLOT (sysdict_delete ()));
+    connect (d->ui->SystemDictionaryUpButton, SIGNAL (clicked ()),
+             this, SLOT (sysdict_up ()));
+    connect (d->ui->SystemDictionaryDownButton, SIGNAL (clicked ()),
+             this, SLOT (sysdict_down ()));
 }
 
-ScimSKKSettingPlugin::~ScimSKKSettingPlugin() 
+ScimSKKSettingPlugin::~ScimSKKSettingPlugin () 
 {
     KGlobal::locale()->removeCatalogue("skim-scim-skk");
     delete d;
@@ -133,6 +147,52 @@ void ScimSKKSettingPlugin::slotWidgetModified ()
         emit changed (true);
     else
         KAutoCModule::slotWidgetModified();
+}
+
+void ScimSKKSettingPlugin::sysdict_add ()
+{
+    ScimSKKAddDictDialog dialog;
+
+    if (dialog.exec () == QDialog::Accepted) {
+        new QListViewItem (
+            d->ui->SystemDictionaryListView,
+            d->ui->SystemDictionaryListView->lastItem (),
+            dialog.get_dict_type (),
+            dialog.get_dict_name ());
+        slotWidgetModified ();
+    }
+}
+
+void ScimSKKSettingPlugin::sysdict_delete ()
+{
+    QListViewItem *item = d->ui->SystemDictionaryListView->currentItem ();
+    if (!item) return;
+    d->ui->SystemDictionaryListView->takeItem (item);
+    delete item;
+
+    slotWidgetModified ();
+}
+
+void ScimSKKSettingPlugin::sysdict_up ()
+{
+    QListViewItem *prev, *item = d->ui->SystemDictionaryListView->currentItem ();
+    if (!item) return;
+    prev = item->itemAbove ();
+    if (!prev) return;
+    prev->moveItem (item);
+
+    slotWidgetModified ();
+}
+
+void ScimSKKSettingPlugin::sysdict_down ()
+{
+    QListViewItem *next, *item = d->ui->SystemDictionaryListView->currentItem ();
+    if (!item) return;
+    next = item->itemBelow ();
+    if (!next) return;
+    item->moveItem (next);
+
+    slotWidgetModified ();
 }
 
 #include "scimskksettingplugin.moc"

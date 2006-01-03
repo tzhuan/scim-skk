@@ -4,11 +4,13 @@ METASOURCES = AUTO
 kde_module_LTLIBRARIES =  kcm_skimplugin_scim_skk.la
 
 noinst_HEADERS = \
+	scimskksettingplugin.h \
 	scimskkadddic.h
 
 kcm_skimplugin_scim_skk_la_LDFLAGS = -module -no-undefined $(KDE_PLUGIN) $(all_libraries)
 kcm_skimplugin_scim_skk_la_SOURCES = \
-	skk.kcfgc skkui.ui \
+	skk.kcfgc \
+	skkui.ui \
 	scimskksettingplugin.cpp \
 	scimskkadddic.cpp
 kcm_skimplugin_scim_skk_la_LIBADD = $(LIB_QT) $(LIB_KDEUI) $(LIB_KDECORE) @SCIM_KDEUTILS_LIBS@

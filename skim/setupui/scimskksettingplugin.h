@@ -24,11 +24,11 @@ class ScimSKKSettingPlugin : public KAutoCModule
 {
 Q_OBJECT
 public:
-    ScimSKKSettingPlugin(QWidget *parent,
-			 const char *name,
-			 const QStringList &args);
+    ScimSKKSettingPlugin (QWidget *parent,
+                          const char *name,
+                          const QStringList &args);
 
-    ~ScimSKKSettingPlugin();
+    ~ScimSKKSettingPlugin ();
 
     void load     ();
     void save     ();
@@ -36,6 +36,11 @@ public:
 
 protected slots:
     void slotWidgetModified  ();
+
+    void sysdict_add    ();
+    void sysdict_delete ();
+    void sysdict_up     ();
+    void sysdict_down   ();
 
 private:
     class ScimSKKSettingPluginPrivate;
