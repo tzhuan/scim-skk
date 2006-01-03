@@ -22,8 +22,8 @@ public:
                            const char *name = 0);
     ~ScimSKKAddDictDialog ();
 
-    void    set_dict      (QString &type,
-			   QString &name);
+    void    set_dict      (const QString &type,
+                           const QString &name);
     QString get_dict_type ();
     QString get_dict_name ();
 

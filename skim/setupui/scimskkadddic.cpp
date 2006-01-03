@@ -99,11 +99,16 @@ ScimSKKAddDictDialog::~ScimSKKAddDictDialog ()
     delete d;
 }
 
-void ScimSKKAddDictDialog::set_dict (QString &type, QString &name)
+void ScimSKKAddDictDialog::set_dict (const QString &type, const QString &name)
 {
     set_dict_type (type);
 
     if (type == "SKKServ") {
+        int pos = name.findRev (":");
+        QString serv = pos <= 0 ? "localhost" : name.left (pos);
+        QString port = pos < 0 ? "1178" : name.right (name.length () - pos - 1);
+        d->m_server_name->setText (serv);
+        d->m_port_number->setText (port);
     } else {
         d->m_dict_file_path->lineEdit()->setText (name);
     }
