@@ -130,6 +130,7 @@ QString ScimSKKAddDictDialog::get_dict_name ()
 
 void ScimSKKAddDictDialog::set_dict_type (const QString & type)
 {
+    d->m_dict_type_combo->setCurrentText (type);
     if (type == "SKKServ") {
         d->m_dict_file_frame->hide ();
         d->m_skk_serv_frame->show ();

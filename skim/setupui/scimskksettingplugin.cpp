@@ -107,6 +107,9 @@ ScimSKKSettingPlugin::ScimSKKSettingPlugin (QWidget *parent,
              this, SLOT (sysdict_up ()));
     connect (d->ui->SystemDictionaryDownButton, SIGNAL (clicked ()),
              this, SLOT (sysdict_down ()));
+    connect (d->ui->SystemDictionaryListView,
+             SIGNAL (doubleClicked (QListViewItem*, const QPoint&, int)),
+             this, SLOT (sysdict_edit (QListViewItem*)));
 }
 
 ScimSKKSettingPlugin::~ScimSKKSettingPlugin () 
@@ -215,6 +218,21 @@ void ScimSKKSettingPlugin::sysdict_down ()
     item->moveItem (next);
 
     slotWidgetModified ();
+}
+
+void ScimSKKSettingPlugin::sysdict_edit (QListViewItem *item)
+{
+    if (!item)
+        return;
+
+    ScimSKKAddDictDialog dialog (d->ui);
+    dialog.set_dict (item->text(0), item->text(1));
+
+    if (dialog.exec () == QDialog::Accepted) {
+        item->setText (0, dialog.get_dict_type ());
+        item->setText (1, dialog.get_dict_name ());
+        slotWidgetModified ();
+    }
 }
 
 #include "scimskksettingplugin.moc"

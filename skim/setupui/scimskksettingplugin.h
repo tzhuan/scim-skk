@@ -20,6 +20,8 @@
 
 #include "utils/kautocmodule.h"
 
+class QListViewItem;
+
 class ScimSKKSettingPlugin : public KAutoCModule
 {
 Q_OBJECT
@@ -41,6 +43,7 @@ protected slots:
     void sysdict_delete ();
     void sysdict_up     ();
     void sysdict_down   ();
+    void sysdict_edit   (QListViewItem *item);
 
 private:
     class ScimSKKSettingPluginPrivate;
