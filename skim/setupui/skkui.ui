@@ -1334,6 +1334,24 @@
 </images>
 <connections>
     <connection>
+        <sender>kcfg__IMEngine_SKK_AnnotView</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>kcfg__IMEngine_SKK_AnnotPos</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>kcfg__IMEngine_SKK_AnnotView</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>kcfg__IMEngine_SKK_AnnotTarget</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>kcfg__IMEngine_SKK_AnnotHighlight</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>kcfg__IMEngine_SKK_AnnotBGColor</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+    <connection>
         <sender>End_Button</sender>
         <signal>setEditorText(const QString&amp;)</signal>
         <receiver>kcfg__IMEngine_SKK_End</receiver>

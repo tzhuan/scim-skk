@@ -79,7 +79,7 @@ public:
 
     bool is_changed ()
     {
-        if (sysdict_list() == SKKConfig::_IMEngine_SKK_SysDict())
+        if (sysdict_list () == SKKConfig::_IMEngine_SKK_SysDict ())
             return false;
         else
             return true;
@@ -89,8 +89,8 @@ public:
 ScimSKKSettingPlugin::ScimSKKSettingPlugin (QWidget *parent, 
                                             const char */*name*/,
                                             const QStringList &args)
-    : KAutoCModule (ScimSKKSettingLoaderFactory::instance(), 
-		 parent, args, SKKConfig::self()),
+    : KAutoCModule (ScimSKKSettingLoaderFactory::instance (), 
+		 parent, args, SKKConfig::self ()),
       d (new ScimSKKSettingPluginPrivate)
 {
     KGlobal::locale()->insertCatalogue ("skim-scim-skk");
@@ -114,7 +114,7 @@ ScimSKKSettingPlugin::ScimSKKSettingPlugin (QWidget *parent,
 
 ScimSKKSettingPlugin::~ScimSKKSettingPlugin () 
 {
-    KGlobal::locale()->removeCatalogue("skim-scim-skk");
+    KGlobal::locale()->removeCatalogue ("skim-scim-skk");
     delete d;
 }
 
