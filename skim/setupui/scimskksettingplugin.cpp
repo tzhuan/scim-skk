@@ -23,10 +23,12 @@
 #include <iostream>
 
 #include <qpushbutton.h>
+#include <qcombobox.h>
 #include <qlistview.h>
 
 #include <kgenericfactory.h>
 #include <klocale.h>
+#include <kcolorbutton.h>
 
 #include "scimskkadddic.h"
 
@@ -110,6 +112,13 @@ ScimSKKSettingPlugin::ScimSKKSettingPlugin (QWidget *parent,
     connect (d->ui->SystemDictionaryListView,
              SIGNAL (doubleClicked (QListViewItem*, const QPoint&, int)),
              this, SLOT (sysdict_edit (QListViewItem*)));
+
+    d->ui->kcfg__IMEngine_SKK_AnnotTarget->setEnabled (
+        SKKConfig::_IMEngine_SKK_AnnotView ());
+    d->ui->kcfg__IMEngine_SKK_AnnotPos->setEnabled (
+        SKKConfig::_IMEngine_SKK_AnnotView ());
+    d->ui->kcfg__IMEngine_SKK_AnnotBGColor->setEnabled (
+        SKKConfig::_IMEngine_SKK_AnnotHighlight ());
 }
 
 ScimSKKSettingPlugin::~ScimSKKSettingPlugin () 

@@ -1,3 +1,7 @@
+2006-01-11 Takuro Ashie <ashie@homa.ne.jp>
+
+	* setupui/scimskksettingplugin.cpp: Set initial state of some widgets.
+
 2006-01-04 Takuro Ashie <ashie@homa.ne.jp>
 
 	* setupui/skkui.ui: Set sensitivity of annotation related widgets.
