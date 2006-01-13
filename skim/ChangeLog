@@ -1,3 +1,7 @@
+2006-01-14 Takuro Ashie <ashie@homa.ne.jp>
+
+	* Version-0.5.2
+
 2006-01-11 Takuro Ashie <ashie@homa.ne.jp>
 
 	* setupui/scimskksettingplugin.cpp: Set initial state of some widgets.
