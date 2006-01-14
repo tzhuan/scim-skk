@@ -1585,6 +1585,114 @@
         <receiver>kcfg__IMEngine_SKK_Kakutei</receiver>
         <slot>setFocus()</slot>
     </connection>
+    <connection>
+        <sender>Completion_Button</sender>
+        <signal>setEditorText(const QString&amp;)</signal>
+        <receiver>kcfg__IMEngine_SKK_Completion</receiver>
+        <slot>setText(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>kcfg__IMEngine_SKK_Completion</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>Completion_Button</receiver>
+        <slot>setShortcuts(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>Completion_Button</sender>
+        <signal>setEditorText(const QString&amp;)</signal>
+        <receiver>kcfg__IMEngine_SKK_Completion</receiver>
+        <slot>setFocus()</slot>
+    </connection>
+    <connection>
+        <sender>CompletionBack_Button</sender>
+        <signal>setEditorText(const QString&amp;)</signal>
+        <receiver>kcfg__IMEngine_SKK_CompletionBack</receiver>
+        <slot>setText(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>kcfg__IMEngine_SKK_CompletionBack</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>CompletionBack_Button</receiver>
+        <slot>setShortcuts(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>CompletionBack_Button</sender>
+        <signal>setEditorText(const QString&amp;)</signal>
+        <receiver>kcfg__IMEngine_SKK_CompletionBack</receiver>
+        <slot>setFocus()</slot>
+    </connection>
+    <connection>
+        <sender>Convert_Button</sender>
+        <signal>setEditorText(const QString&amp;)</signal>
+        <receiver>kcfg__IMEngine_SKK_Convert</receiver>
+        <slot>setText(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>kcfg__IMEngine_SKK_Convert</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>Convert_Button</receiver>
+        <slot>setShortcuts(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>Convert_Button</sender>
+        <signal>setEditorText(const QString&amp;)</signal>
+        <receiver>kcfg__IMEngine_SKK_Convert</receiver>
+        <slot>setFocus()</slot>
+    </connection>
+    <connection>
+        <sender>StartPreedit_Button</sender>
+        <signal>setEditorText(const QString&amp;)</signal>
+        <receiver>kcfg__IMEngine_SKK_StartPreedit</receiver>
+        <slot>setText(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>kcfg__IMEngine_SKK_StartPreedit</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>StartPreedit_Button</receiver>
+        <slot>setShortcuts(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>StartPreedit_Button</sender>
+        <signal>setEditorText(const QString&amp;)</signal>
+        <receiver>kcfg__IMEngine_SKK_StartPreedit</receiver>
+        <slot>setFocus()</slot>
+    </connection>
+    <connection>
+        <sender>ASCIIConvert_Button</sender>
+        <signal>setEditorText(const QString&amp;)</signal>
+        <receiver>kcfg__IMEngine_SKK_ASCIIConvert</receiver>
+        <slot>setText(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>kcfg__IMEngine_SKK_ASCIIConvert</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>ASCIIConvert_Button</receiver>
+        <slot>setShortcuts(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>ASCIIConvert_Button</sender>
+        <signal>setEditorText(const QString&amp;)</signal>
+        <receiver>kcfg__IMEngine_SKK_ASCIIConvert</receiver>
+        <slot>setFocus()</slot>
+    </connection>
+    <connection>
+        <sender>PrevCand_Button</sender>
+        <signal>setEditorText(const QString&amp;)</signal>
+        <receiver>kcfg__IMEngine_SKK_PrevCand</receiver>
+        <slot>setText(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>kcfg__IMEngine_SKK_PrevCand</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>PrevCand_Button</receiver>
+        <slot>setShortcuts(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>PrevCand_Button</sender>
+        <signal>setEditorText(const QString&amp;)</signal>
+        <receiver>kcfg__IMEngine_SKK_PrevCand</receiver>
+        <slot>setFocus()</slot>
+    </connection>
 </connections>
 <tabstops>
     <tabstop>tabWidget</tabstop>

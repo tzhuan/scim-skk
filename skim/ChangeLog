@@ -1,5 +1,11 @@
 2006-01-14 Takuro Ashie <ashie@homa.ne.jp>
 
+	* setupui/skk.kcfg: Change "String" type to "Enum" type for combo box.
+	* setupui/skkui.ui: Add some missing feature.
+	Thank you for testting > Bando-san
+
+2006-01-14 Takuro Ashie <ashie@homa.ne.jp>
+
 	* Version-0.5.2
 
 2006-01-11 Takuro Ashie <ashie@homa.ne.jp>
@@ -9,6 +15,11 @@
 2006-01-04 Takuro Ashie <ashie@homa.ne.jp>
 
 	* setupui/skkui.ui: Set sensitivity of annotation related widgets.
+
+2006-01-03 Takuro Ashie <ashie@homa.ne.jp>
+
+        * setupui/scimskkadddic.cppp:
+	Enable to edit each system dictionary entry.
 
 2006-01-03 Takuro Ashie <ashie@homa.ne.jp>
 

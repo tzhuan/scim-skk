@@ -99,7 +99,7 @@
       <default>period</default>
     </entry>
 
-    <entry name="_IMEngine_SKK_SelectionStyle" key="/IMEngine/SKK/SelectionStyle" type="String">
+    <entry name="_IMEngine_SKK_SelectionStyle" key="/IMEngine/SKK/SelectionStyle" type="Enum">
       <label>Selection Style</label>
       <default>Qwerty</default>
       <choices>
@@ -133,7 +133,7 @@
       <label>View Annotation</label>
       <default>true</default>
     </entry>
-    <entry name="_IMEngine_SKK_AnnotPos" key="/IMEngine/SKK/AnnotPos" type="String">
+    <entry name="_IMEngine_SKK_AnnotPos" key="/IMEngine/SKK/AnnotPos" type="Enum">
       <label>Position of Annotation</label>
       <choices>
         <choice name="AuxWindow">
@@ -145,7 +145,7 @@
       </choices>
       <default>AuxWindow</default>
     </entry>
-    <entry name="_IMEngine_SKK_AnnotTarget" key="/IMEngine/SKK/AnnotTarget" type="String">
+    <entry name="_IMEngine_SKK_AnnotTarget" key="/IMEngine/SKK/AnnotTarget" type="Enum">
       <label>Printed Annotation</label>
       <choices>
         <choice name="all">
