@@ -543,9 +543,11 @@ void
 UserDict::write (const WideString &key, const CandPair &data)
 {
     list<CandPair> &cl = m_dictdata[key];
-    for (list<CandPair>::iterator it = cl.begin(); it != cl.end(); it++) {
+    for (list<CandPair>::iterator it = cl.begin(); it != cl.end();) {
         if (it->first == data.first) {
-            cl.erase(it);
+            it = cl.erase(it);
+        } else {
+            ++it;
         }
     }
     cl.push_front(data);
