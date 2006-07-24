@@ -403,9 +403,9 @@ static KeyboardConfigData __config_keyboards_caret [] =
     },
 };
 
-static FileConfigData __config_sysdict = {
-    N_("System Dictionary Path:"),
-    SCIM_SKK_CONFIG_SYSDICT_DEFAULT,
+static FileConfigData __config_style_filename = {
+    N_("_FileName:"),
+    String(),
     NULL,
     NULL,
 };
@@ -749,6 +749,40 @@ create_keyboard_page (unsigned int page)
 }
 
 static GtkWidget *
+create_romakana_page ()
+{
+    GtkWidget *hbox, *label;
+    GtkWidget *vbox;
+
+    vbox = gtk_vbox_new (FALSE, 0);
+    hbox = gtk_hbox_new (FALSE, 0);
+
+    label = gtk_label_new(NULL);
+    gtk_label_set_text_with_mnemonic(GTK_LABEL (label),
+                                     __config_style_filename.title);
+    gtk_box_pack_start(GTK_BOX (hbox), label, FALSE, FALSE, 4);
+    gtk_widget_show(label);
+    
+    __config_style_filename.entry = gtk_entry_new();
+    gtk_box_pack_start(GTK_BOX (hbox), __config_style_filename.entry, TRUE, TRUE, 4);
+    gtk_widget_show(__config_style_filename.entry);
+
+    __config_style_filename.button = gtk_button_new_with_label ("...");
+    g_signal_connect ((gpointer) __config_style_filename.button, "clicked",
+                      G_CALLBACK (on_default_file_selection_clicked),
+                      &(__config_style_filename));
+    gtk_box_pack_start(GTK_BOX (hbox), __config_style_filename.button, FALSE, FALSE, 4);
+    gtk_widget_show(__config_style_filename.button);
+    
+    gtk_widget_show(hbox);
+
+    gtk_box_pack_start(GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
+    gtk_widget_show(vbox);
+
+    return vbox;
+}
+
+static GtkWidget *
 create_setup_window ()
 {
     static GtkWidget *window = NULL;
@@ -771,6 +805,12 @@ create_setup_window ()
         page = create_dictionary_page ();
         label = gtk_label_new (_("Dictionary"));
         gtk_widget_show (label);
+        gtk_notebook_append_page (GTK_NOTEBOOK (notebook), page, label);
+
+        // Create the key2kana conversion page.
+        page = create_romakana_page ();
+        label = gtk_label_new(_("RomaKana Table"));
+        gtk_widget_show(label);
         gtk_notebook_append_page (GTK_NOTEBOOK (notebook), page, label);
 
         // Create the key bind pages.
@@ -851,11 +891,6 @@ setup_widget_value ()
             __config_listsize);
     }
 
-    if (__config_sysdict.entry) {
-        gtk_entry_set_text (GTK_ENTRY (__config_sysdict.entry),
-                            __config_sysdict.data.c_str());
-    }
-
     if (__widget_userdict) {
         gtk_entry_set_text (GTK_ENTRY (__widget_userdict),
                             __config_userdict.c_str());
@@ -872,6 +907,11 @@ setup_widget_value ()
         gdk_color_parse(annot_bgcolor.value.c_str(), &color);
         gtk_color_button_set_color(GTK_COLOR_BUTTON(annot_bgcolor.widget),
                                    &color);
+    }
+
+    if (__config_style_filename.entry) {
+        gtk_entry_set_text (GTK_ENTRY (__config_style_filename.entry),
+                            __config_style_filename.data.c_str());
     }
 
     for (unsigned int j = 0; j < __key_conf_pages_num; ++j) {
@@ -925,6 +965,10 @@ load_config (const ConfigPointer &config)
         annot_bgcolor.value = config->read(String(annot_bgcolor.key),
                                            annot_bgcolor.value);
 
+        __config_style_filename.data =
+            config->read (String (SCIM_SKK_CONFIG_STYLE_FILENAME),
+                          __config_style_filename.data);
+
         for (unsigned int j = 0; j < __key_conf_pages_num; ++ j) {
             for (unsigned int i = 0; __key_conf_pages[j].data[i].key; ++ i) {
                 __key_conf_pages[j].data[i].data =
@@ -964,6 +1008,9 @@ save_config (const ConfigPointer &config)
 
         config->write(String(annot_bgcolor.key),
                       annot_bgcolor.value);
+
+        config->write (String (SCIM_SKK_CONFIG_STYLE_FILENAME),
+                       __config_style_filename.data);
 
         for (unsigned int j = 0; j < __key_conf_pages_num; j++) {
             for (unsigned int i = 0; __key_conf_pages[j].data[i].key; ++ i) {
@@ -1071,8 +1118,11 @@ on_default_file_selection_clicked (GtkButton *button,
 
             if (!fname) fname = "";
 
-            if (strcmp (fname, gtk_entry_get_text (GTK_ENTRY (data->entry))) != 0)
+            if (strcmp (fname, gtk_entry_get_text (GTK_ENTRY (data->entry))) != 0) {
                 gtk_entry_set_text (GTK_ENTRY (data->entry), fname);
+                data->data = fname;
+                __have_changed = true;
+            }
         }
 
         gtk_widget_destroy (dialog);

@@ -25,6 +25,9 @@
 #include <scim.h>
 using namespace scim;
 
+#include <list>
+#include <vector>
+
 namespace scim_skk {
 
 typedef struct _ConvRule
@@ -47,26 +50,21 @@ typedef struct _WideRule
     const char *wide;
 } WideRule;
 
-#if 0
-class ConvRule
-{
-    WideString *m_string;
-    WideString *m_result;
-    WideString *m_continue;
 
+class ConvEntry {
 public:
-    ConvRule ();
-    virtual ~ConvRule();
+    WideString str;
+    WideString res;
+    WideString cont;
+    ConvEntry (WideString s, WideString r, WideString c);
 };
-#endif
 
 class SKKAutomaton
 {
     WideString              m_pending;
-    ConvRule               *m_table;
-    unsigned int            m_table_len;
-    ConvRule               *m_exact_match;
-    std::vector<ConvRule*>  m_tables;
+    const ConvEntry        *m_exact_match;
+    std::list<ConvEntry>    m_rules;
+    WideString              m_title;
 
 public:
     enum {
@@ -75,22 +73,27 @@ public:
         COMMIT_PREV_PENDING,
     };
 
-    SKKAutomaton ();
+    SKKAutomaton (WideString title = utf8_mbstowcs("default"));
     virtual ~SKKAutomaton ();
 
-    virtual bool       append             (const String & str,
-                                           WideString   & result,
-                                           WideString   & pending);
-    virtual void       clear              (void);
+    virtual bool        append             (const String & str,
+                                            WideString   & result);
+    virtual void        clear              (void);
 
-    virtual bool       is_pending         (void);
-    virtual WideString get_pending        (void);
-    virtual WideString flush_pending      (void);
-    virtual void       set_pending        (WideString &pending);
+    virtual bool        is_pending         (void);
+    virtual WideString& get_pending        (void);
+    virtual WideString  flush_pending      (void);
+    virtual void        set_pending        (WideString &pending);
 
-    virtual void       set_table          (ConvRule *table);
-    virtual void       append_table       (ConvRule *table);
-    virtual void       remove_table       (ConvRule *table);
+    virtual void        set_rules          (ConvRule *table);
+    virtual void        append_rules       (ConvRule *table);
+    virtual void        replace_rules      (ConvRule *table);
+    virtual void        append_rule        (String &key,
+                                            std::vector<String> &vals);
+    virtual void        clear_rules        (void);
+
+    WideString&         get_title          (void);
+    void                set_title          (const WideString &title);
 };
 
 } /* namespace scim_skk */

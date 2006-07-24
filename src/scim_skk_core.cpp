@@ -120,7 +120,7 @@ SKKCore::get_preedit_string (WideString &result)
         result += m_preeditstr;
         result += utf8_mbstowcs("*");
         result += m_okuristr;
-        result += m_pendingstr;
+        result += m_key2kana->get_pending();
         break;
     case INPUT_MODE_PREEDIT:
         result += utf8_mbstowcs("\xE2\x96\xBD");
@@ -131,7 +131,7 @@ SKKCore::get_preedit_string (WideString &result)
                                          result,
                                          m_skk_mode == SKK_MODE_HALF_KATAKANA);
         }
-        result += m_pendingstr;
+        result += m_key2kana->get_pending();
         if (m_skk_mode == SKK_MODE_HIRAGANA) {
             result += m_preeditstr.substr(m_preedit_pos,
                                           m_preeditstr.length());
@@ -174,7 +174,7 @@ SKKCore::get_preedit_string (WideString &result)
         result += utf8_mbstowcs("\xE3\x80\x91");
         break;
     case INPUT_MODE_DIRECT:
-        result += m_pendingstr;
+        result += m_key2kana->get_pending();
     }
 
     if (!m_commitstr.empty()) {
@@ -206,7 +206,7 @@ SKKCore::commit_or_preedit (const WideString &str)
         break;
     case INPUT_MODE_OKURI:
         m_okuristr += str;
-        if (m_pendingstr.empty()) {
+        if (m_key2kana->get_pending().empty()) {
             m_ltable.clear();
             m_dict->lookup(m_preeditstr+m_okurihead, true, m_ltable);
             if (m_ltable.empty()) {
@@ -271,7 +271,7 @@ SKKCore::commit_converting (int index)
 int
 SKKCore::caret_pos (void)
 {
-    int base_pos = m_commit_pos + m_pendingstr.length();
+    int base_pos = m_commit_pos + m_key2kana->get_pending().length();
 
     switch (m_input_mode) {
     case INPUT_MODE_DIRECT:
@@ -326,11 +326,14 @@ SKKCore::move_preedit_caret (int pos)
     case INPUT_MODE_OKURI:
         if (pos < m_commit_pos) {
             m_commit_pos = pos;
-        } else if (pos > m_commit_pos +
-                   m_preeditstr.length() + m_pendingstr.length() + 2 &&
-                   pos <= m_commitstr.length() +
-                   m_preeditstr.length() + m_pendingstr.length() + 2) {
-            m_commit_pos = pos - m_preeditstr.length() - m_pendingstr.length() - 2;
+        } else {
+            WideString &pstr = m_key2kana->get_pending();
+            if (pos > m_commit_pos +
+                m_preeditstr.length() + pstr.length() + 2 &&
+                pos <= m_commitstr.length() +
+                m_preeditstr.length() + pstr.length() + 2) {
+            m_commit_pos = pos - m_preeditstr.length() - pstr.length() - 2;
+            }
         }
         break;
     case INPUT_MODE_CONVERTING:
@@ -398,11 +401,10 @@ SKKCore::get_input_mode (void)
 void
 SKKCore::clear_pending (bool flag)
 {
-    if (flag && m_pendingstr == utf8_mbstowcs("n")) {
-        commit_or_preedit(utf8_mbstowcs("\xE3\x82\x93"));
+    WideString res = m_key2kana->flush_pending();
+    if (flag && !(res.empty())) {
+        commit_or_preedit(res);
     }
-    m_pendingstr.clear();
-    m_key2kana->clear();
 }
 
 
@@ -442,7 +444,7 @@ SKKCore::action_kakutei (void)
     case INPUT_MODE_DIRECT:
         if (!(m_skk_mode == SKK_MODE_ASCII ||
               m_skk_mode == SKK_MODE_WIDE_ASCII) &&
-            m_pendingstr.empty() && m_preeditstr.empty()) {
+            m_key2kana->get_pending().empty() && m_preeditstr.empty()) {
             m_end_flag = true;
             return false;
         } else {
@@ -487,7 +489,7 @@ SKKCore::action_cancel (void)
 {
     switch (m_input_mode) {
     case INPUT_MODE_DIRECT:
-        if (!m_pendingstr.empty()) {
+        if (!m_key2kana->get_pending().empty()) {
             clear_pending(false);
         } else {
             clear_commit();
@@ -745,7 +747,8 @@ SKKCore::action_ascii_convert (void)
 bool
 SKKCore::action_backspace (void)
 {
-    if (m_pendingstr.empty()) {
+    WideString &pstr = m_key2kana->get_pending();
+    if (pstr.empty()) {
         switch (m_input_mode) {
         case INPUT_MODE_CONVERTING:
             set_input_mode(INPUT_MODE_PREEDIT);
@@ -774,14 +777,13 @@ SKKCore::action_backspace (void)
             break;
         }
     } else {
-        if (m_input_mode == INPUT_MODE_OKURI &&
-            m_pendingstr.length() == 1) {
+        if (m_input_mode == INPUT_MODE_OKURI && pstr.length() == 1) {
             clear_pending();
             set_input_mode(INPUT_MODE_PREEDIT);
             m_preedit_pos = m_preeditstr.length();
         } else {
-            m_pendingstr.erase(m_pendingstr.length()-1);
-            m_key2kana->set_pending(m_pendingstr);
+            pstr.erase(pstr.length()-1);
+            //m_key2kana->set_pending(m_pendingstr);
         }
     }
 
@@ -791,7 +793,7 @@ SKKCore::action_backspace (void)
 bool
 SKKCore::action_delete (void)
 {
-    if (m_pendingstr.empty()) {
+    if (m_key2kana->get_pending().empty()) {
         switch (m_input_mode) {
         case INPUT_MODE_CONVERTING:
             set_input_mode(INPUT_MODE_PREEDIT);
@@ -1123,7 +1125,7 @@ SKKCore::process_romakana (const KeyEvent &key)
         if (m_keybind->match_convert_keys(key))
             return action_convert();
 
-    if (m_pendingstr.empty() && process_remaining_keybinds(key)) {
+    if (m_key2kana->get_pending().empty() && process_remaining_keybinds(key)) {
         return true;
     }
 
@@ -1146,16 +1148,17 @@ SKKCore::process_romakana (const KeyEvent &key)
         }
 
         is_pending_clear =
-            m_key2kana->append(String(1, tolower(code)), result, m_pendingstr);
+            m_key2kana->append(String(1, tolower(code)), result);
 
-        if (m_input_mode == INPUT_MODE_OKURI && !m_pendingstr.empty() &&
-            result.empty()) {
-            m_okurihead = m_pendingstr[0];
+        WideString &pstr = m_key2kana->get_pending();
+        if (m_input_mode == INPUT_MODE_OKURI &&
+            !pstr.empty() && result.empty()) {
+            m_okurihead = pstr[0];
         }
 
         if (d2p) {
             /* shift to preedit from direct */
-            if (m_pendingstr.empty()) {
+            if (pstr.empty()) {
                 set_input_mode(INPUT_MODE_PREEDIT);
                 commit_or_preedit(result);
             } else {
@@ -1167,7 +1170,7 @@ SKKCore::process_romakana (const KeyEvent &key)
             /* shift to okuri from preedit */
             m_okurihead = (ucs4_t) tolower(code);
             m_preeditstr.erase(m_preedit_pos);
-            if (m_pendingstr.empty()) {
+            if (pstr.empty()) {
                 set_input_mode(INPUT_MODE_OKURI);
                 commit_or_preedit(result);
             } else{
@@ -1179,7 +1182,7 @@ SKKCore::process_romakana (const KeyEvent &key)
             /* otherwise simply commit or add to preedit */
             commit_or_preedit(result);
             retval = true;
-        } else if (!m_pendingstr.empty()) {
+        } else if (!pstr.empty()) {
             retval = true ;
         }
 

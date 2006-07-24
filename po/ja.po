@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: scim-skk\n"
 "Report-Msgid-Bugs-To: mukai@jmuk.org\n"
-"POT-Creation-Date: 2005-12-21 15:04+0900\n"
+"POT-Creation-Date: 2006-07-23 22:55+0900\n"
 "PO-Revision-Date: 2004-12-27 01:06+0900\n"
 "Last-Translator: Jun Mukai <mukai@jmuk.org>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -14,31 +14,31 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/scim_skk_imengine.cpp:516
+#: src/scim_skk_imengine.cpp:527
 msgid "Input mode"
 msgstr "入力モード"
 
-#: src/scim_skk_imengine.cpp:520
+#: src/scim_skk_imengine.cpp:531
 msgid "Hiragana"
 msgstr "ひらがな"
 
-#: src/scim_skk_imengine.cpp:524
+#: src/scim_skk_imengine.cpp:535
 msgid "Katakana"
 msgstr "カタカナ"
 
-#: src/scim_skk_imengine.cpp:528 src/scim_skk_imengine.cpp:529
+#: src/scim_skk_imengine.cpp:539 src/scim_skk_imengine.cpp:540
 msgid "Half width katakana"
 msgstr "半角カタカナ"
 
-#: src/scim_skk_imengine.cpp:533
+#: src/scim_skk_imengine.cpp:544
 msgid "ASCII"
 msgstr "英数"
 
-#: src/scim_skk_imengine.cpp:533
+#: src/scim_skk_imengine.cpp:544
 msgid "Direct input"
 msgstr "直接入力"
 
-#: src/scim_skk_imengine.cpp:537
+#: src/scim_skk_imengine.cpp:548
 msgid "Wide ASCII"
 msgstr "全角英数"
 
@@ -279,9 +279,9 @@ msgstr "終端キーを選択"
 msgid "The key events to move the caret to the end of preedit. "
 msgstr "キャレットを候補文字列の終端に移動するキーイベント"
 
-#: src/scim_skk_imengine_setup.cpp:407 src/scim_skk_setup_dictionaries.cpp:78
-msgid "System Dictionary Path:"
-msgstr "システム辞書のパス:"
+#: src/scim_skk_imengine_setup.cpp:407
+msgid "_FileName:"
+msgstr "ファイル名"
 
 #: src/scim_skk_imengine_setup.cpp:415
 msgid "qwerty arrangement"
@@ -379,13 +379,21 @@ msgstr "アノテーションの色を設定する"
 msgid "User Dictionary Name:"
 msgstr "ユーザ辞書の名前:"
 
-#: src/scim_skk_imengine_setup.cpp:766
+#: src/scim_skk_imengine_setup.cpp:794
 msgid "Options"
 msgstr "オプション"
 
-#: src/scim_skk_imengine_setup.cpp:772
+#: src/scim_skk_imengine_setup.cpp:800
 msgid "Dictionary"
 msgstr "辞書関連"
+
+#: src/scim_skk_imengine_setup.cpp:806
+msgid "RomaKana Table"
+msgstr "ローマ字変換表"
+
+#: src/scim_skk_setup_dictionaries.cpp:78
+msgid "System Dictionary Path:"
+msgstr "システム辞書のパス:"
 
 #: src/scim_skk_setup_dictionaries.cpp:92
 msgid "CDB Dictionary Path:"

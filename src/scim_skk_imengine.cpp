@@ -38,6 +38,7 @@
 #include "scim_skk_intl.h"
 #include "scim_skk_config.h"
 #include "scim_skk_history.h"
+#include "scim_skk_style_file.h"
 
 using namespace scim_skk;
 
@@ -233,6 +234,24 @@ SKKFactory::reload_config (const ConfigPointer &config)
             config->read(String(SCIM_SKK_CONFIG_IGNORE_RETURN),
                          SCIM_SKK_CONFIG_IGNORE_RETURN_DEFAULT);
 
+        str = config->read(String(SCIM_SKK_CONFIG_STYLE_FILENAME), String());
+        key2kana.clear_rules();
+        {
+            /* read style files */
+            StyleFile sfile;
+            static const String romaji = "RomajiTable/FundamentalTable";
+            static const String kana   = "KanaTable/FundamentalTable";
+            if (sfile.load(str.c_str())) {
+                if (!sfile.get_key2kana_table(key2kana, romaji)) {
+                    sfile.get_key2kana_table(key2kana, kana);
+                }
+            } else {
+                /* default settings */
+                key2kana.set_rules(romakana_table);
+            }
+        }
+        key2kana.append_rules(romakana_ja_period_rule);
+
         str = config->read(String(SCIM_SKK_CONFIG_KAKUTEI_KEY),
                            String(SCIM_SKK_CONFIG_KAKUTEI_KEY_DEFAULT));
         m_keybind.set_kakutei_keys(str);
@@ -303,22 +322,14 @@ SKKInstance::SKKInstance (SKKFactory   *factory,
                           int           id)
     : IMEngineInstanceBase (factory, encoding, id),
       m_skk_mode (SKK_MODE_HIRAGANA),
-      m_skkcore (&(factory->m_keybind), &(m_key2kana),
+      m_skkcore (&(factory->m_keybind), &(key2kana),
                  scim_skkdict, scim_skkhistory)
 {
     SCIM_DEBUG_IMENGINE(1) << "Create SKK Instance : ";
-    init_key2kana();
 }
 
 SKKInstance::~SKKInstance ()
 {
-}
-
-void
-SKKInstance::init_key2kana (void)
-{
-    m_key2kana.set_table(romakana_table);
-    m_key2kana.append_table(romakana_ja_period_rule);
 }
 
 void

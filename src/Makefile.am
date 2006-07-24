@@ -1,5 +1,6 @@
 AM_CPPFLAGS = \
 	-DSCIM_SKK_LOCALEDIR=\"$(datadir)/locale\" \
+	-DSCIM_SKK_DATADIR=\"@SCIM_SKK_DATADIR@\" \
 	-DSCIM_ICONDIR=\"@SCIM_ICONDIR@\"
 INCLUDES	= \
 	-I$(top_builddir) \
@@ -10,6 +11,7 @@ noinst_HEADERS = \
 	conv_table.h \
 	$(HELP_FILE) \
 	cdb.h \
+	scim_skk_style_file.h \
 	scim_skk_setup_dictionaries.h \
 	scim_skk_intl.h \
 	scim_skk_config.h \
@@ -27,6 +29,7 @@ module_LTLIBRARIES = skk.la
 
 skk_la_SOURCES = \
 	cdb.cpp \
+	scim_skk_style_file.cpp \
 	scim_skk_config.cpp \
 	scim_skk_lookup_table.cpp \
 	scim_skk_history.cpp \

@@ -20,6 +20,9 @@
 #ifndef __SCIM_SKK_CONFIG_H__
 #define __SCIM_SKK_CONFIG_H__
 
+#include <scim.h>
+#include "scim_skk_automaton.h"
+
 namespace scim_skk {
 extern bool annot_view;   /* view annotation if true */
 extern bool annot_pos;    /* inline if true, auxwindow if otherwise */
@@ -30,6 +33,8 @@ extern bool annot_highlight;
 extern int annot_bgcolor;
 
 extern bool ignore_return;
+
+extern SKKAutomaton key2kana;
 };
 
 #endif /*  __SCIM_SKK_CONFIG_H__ */

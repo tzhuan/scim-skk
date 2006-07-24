@@ -109,8 +109,11 @@ if test "x$SCIM_MODULEDIR" = "x"; then
   SCIM_MODULEDIR=${libdir}/scim-1.0
 fi
 
+SCIM_SKK_DATADIR=${datadir}/scim/SKK
+
 AC_SUBST(SCIM_ICONDIR)
 AC_SUBST(SCIM_MODULEDIR)
+AC_SUBST(SCIM_SKK_DATADIR)
         
 AC_CONFIG_FILES([
 Makefile

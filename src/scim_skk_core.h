@@ -70,7 +70,6 @@ class SKKCore
     InputMode      m_input_mode;
     SKKAutomaton  *m_key2kana;
 
-    WideString  m_pendingstr;
     WideString  m_preeditstr;
     WideString  m_okuristr;
     ucs4_t      m_okurihead;
@@ -117,8 +116,6 @@ class SKKCore
 
     void clear_pending   (bool flag=true);
     void clear_preedit   (void);
-
-    void init_key2kana (void);
 public:
     SKKCore  (KeyBind *keybind, SKKAutomaton *key2kana,
               SKKDictionary *dict, History &hist);

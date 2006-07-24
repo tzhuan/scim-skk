@@ -77,7 +77,6 @@ private:
 
 class SKKInstance : public IMEngineInstanceBase
 {
-    SKKAutomaton   m_key2kana;
     PropertyList   m_properties;
 
     /* for displaying SKKMode */
@@ -85,8 +84,6 @@ class SKKInstance : public IMEngineInstanceBase
 
     /* core of SKK */
     SKKCore        m_skkcore;
-
-    void init_key2kana (void);
 
     bool process_kakutei_keys         (const KeyEvent &key);
     bool process_remaining_keybinds   (const KeyEvent &key);

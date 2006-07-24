@@ -55,6 +55,8 @@
 
 #define SCIM_SKK_CONFIG_IGNORE_RETURN   "/IMEngine/SKK/IgnoreReturn"
 
+#define SCIM_SKK_CONFIG_STYLE_FILENAME  "/IMEngine/SKK/StyleFileName"
+
 /* default values */
 #define SCIM_SKK_CONFIG_KAKUTEI_KEY_DEFAULT          "Control+j"
 #define SCIM_SKK_CONFIG_KATAKANA_KEY_DEFAULT         "q"

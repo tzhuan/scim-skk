@@ -36,4 +36,6 @@ namespace scim_skk {
     int annot_bgcolor = strtol(SCIM_SKK_CONFIG_ANNOT_BGCOLOR_DEFAULT+1,
                                (char**)NULL, 16);
     bool ignore_return = SCIM_SKK_CONFIG_IGNORE_RETURN_DEFAULT;
+
+    SKKAutomaton key2kana = SKKAutomaton(utf8_mbstowcs("default"));
 }

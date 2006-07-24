@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: mukai@jmuk.org\n"
-"POT-Creation-Date: 2005-12-21 15:04+0900\n"
+"POT-Creation-Date: 2006-07-23 22:55+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,31 +16,31 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/scim_skk_imengine.cpp:516
+#: src/scim_skk_imengine.cpp:527
 msgid "Input mode"
 msgstr ""
 
-#: src/scim_skk_imengine.cpp:520
+#: src/scim_skk_imengine.cpp:531
 msgid "Hiragana"
 msgstr ""
 
-#: src/scim_skk_imengine.cpp:524
+#: src/scim_skk_imengine.cpp:535
 msgid "Katakana"
 msgstr ""
 
-#: src/scim_skk_imengine.cpp:528 src/scim_skk_imengine.cpp:529
+#: src/scim_skk_imengine.cpp:539 src/scim_skk_imengine.cpp:540
 msgid "Half width katakana"
 msgstr ""
 
-#: src/scim_skk_imengine.cpp:533
+#: src/scim_skk_imengine.cpp:544
 msgid "ASCII"
 msgstr ""
 
-#: src/scim_skk_imengine.cpp:533
+#: src/scim_skk_imengine.cpp:544
 msgid "Direct input"
 msgstr ""
 
-#: src/scim_skk_imengine.cpp:537
+#: src/scim_skk_imengine.cpp:548
 msgid "Wide ASCII"
 msgstr ""
 
@@ -280,8 +280,8 @@ msgstr ""
 msgid "The key events to move the caret to the end of preedit. "
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:407 src/scim_skk_setup_dictionaries.cpp:78
-msgid "System Dictionary Path:"
+#: src/scim_skk_imengine_setup.cpp:407
+msgid "_FileName:"
 msgstr ""
 
 #: src/scim_skk_imengine_setup.cpp:415
@@ -380,12 +380,20 @@ msgstr ""
 msgid "User Dictionary Name:"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:766
+#: src/scim_skk_imengine_setup.cpp:794
 msgid "Options"
 msgstr ""
 
-#: src/scim_skk_imengine_setup.cpp:772
+#: src/scim_skk_imengine_setup.cpp:800
 msgid "Dictionary"
+msgstr ""
+
+#: src/scim_skk_imengine_setup.cpp:806
+msgid "RomaKana Table"
+msgstr ""
+
+#: src/scim_skk_setup_dictionaries.cpp:78
+msgid "System Dictionary Path:"
 msgstr ""
 
 #: src/scim_skk_setup_dictionaries.cpp:92
