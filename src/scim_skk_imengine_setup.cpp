@@ -807,11 +807,13 @@ create_setup_window ()
         gtk_widget_show (label);
         gtk_notebook_append_page (GTK_NOTEBOOK (notebook), page, label);
 
+#if 0
         // Create the key2kana conversion page.
         page = create_romakana_page ();
         label = gtk_label_new(_("RomaKana Table"));
         gtk_widget_show(label);
         gtk_notebook_append_page (GTK_NOTEBOOK (notebook), page, label);
+#endif
 
         // Create the key bind pages.
         for (unsigned int i = 0; i < __key_conf_pages_num; i++) {

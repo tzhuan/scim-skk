@@ -51,9 +51,6 @@ SKKAutomaton::set_title (const WideString &title)
 }
 
 
-#include <fstream>
-#include <ostream>
-#include <ios>
 bool
 SKKAutomaton::append (const String & str, WideString & result)
 {

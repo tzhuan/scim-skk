@@ -1183,7 +1183,7 @@ SKKCore::process_romakana (const KeyEvent &key)
             commit_or_preedit(result);
             retval = true;
         } else if (!pstr.empty()) {
-            retval = true ;
+            retval = true;
         }
 
         if ((is_pending_clear) && process_remaining_keybinds(key)) {
