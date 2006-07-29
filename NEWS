@@ -1,0 +1,17 @@
+scim-skk 0.5.2
+
+Bug fix release.
+
+scim-skk 0.5.1
+
+Bug fix release.
+
+scim-skk 0.5.0
+
+new features from 0.4.0:
+* Connection to SKK Dictionary
+* handling multi-dictionaries
+* native support to CDB files
+* Tab-Completion
+* Add `Down' and `Up' key to default of forward/backward keys
+* Ignorance of Return key

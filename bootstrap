@@ -20,9 +20,9 @@
 #! /bin/sh
 
 set -x
-aclocal -I m4
+aclocal-1.9 -I m4
 autoheader
 libtoolize -c --automake 
-automake --add-missing --copy --include-deps
+automake-1.9 --add-missing --copy --include-deps
 autoconf
 ## @end 1
