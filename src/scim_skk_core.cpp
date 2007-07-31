@@ -397,7 +397,6 @@ SKKCore::get_input_mode (void)
     }
 }
 
-
 void
 SKKCore::clear_pending (bool flag)
 {

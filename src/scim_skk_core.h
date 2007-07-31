@@ -132,6 +132,7 @@ public:
     void      set_input_mode (InputMode newmode);
     SKKMode   get_skk_mode   (void);
     InputMode get_input_mode (void);
+    void      set_period_style (PeriodStyle newstyle);
 
     inline bool has_commit_string (void) { return m_commit_flag; }
 

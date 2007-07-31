@@ -57,6 +57,13 @@ using namespace scim_skk;
 #define SCIM_PROP_INPUT_MODE_ASCII          SCIM_PROP_MODE_PREFIX"/ASCII"
 #define SCIM_PROP_INPUT_MODE_WIDE_ASCII     SCIM_PROP_MODE_PREFIX"/WideASCII"
 
+#define SCIM_PROP_PERIOD_STYLE                    SCIM_PROP_PREFIX"/PeriodMode"
+#define SCIM_PROP_PERIOD_STYLE_TEN_MARU           SCIM_PROP_PERIOD_STYLE"/TenMaru"
+#define SCIM_PROP_PERIOD_STYLE_COMMA_PERIOD       SCIM_PROP_PERIOD_STYLE"/CommaPeriod"
+#define SCIM_PROP_PERIOD_STYLE_HALF_COMMA_PERIOD  SCIM_PROP_PERIOD_STYLE"/HalfCommaPeriod"
+#define SCIM_PROP_PERIOD_STYLE_COMMA_MARU         SCIM_PROP_PERIOD_STYLE"/CommaMaru"
+
+
 #ifndef SCIM_SKK_ICON_FILE
 #define SCIM_SKK_ICON_FILE           (SCIM_ICONDIR"/scim-skk.png")
 #endif
@@ -250,7 +257,6 @@ SKKFactory::reload_config (const ConfigPointer &config)
                 key2kana.set_rules(romakana_table);
             }
         }
-        key2kana.append_rules(romakana_ja_period_rule);
 
         str = config->read(String(SCIM_SKK_CONFIG_KAKUTEI_KEY),
                            String(SCIM_SKK_CONFIG_KAKUTEI_KEY_DEFAULT));
@@ -451,6 +457,46 @@ SKKInstance::set_skk_mode (SKKMode newmode)
 }
 
 void
+SKKInstance::set_period_style (PeriodStyle newstyle)
+{
+    SCIM_DEBUG_IMENGINE(2) << "set period style to " << newstyle << ".\n";
+    if (key2kana.get_period_style() == newstyle) {
+        return;
+    }
+
+    const char *label = "";
+
+    switch (newstyle) {
+    case PERIOD_STYLE_TEN_MARU:
+        label = "\xE3\x80\x81\xE3\x80\x82";
+        break;
+    case PERIOD_STYLE_COMMA_PERIOD:
+        label = "\xEF\xBC\x8C\xEF\xBC\x8E";
+        break;
+    case PERIOD_STYLE_HALF_COMMA_PERIOD:
+        label = ",.";
+        break;
+    case PERIOD_STYLE_COMMA_MARU:
+        label = "\xEF\xBC\x8C\xE3\x80\x82";
+        break;
+    default:
+        break;
+    }
+
+    if (label && *label) {
+        PropertyList::iterator it = std::find (m_properties.begin(),
+                                               m_properties.end(),
+                                               SCIM_PROP_PERIOD_STYLE);
+        if (it != m_properties.end()) {
+            it->set_label(label);
+            update_property(*it);
+        }
+    }
+
+    key2kana.set_period_style(newstyle);
+}
+
+void
 SKKInstance::move_preedit_caret (unsigned int pos)
 {
     m_skkcore.move_preedit_caret(pos);
@@ -544,8 +590,24 @@ SKKInstance::install_properties (void)
                          _("ASCII"), String (""), _("Direct input"));
         m_properties.push_back (prop);
 
-        prop = Property (SCIM_PROP_INPUT_MODE_WIDE_ASCII,
-                         _("Wide ASCII"), String (""), _("Wide ASCII"));
+        prop = Property (SCIM_PROP_PERIOD_STYLE,
+                         "\xE3\x80\x81\xE3\x80\x82", String (""), _("Period Style"));
+        m_properties.push_back (prop);
+
+        prop = Property (SCIM_PROP_PERIOD_STYLE_TEN_MARU,
+                         "\xE3\x80\x81\xE3\x80\x82", String (""), "\xE3\x80\x81\xE3\x80\x82");
+        m_properties.push_back (prop);
+
+        prop = Property (SCIM_PROP_PERIOD_STYLE_COMMA_PERIOD,
+                         "\xEF\xBC\x8C\xEF\xBC\x8E", String (""), "\xEF\xBC\x8C\xEF\xBC\x8E");
+        m_properties.push_back (prop);
+
+        prop = Property (SCIM_PROP_PERIOD_STYLE_HALF_COMMA_PERIOD,
+                         ",.", String (""), ",.");
+        m_properties.push_back (prop);
+
+        prop = Property (SCIM_PROP_PERIOD_STYLE_COMMA_MARU,
+                         "\xEF\xBC\x8C\xE3\x80\x82", String (""), "\xEF\xBC\x8C\xE3\x80\x82");
         m_properties.push_back (prop);
     }
 
@@ -567,5 +629,13 @@ SKKInstance::trigger_property (const String& property)
         set_skk_mode(SKK_MODE_ASCII);
     } else if (property == SCIM_PROP_INPUT_MODE_WIDE_ASCII) {
         set_skk_mode(SKK_MODE_WIDE_ASCII);
+    } else if (property == SCIM_PROP_PERIOD_STYLE_TEN_MARU) {
+        set_period_style(PERIOD_STYLE_TEN_MARU);
+    } else if (property == SCIM_PROP_PERIOD_STYLE_COMMA_PERIOD) {
+        set_period_style(PERIOD_STYLE_COMMA_PERIOD);
+    } else if (property == SCIM_PROP_PERIOD_STYLE_HALF_COMMA_PERIOD) {
+        set_period_style(PERIOD_STYLE_HALF_COMMA_PERIOD);
+    } else if (property == SCIM_PROP_PERIOD_STYLE_COMMA_MARU) {
+        set_period_style(PERIOD_STYLE_COMMA_MARU);
     }
 }

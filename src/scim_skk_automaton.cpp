@@ -19,6 +19,7 @@
  */
 
 #include "scim_skk_automaton.h"
+#include "conv_table.h"
 
 using namespace scim_skk;
 
@@ -28,10 +29,17 @@ ConvEntry::ConvEntry (WideString s, WideString r, WideString c)
 {
 }
 
+ConvEntry::ConvEntry (WideString s, WideString r)
+    : str (s), res (r) 
+{
+}
+
 SKKAutomaton::SKKAutomaton (WideString title)
     : m_exact_match (NULL),
-      m_title (title)
+      m_title (title),
+      m_period_style(PERIOD_STYLE_TEN_MARU)
 {
+    set_period_style(PERIOD_STYLE_TEN_MARU);
 }
 
 SKKAutomaton::~SKKAutomaton ()
@@ -50,7 +58,6 @@ SKKAutomaton::set_title (const WideString &title)
     m_title = title;
 }
 
-
 bool
 SKKAutomaton::append (const String & str, WideString & result)
 {
@@ -59,6 +66,7 @@ SKKAutomaton::append (const String & str, WideString & result)
     const ConvEntry *exact_match = NULL;
     bool has_partial_match = false;
     bool retval = false;
+    ConvEntry *tmp_entry = NULL;
 
     /* FIXME! should be optimized */
 
@@ -71,7 +79,15 @@ SKKAutomaton::append (const String & str, WideString & result)
         if (roma.find (newstr) == 0) {
             if (roma.length () == newstr.length ()) {
                 /* exact match */
-                exact_match = &(*it);
+                for (std::list<ConvEntry>::const_iterator j = m_period_rules.begin(); j != m_period_rules.end(); j++) {
+                    if (j->str.compare(it->res) == 0) {
+                        tmp_entry = new ConvEntry(it->str, j->res);
+                        exact_match = tmp_entry;
+                        break;
+                    }
+                }
+                if (!tmp_entry) 
+                    exact_match = &(*it);
             } else {
                 /* partial match */
                 has_partial_match = true;
@@ -119,6 +135,8 @@ SKKAutomaton::append (const String & str, WideString & result)
         }
     }
 
+    if (tmp_entry)
+        delete tmp_entry;
     return retval;
 }
 
@@ -214,5 +232,37 @@ SKKAutomaton::append_rule (String &key, std::vector<String> &vals)
         m_rules.push_back(ConvEntry(utf8_mbstowcs(key),
                                     utf8_mbstowcs(vals[0]),
                                     WideString()));
+    }
+}
+
+
+PeriodStyle
+SKKAutomaton::get_period_style (void)
+{
+    return m_period_style;
+}
+
+void
+SKKAutomaton::set_period_style (PeriodStyle newstyle)
+{
+    ConvRule *rules;
+    m_period_style = newstyle;
+    switch(m_period_style) {
+    case PERIOD_STYLE_TEN_MARU:
+        rules = period_rule_ten_maru;
+        break;
+    case PERIOD_STYLE_COMMA_PERIOD:
+        rules = period_rule_comma_period;
+        break;
+    case PERIOD_STYLE_HALF_COMMA_PERIOD:
+        rules = period_rule_half_comma_period;
+        break;
+    case PERIOD_STYLE_COMMA_MARU:
+        rules = period_rule_comma_maru;
+        break;
+    }
+    for (unsigned int i = 0; rules[i].string; i++) {
+        m_period_rules.push_front(ConvEntry(utf8_mbstowcs(rules[i].string),
+                                            utf8_mbstowcs(rules[i].result)));
     }
 }

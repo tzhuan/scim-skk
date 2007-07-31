@@ -90,6 +90,7 @@ class SKKInstance : public IMEngineInstanceBase
 
     void install_properties (void);
     void set_skk_mode       (SKKMode newmode);
+    void set_period_style   (PeriodStyle newstyle);
 
     void update_candidates (void);
 public:

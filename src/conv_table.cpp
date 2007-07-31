@@ -355,6 +355,8 @@ ConvRule romakana_table[] = {
     {"8",	"8",	""},
     {"9",	"9",	""},
     {"0",	"0",	""},
+    {",",	"、",	""},
+    {".",	"。",	""},
 #endif
     {NULL,	NULL,	NULL}
 };
@@ -448,42 +450,32 @@ ConvRule kana_table[] = {
     {"[",	"゜",	""},
     {"{",	"「",	""},
     {"}",	"」",	""},
-    {NULL,	NULL,	NULL},
-};
-
-ConvRule romakana_ja_period_rule[] = {
-    {",",	"、",	""},
-    {".",	"。",	""},
-    {NULL,	NULL,	NULL},
-};
-
-ConvRule romakana_wide_ascii_period_rule[] = {
-    {",",	"，",	""},
-    {".",	"．",	""},
-    {NULL,	NULL,	NULL},
-};
-
-ConvRule romakana_ascii_period_rule[] = {
-    {",",	",",	""},
-    {".",	".",	""},
-    {NULL,	NULL,	NULL},
-};
-
-ConvRule kana_ja_period_rule[] = {
     {">",	"。",	""},
     {"<",	"、",	""},
     {NULL,	NULL,	NULL},
 };
 
-ConvRule kana_wide_ascii_period_rule[] = {
-    {">",	"．",	""},
-    {"<",	"，",	""},
+ConvRule period_rule_ten_maru[] = {
+    {"、",	"、",	""},
+    {"。",	"。",	""},
     {NULL,	NULL,	NULL},
 };
 
-ConvRule kana_ascii_period_rule[] = {
-    {">",	".",	""},
-    {"<",	",",	""},
+ConvRule period_rule_comma_period[] = {
+    {"、",	"，",	""},
+    {"。",	"．",	""},
+    {NULL,	NULL,	NULL},
+};
+
+ConvRule period_rule_half_comma_period[] = {
+    {"、",	",",	""},
+    {"。",	".",	""},
+    {NULL,	NULL,	NULL},
+};
+
+ConvRule period_rule_comma_maru[] = {
+    {"、",	"，",	""},
+    {"。",	"。",	""},
     {NULL,	NULL,	NULL},
 };
 

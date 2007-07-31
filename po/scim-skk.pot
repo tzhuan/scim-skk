@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: mukai@jmuk.org\n"
-"POT-Creation-Date: 2006-07-29 14:54+0900\n"
+"POT-Creation-Date: 2007-07-31 15:23+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,32 +16,32 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/scim_skk_imengine.cpp:527
+#: src/scim_skk_imengine.cpp:534
 msgid "Input mode"
 msgstr ""
 
-#: src/scim_skk_imengine.cpp:531
+#: src/scim_skk_imengine.cpp:538
 msgid "Hiragana"
 msgstr ""
 
-#: src/scim_skk_imengine.cpp:535
+#: src/scim_skk_imengine.cpp:542
 msgid "Katakana"
 msgstr ""
 
-#: src/scim_skk_imengine.cpp:539 src/scim_skk_imengine.cpp:540
+#: src/scim_skk_imengine.cpp:546 src/scim_skk_imengine.cpp:547
 msgid "Half width katakana"
 msgstr ""
 
-#: src/scim_skk_imengine.cpp:544
+#: src/scim_skk_imengine.cpp:551
 msgid "ASCII"
 msgstr ""
 
-#: src/scim_skk_imengine.cpp:544
+#: src/scim_skk_imengine.cpp:551
 msgid "Direct input"
 msgstr ""
 
-#: src/scim_skk_imengine.cpp:548
-msgid "Wide ASCII"
+#: src/scim_skk_imengine.cpp:555
+msgid "Period Style"
 msgstr ""
 
 #: src/scim_skk_imengine_setup.cpp:88

@@ -30,6 +30,13 @@ using namespace scim;
 
 namespace scim_skk {
 
+typedef enum {
+    PERIOD_STYLE_TEN_MARU,
+    PERIOD_STYLE_COMMA_PERIOD,
+    PERIOD_STYLE_HALF_COMMA_PERIOD,
+    PERIOD_STYLE_COMMA_MARU
+} PeriodStyle;
+
 typedef struct _ConvRule
 {
     const char *string;
@@ -57,6 +64,7 @@ public:
     WideString res;
     WideString cont;
     ConvEntry (WideString s, WideString r, WideString c);
+    ConvEntry (WideString s, WideString r);
 };
 
 class SKKAutomaton
@@ -65,6 +73,8 @@ class SKKAutomaton
     const ConvEntry        *m_exact_match;
     std::list<ConvEntry>    m_rules;
     WideString              m_title;
+    PeriodStyle             m_period_style;
+    std::list<ConvEntry>    m_period_rules;
 
 public:
     enum {
@@ -94,6 +104,8 @@ public:
 
     WideString&         get_title          (void);
     void                set_title          (const WideString &title);
+    PeriodStyle         get_period_style   (void);
+    void                set_period_style   (PeriodStyle newstyle);
 };
 
 } /* namespace scim_skk */
