@@ -31,6 +31,7 @@
 #  include <config.h>
 #endif
 
+#include <cstring>
 #include <vector>
 
 #include <scim.h>
