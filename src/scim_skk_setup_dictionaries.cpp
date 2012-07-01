@@ -59,7 +59,7 @@ enum DictColumnType {
 };
 
 struct DictionaryConfigWidgets {
-    gchar *title;
+    const gchar *title;
     GtkWidget *widget;
     GtkWidget *entry;
     GtkWidget *button;
@@ -170,7 +170,11 @@ inline void
 dict_entry_widgets_dictfile_setup (DictionaryConfigWidgets *widgets)
 {
     GtkWidget *label;
+#if GTK_CHECK_VERSION(3, 0, 0)
+    widgets->widget = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+#else
     widgets->widget = gtk_hbox_new(FALSE, 0);
+#endif
     label  = gtk_label_new(widgets->title);
     widgets->entry = gtk_entry_new();
     widgets->button = gtk_button_new_with_label ("...");
@@ -195,8 +199,13 @@ dict_entry_widgets_skkserv_setup (DictionaryConfigWidgets *widgets)
 {
     GtkWidget *hbox, *label;
 
+#if GTK_CHECK_VERSION(3, 0, 0)
+    widgets->widget = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+    hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+#else
     widgets->widget = gtk_vbox_new(FALSE, 0);
     hbox = gtk_hbox_new(FALSE, 0);
+#endif
     gtk_widget_hide(widgets->widget);
     label = gtk_label_new(_("Server Name:"));
     gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 4);
@@ -205,7 +214,11 @@ dict_entry_widgets_skkserv_setup (DictionaryConfigWidgets *widgets)
                        TRUE, TRUE, 4);
     gtk_box_pack_start(GTK_BOX(widgets->widget), hbox,
                        FALSE, FALSE, 4);
+#if GTK_CHECK_VERSION(3, 0, 0)
+    hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+#else
     hbox = gtk_hbox_new(FALSE, 0);
+#endif
     label = gtk_label_new(_("Port Number:"));
     widgets->entry2 = gtk_entry_new();
     gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 4);
@@ -224,7 +237,11 @@ dict_entry_widgets_setup (GtkBox *container,
     GtkWidget *button;
 
     /* edit buttons */
+#if GTK_CHECK_VERSION(3, 0, 0)
+    hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+#else
     hbox = gtk_hbox_new(FALSE, 0);
+#endif
     button = gtk_button_new_with_label(_("Add"));
     gtk_box_pack_start (GTK_BOX (hbox), button, TRUE, FALSE, 4);
     g_signal_connect((gpointer) button, "clicked",
@@ -245,7 +262,11 @@ dict_selection_widget_setup (void)
 {
     GtkWidget *tree;
 
+#if GTK_CHECK_VERSION(3, 0, 0)
+    __widget_sysdicts = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+#else
     __widget_sysdicts = gtk_vbox_new(FALSE, 0);
+#endif
     dict_list_setup(__config_sysdicts);
 
     /* setup container for dictionaries selection */
@@ -257,10 +278,18 @@ dict_selection_widget_setup (void)
 
     {
         GtkWidget *hbox, *vbox, *button;
+#if GTK_CHECK_VERSION(3, 0, 0)
+		hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+#else
         hbox = gtk_hbox_new(FALSE, 0);
+#endif
         gtk_widget_show(hbox);
         gtk_box_pack_start(GTK_BOX(hbox), tree, TRUE, TRUE, 4);
+#if GTK_CHECK_VERSION(3, 0, 0)
+		vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+#else
         vbox = gtk_vbox_new(FALSE, 0);
+#endif
         button = gtk_button_new_from_stock(GTK_STOCK_GO_UP);
         gtk_box_pack_start(GTK_BOX(vbox), button, TRUE, FALSE, 4);
         g_signal_connect((gpointer) button, "clicked",
@@ -301,6 +330,24 @@ file_selection_clicked_cb (GtkButton *button,
     DictionaryConfigWidgets *data = static_cast <DictionaryConfigWidgets *> (user_data);
 
     if (data) {
+#if GTK_CHECK_VERSION(2, 4, 0)
+		GtkWidget *dialog = gtk_file_chooser_dialog_new (
+			_(data->title), NULL, GTK_FILE_CHOOSER_ACTION_OPEN,
+			GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+			GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+			NULL);
+		gtk_file_chooser_set_filename (
+			GTK_FILE_CHOOSER (dialog),
+			gtk_entry_get_text (GTK_ENTRY (data->entry)));
+
+		if (gtk_dialog_run(GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT) {
+			char *filename;
+			filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
+			gtk_entry_set_text (GTK_ENTRY (data->entry), filename);
+			g_free (filename);
+		}
+		gtk_widget_destroy (dialog);
+#else
         GtkWidget *dialog = gtk_file_selection_new (_(data->title));
         gint result;
 
@@ -318,6 +365,7 @@ file_selection_clicked_cb (GtkButton *button,
         }
 
         gtk_widget_destroy (dialog);
+#endif
     }
 }
 
@@ -325,12 +373,20 @@ static void
 dict_type_changed_cb (GtkComboBox *combo,
                       gpointer userdata)
 {
+#if GTK_CHECK_VERSION(2, 24, 0)
+    gchar *typetext = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT (combo));
+#else
     gchar *typetext = gtk_combo_box_get_active_text(combo);
+#endif
     for (int i = 0; __dict_type_names[i] != ""; i++) {
         if (__dict_type_names[i] == typetext) {
             gtk_widget_show_all(__widgets_dicts[i].widget);
         } else {
+#if GTK_CHECK_VERSION(2, 24, 0)
+            gtk_widget_hide(__widgets_dicts[i].widget);
+#else
             gtk_widget_hide_all(__widgets_dicts[i].widget);
+#endif
         }
     }
     gtk_entry_set_text(GTK_ENTRY(__widgets_dicts[0].entry), "");
@@ -351,37 +407,74 @@ dict_list_add_clicked_cb (GtkButton *button,
     gtk_window_set_title(GTK_WINDOW(dialog),
                          _("Add new dictionary"));
 
+#if GTK_CHECK_VERSION(3, 0, 0)
+    hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+#else
     hbox = gtk_hbox_new(FALSE, 0);
+#endif
     gtk_widget_show(hbox);
     label = gtk_label_new(_("Dictionary Type: "));
     gtk_widget_show(label);
     gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 4);
+#if GTK_CHECK_VERSION(2, 24, 0)
+    __combo_box_dict_types = gtk_combo_box_text_new();
+#else
     __combo_box_dict_types = gtk_combo_box_new_text();
+#endif
     for (int i = 0; !__dict_type_names[i].empty(); i++) {
+#if GTK_CHECK_VERSION(2, 24, 0)
+        gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT (__combo_box_dict_types),
+                                  __dict_type_names[i].data());
+#else
         gtk_combo_box_append_text(GTK_COMBO_BOX(__combo_box_dict_types),
                                   __dict_type_names[i].data());
+#endif
     }
     g_signal_connect((gpointer) __combo_box_dict_types, "changed",
                      G_CALLBACK(dict_type_changed_cb),
                      NULL);
     gtk_widget_show(__combo_box_dict_types);
     gtk_box_pack_start(GTK_BOX(hbox), __combo_box_dict_types, FALSE, TRUE, 4);
+#if GTK_CHECK_VERSION(3, 0, 0)
+	gtk_box_pack_start(
+		GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))),
+		hbox, FALSE, FALSE, 4);
+#else
     gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), hbox, FALSE, FALSE, 4);
+#endif
 
     /* dictionary file widgets */
     dict_entry_widgets_dictfile_setup(&(__widgets_dicts[0]));
+#if GTK_CHECK_VERSION(3, 0, 0)
+	gtk_box_pack_start(
+		GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))),
+		__widgets_dicts[0].widget, TRUE, TRUE, 4);
+#else
     gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), __widgets_dicts[0].widget,
                        TRUE, FALSE, 4);
+#endif
 
     /* skkserv widgets */
     dict_entry_widgets_skkserv_setup(&__widgets_dicts[1]);
+#if GTK_CHECK_VERSION(3, 0, 0)
+	gtk_box_pack_start(
+		GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))),
+		__widgets_dicts[1].widget, TRUE, FALSE, 4);
+#else
     gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), __widgets_dicts[1].widget,
                        TRUE, FALSE, 4);
+#endif
 
     /* dictionary file widgets */
     dict_entry_widgets_dictfile_setup(&__widgets_dicts[2]);
+#if GTK_CHECK_VERSION(3, 0, 0)
+	gtk_box_pack_start(
+		GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))),
+		__widgets_dicts[2].widget, TRUE, FALSE, 4);
+#else
     gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), __widgets_dicts[2].widget,
                        TRUE, FALSE, 4);
+#endif
 
     gtk_combo_box_set_active(GTK_COMBO_BOX(__combo_box_dict_types), 0);
 
@@ -392,12 +485,19 @@ dict_list_add_clicked_cb (GtkButton *button,
                                       _("Add"),
                                       GTK_RESPONSE_OK);
     gtk_widget_grab_default(ok_button);
+#if GTK_CHECK_VERSION(2, 22, 0)
+#else  
     gtk_dialog_set_has_separator(GTK_DIALOG(dialog), TRUE);
+#endif
     gtk_widget_show(dialog);
 
     result = gtk_dialog_run(GTK_DIALOG(dialog));
     if (result == GTK_RESPONSE_OK) {
+#if GTK_CHECK_VERSION(2, 24, 0)
+        String dict_type = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(__combo_box_dict_types));
+#else
         String dict_type = gtk_combo_box_get_active_text(GTK_COMBO_BOX(__combo_box_dict_types));
+#endif
         String dict_name;
         GtkTreeIter iter;
         GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(userdata));
